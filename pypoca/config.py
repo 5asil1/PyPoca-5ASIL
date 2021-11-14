@@ -23,6 +23,7 @@ class BotConfig:
     invite_link = os.environ.get("BOT_INVITE_LINK")
     vote_link = os.environ.get("BOT_VOTE_LINK")
     server_link = os.environ.get("BOT_SERVER_LINK")
+    github_link = os.environ.get("BOT_GITHUB_LINK")
 
 
 class TMDBConfig:
