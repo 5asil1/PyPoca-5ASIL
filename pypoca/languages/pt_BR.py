@@ -1,18 +1,19 @@
 # -*- coding: utf-8 -*-
 
 __all__ = (
-    "OptionsDescription",
-    "Placeholders",
-    "EventsResponse",
-    "CommandsDescription",
-    "CommandsResponse",
-    "Languages",
-    "Regions",
-    "Genres",
+    "OptionDescription",
+    "Placeholder",
+    "EventReply",
+    "CommandDescription",
+    "CommandReply",
+    "Language",
+    "Region",
+    "Genre",
 )
 
 
-class Response(object):
+class Reply:
+    """Basic reply model."""
     title: str
     description: str
 
@@ -21,7 +22,8 @@ class Response(object):
         self.description = description
 
 
-class OptionsDescription:
+class OptionDescription:
+    """All available option descriptions with the respectives regionalized name."""
     query = "Uma consulta de texto para pesquisar"
     page = "Especifique qual página consultar"
     language = "Um valor ISO 639-1 para exibir os dados traduzidos"
@@ -42,26 +44,29 @@ class OptionsDescription:
     service = "Filtrar os resultados por serviço de streaming ou canal específico"
 
 
-class Placeholders:
+class Placeholder:
+    """All available placeholders with the respectives regionalized name."""
     menu = "Selecione uma das opções..."
 
 
-class EventsResponse:
-    cooldown = Response(
+class EventReply:
+    """All available event replies with the respectives regionalized name."""
+    cooldown = Reply(
         title="Aguarde para usar o comando `{command_name}`",
         description="Por favor, aguarde {time:.2f} segundos para usar o comando",
     )
-    not_found = Response(
+    not_found = Reply(
         title="Nenhum resultado encontrado",
         description="Não foi possível encontrar nenhuma correspondência para essas especificações",
     )
-    exception = Response(
+    exception = Reply(
         title="Ocorreu um erro inesperado com o comando `{command_name}`",
         description="Erro: {error}",
     )
 
 
-class CommandsDescription:
+class CommandDescription:
+    """All available command descriptions with the respectives regionalized name."""
     ping = "Obtenha a latência da PyPoca"
     help = "Veja o menu de ajuda da PyPoca"
     movie = "Tudo sobre filmes: encontre, descubra e obtenha informações"
@@ -69,25 +74,29 @@ class CommandsDescription:
     tv = "Tudo sobre séries: encontre, descubra e obtenha informações"
 
 
-class CommandsResponse:
-    ping = Response(title="Pong!", description="Latência: {latency}ms")
-    help = Response(
+class CommandReply:
+    """All available command replies with the respectives regionalized name."""
+    ping = Reply(title="Pong!", description="Latência: {latency}ms")
+    help = Reply(
         title="Comandos disponíveis",
         description="Milhões de filmes, séries e artistas para descobrir. Explore agora!",
     )
 
 
-class Languages:
+class Language:
+    """All available languages with the respectives regionalized name."""
     en_US = "Inglês"
     pt_BR = "Português"
 
 
-class Regions:
+class Region:
+    """All available regions with the respectives regionalized name."""
     BR = "Brasil"
     US = "Estados Unidos"
 
 
-class Genres:
+class Genre:
+    """All available genres with the respectives regionalized name."""
     action = "Ação"
     action_and_adventure = "Ação & Aventura"
     adventure = "Aventura"

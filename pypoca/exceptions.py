@@ -10,4 +10,4 @@ class RequestFailed(PyPocaException):
 
 
 class NotFound(PyPocaException):
-    """Request returns no results."""
+    """Command request returns no results."""
