@@ -23,15 +23,19 @@ class Event(Cog):
     async def on_slash_command_error(self, inter: SlashInteraction, e: Exception) -> None:
         """Called when slash command had an exception while the command was invoked."""
         if isinstance(e, CommandOnCooldown):
-            title = EventReply.cooldown.title.format(command_name=inter.data.name),
-            description = EventReply.cooldown.title.format(command_name=e.retry_after),
+            title = (EventReply.cooldown.title.format(command_name=inter.data.name),)
+            description = (EventReply.cooldown.title.format(command_name=e.retry_after),)
         elif isinstance(e, NotFound):
             title = EventReply.not_found.title
             description = EventReply.not_found.description
         else:
             title = EventReply.exception.title.format(command_name=inter.data.name)
             description = EventReply.exception.description.format(error=str(e))
-            log.error(f"{inter}. {e}", extra={"locals": locals(), "ctx": vars(inter)}, exc_info=e)
+            log.error(
+                f"{inter}. {e}",
+                extra={"locals": locals(), "ctx": vars(inter)},
+                exc_info=e,
+            )
         embed = ReplyEmbed(title=title, description=description, color=Color.error)
         await inter.reply(embed=embed, ephemeral=True)
 

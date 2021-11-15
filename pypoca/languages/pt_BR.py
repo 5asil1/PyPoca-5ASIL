@@ -14,6 +14,7 @@ __all__ = (
 
 class Reply:
     """Basic reply model."""
+
     title: str
     description: str
 
@@ -24,6 +25,7 @@ class Reply:
 
 class OptionDescription:
     """All available option descriptions with the respectives regionalized name."""
+
     query = "Uma consulta de texto para pesquisar"
     page = "Especifique qual página consultar"
     language = "Um valor ISO 639-1 para exibir os dados traduzidos"
@@ -46,11 +48,13 @@ class OptionDescription:
 
 class Placeholder:
     """All available placeholders with the respectives regionalized name."""
+
     menu = "Selecione uma das opções..."
 
 
 class EventReply:
     """All available event replies with the respectives regionalized name."""
+
     cooldown = Reply(
         title="Aguarde para usar o comando `{command_name}`",
         description="Por favor, aguarde {time:.2f} segundos para usar o comando",
@@ -67,6 +71,7 @@ class EventReply:
 
 class CommandDescription:
     """All available command descriptions with the respectives regionalized name."""
+
     ping = "Obtenha a latência da PyPoca"
     help = "Veja o menu de ajuda da PyPoca"
     movie = "Tudo sobre filmes: encontre, descubra e obtenha informações"
@@ -76,6 +81,7 @@ class CommandDescription:
 
 class CommandReply:
     """All available command replies with the respectives regionalized name."""
+
     ping = Reply(title="Pong!", description="Latência: {latency}ms")
     help = Reply(
         title="Comandos disponíveis",
@@ -85,18 +91,21 @@ class CommandReply:
 
 class Language:
     """All available languages with the respectives regionalized name."""
+
     en_US = "Inglês"
     pt_BR = "Português"
 
 
 class Region:
     """All available regions with the respectives regionalized name."""
+
     BR = "Brasil"
     US = "Estados Unidos"
 
 
 class Genre:
     """All available genres with the respectives regionalized name."""
+
     action = "Ação"
     action_and_adventure = "Ação & Aventura"
     adventure = "Aventura"

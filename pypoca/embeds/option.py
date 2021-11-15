@@ -8,6 +8,7 @@ __all__ = ("Choice", "Choices", "Option")
 
 class Choice:
     """All valid choice options for option."""
+
     # sort_by
     popularity = OptionChoice("popularity", "popularity.desc")
     year = OptionChoice("year", "release_date.desc")
@@ -75,13 +76,16 @@ class Choice:
 
 class Choices:
     """All valid list of choice options for option."""
-    languages = [
-        OptionChoice(value, key.replace("_", "-")) for key, value in vars(Language).items() if key[0] != "_"
+
+    languages = [OptionChoice(value, key.replace("_", "-")) for key, value in vars(Language).items() if key[0] != "_"]
+    regions = [OptionChoice(value, key) for key, value in vars(Region).items() if key[0] != "_"]
+    movie_sort_by = [
+        Choice.popularity,
+        Choice.year,
+        Choice.rating,
+        Choice.title,
+        Choice.votes,
     ]
-    regions = [
-        OptionChoice(value, key) for key, value in vars(Region).items() if key[0] != "_"
-    ]
-    movie_sort_by = [Choice.popularity, Choice.year, Choice.rating, Choice.title, Choice.votes]
     tv_sort_by = [Choice.popularity, Choice.year, Choice.rating]
     intervals = [Choice.day, Choice.week]
     movie_services = [
@@ -173,15 +177,31 @@ class Choices:
 
 class Option:
     """All valid options for slash commands."""
+
     hide = OptionObj("hide", OptionDescription.hide, OptionType.BOOLEAN)
     compact = OptionObj("compact", OptionDescription.hide, OptionType.BOOLEAN)
     query = OptionObj("query", OptionDescription.query, OptionType.STRING, required=True)
     page = OptionObj("page", OptionDescription.page, OptionType.INTEGER)
-    language = OptionObj("language", OptionDescription.language, OptionType.STRING, choices=Choices.languages)
+    language = OptionObj(
+        "language",
+        OptionDescription.language,
+        OptionType.STRING,
+        choices=Choices.languages,
+    )
     region = OptionObj("region", OptionDescription.region, OptionType.STRING, choices=Choices.regions)
     nsfw = OptionObj("nsfw", OptionDescription.nsfw, OptionType.BOOLEAN)
-    movie_sort_by = OptionObj("sort_by", OptionDescription.sort_by, OptionType.STRING, choices=Choices.movie_sort_by)
-    tv_sort_by = OptionObj("sort_by", OptionDescription.sort_by, OptionType.STRING, choices=Choices.tv_sort_by)
+    movie_sort_by = OptionObj(
+        "sort_by",
+        OptionDescription.sort_by,
+        OptionType.STRING,
+        choices=Choices.movie_sort_by,
+    )
+    tv_sort_by = OptionObj(
+        "sort_by",
+        OptionDescription.sort_by,
+        OptionType.STRING,
+        choices=Choices.tv_sort_by,
+    )
     year = OptionObj("year", OptionDescription.year, OptionType.INTEGER)
     min_year = OptionObj("min_year", OptionDescription.min_year, OptionType.INTEGER)
     max_year = OptionObj("max_year", OptionDescription.max_year, OptionType.INTEGER)
@@ -191,8 +211,28 @@ class Option:
     max_rating = OptionObj("max_rating", OptionDescription.max_rating, OptionType.INTEGER)
     min_runtime = OptionObj("min_runtime", OptionDescription.min_runtime, OptionType.INTEGER)
     max_runtime = OptionObj("max_runtime", OptionDescription.max_runtime, OptionType.INTEGER)
-    interval = OptionObj("interval", OptionDescription.interval, OptionType.STRING, choices=Choices.intervals)
-    movie_service = OptionObj("service", OptionDescription.service, OptionType.STRING, choices=Choices.movie_services)
-    tv_service = OptionObj("service", OptionDescription.service, OptionType.STRING, choices=Choices.tv_services)
-    movie_genre = OptionObj("genre", OptionDescription.service, OptionType.STRING, choices=Choices.tv_sort_by)
+    interval = OptionObj(
+        "interval",
+        OptionDescription.interval,
+        OptionType.STRING,
+        choices=Choices.intervals,
+    )
+    movie_service = OptionObj(
+        "service",
+        OptionDescription.service,
+        OptionType.STRING,
+        choices=Choices.movie_services,
+    )
+    tv_service = OptionObj(
+        "service",
+        OptionDescription.service,
+        OptionType.STRING,
+        choices=Choices.tv_services,
+    )
+    movie_genre = OptionObj(
+        "genre",
+        OptionDescription.service,
+        OptionType.STRING,
+        choices=Choices.tv_sort_by,
+    )
     tv_genre = OptionObj("genre", OptionDescription.service, OptionType.STRING, choices=Choices.tv_genres)

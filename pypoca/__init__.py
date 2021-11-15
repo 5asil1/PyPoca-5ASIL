@@ -7,4 +7,4 @@ log = logger.get_logger(
     bugsnag_handler_config={"api_key": BugsnagConfig.key},
 )
 
-__all__ = ("log")
+__all__ = "log"

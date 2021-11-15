@@ -4,6 +4,7 @@ import os
 
 class LoggerConfig:
     """Logging configuration variables"""
+
     level = os.environ.get("LOG_LEVEL")
     format = os.environ.get("LOG_FORMAT")
     filename = os.environ.get("LOG_FILE_CONFIG")
@@ -11,6 +12,7 @@ class LoggerConfig:
 
 class BotConfig:
     """Bot configuration variables"""
+
     cogs = [
         os.path.join(os.environ.get("COG_PATH"), filename)
         for filename in os.listdir(os.environ.get("COG_PATH"))
@@ -28,6 +30,7 @@ class BotConfig:
 
 class TMDBConfig:
     """TMDB configuration variables"""
+
     key = os.environ.get("TMDB_KEY")
     language = os.environ.get("TMDB_LANGUAGE")
     region = os.environ.get("TMDB_REGION")
@@ -36,5 +39,6 @@ class TMDBConfig:
 
 class BugsnagConfig:
     """Bugsnag configuration variables"""
+
     key = os.environ.get("BUGSNAG_KEY")
     level = os.environ.get("BUGSNAG_LEVEL")

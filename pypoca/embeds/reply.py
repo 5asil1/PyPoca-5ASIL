@@ -9,13 +9,7 @@ from pypoca.embeds import Color
 
 class ReplyEmbed(Embed):
     def __init__(
-        self,
-        title: str,
-        description: str,
-        *,
-        color: int = Color.bot,
-        fields: List[dict] = [],
-        **kwargs
+        self, title: str, description: str, *, color: int = Color.bot, fields: List[dict] = [], **kwargs
     ) -> None:
         super().__init__(title=title, description=description, color=color, **kwargs)
         self.add_fields(fields)
