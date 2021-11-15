@@ -14,13 +14,16 @@ class BotConfig:
     """Bot configuration variables"""
 
     cogs = [
-        os.path.join(os.environ.get("COG_PATH"), filename)
-        for filename in os.listdir(os.environ.get("COG_PATH"))
+        os.path.join("pypoca/cogs", filename)
+        for filename in os.listdir("pypoca/cogs")
         if not filename.startswith("_") and filename.endswith(".py")
     ]
-    token = os.environ.get("DISCORD_TOKEN")
-    prefix = os.environ.get("BOT_PREFIX")
-    guilds_ids = list(map(int, os.environ.get("TEST_GUILDS_ID").split(",")))
+    token = os.environ["DISCORD_TOKEN"]
+    prefix = os.environ.get("BOT_PREFIX", "/")
+    try:
+        guilds_ids = list(map(int, os.environ.get("TEST_GUILDS_ID").split(",")))
+    except AttributeError:
+        guilds_ids = None
     language = os.environ.get("BOT_LANGUAGE")
     invite_link = os.environ.get("BOT_INVITE_LINK")
     vote_link = os.environ.get("BOT_VOTE_LINK")
