@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 __all__ = (
+    "DATETIME_STR",
     "OptionDescription",
     "Placeholder",
     "EventReply",
@@ -10,6 +11,8 @@ __all__ = (
     "Region",
     "Genre",
 )
+
+DATETIME_STR = "%d/%m/%Y"
 
 
 class Reply:
@@ -77,6 +80,12 @@ class CommandDescription:
     movie = "Tudo sobre filmes: encontre, descubra e obtenha informações"
     person = "Tudo sobre artistas: encontre, descubra e obtenha informações"
     tv = "Tudo sobre séries: encontre, descubra e obtenha informações"
+    discover_movie = "Descubra filmes por diferentes tipos de filtros"
+    popular_movie = "Veja os filmes mais populares"
+    search_movie = "Pesquise por um filme"
+    top_movie = "Veja os filmes com melhor nota de todos os tempos"
+    trending_movie = "Veja os filmes da tendência"
+    upcoming_movie = "Veja os próximos filmes nos cinemas"
 
 
 class CommandReply:

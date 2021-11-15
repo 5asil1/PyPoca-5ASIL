@@ -233,6 +233,6 @@ class Option:
         "genre",
         OptionDescription.service,
         OptionType.STRING,
-        choices=Choices.tv_sort_by,
+        choices=Choices.movie_genres,
     )
     tv_genre = OptionObj("genre", OptionDescription.service, OptionType.STRING, choices=Choices.tv_genres)

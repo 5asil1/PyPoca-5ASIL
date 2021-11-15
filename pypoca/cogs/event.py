@@ -10,6 +10,8 @@ from pypoca.languages import EventReply
 
 
 class Event(Cog):
+    """`Event` cog handles the different types of events listened by Client."""
+
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
 

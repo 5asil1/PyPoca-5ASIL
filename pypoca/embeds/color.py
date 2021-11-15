@@ -6,8 +6,8 @@ __all__ = ("Color",)
 class Color:
     """Represents a HEX code color."""
 
-    blue = 0x42C2A1
-    red = 0xE74C3C
+    yellow = 0xF0C434
+    red = 0xE0242C
 
-    bot = blue
+    bot = yellow
     error = red

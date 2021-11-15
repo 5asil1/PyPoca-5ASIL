@@ -8,6 +8,8 @@ from pypoca.languages import CommandDescription, CommandReply
 
 
 class General(Cog):
+    """`General` cog has the basic commands."""
+
     def __init__(self, bot: Bot):
         self.bot = bot
 
@@ -30,9 +32,9 @@ class General(Cog):
             title=CommandReply.help.title,
             description=CommandReply.help.description,
             fields=[
-                {"name": "/movie", "value": CommandDescription.movie},
-                {"name": "/tv", "value": CommandDescription.tv},
-                {"name": "/people", "value": CommandDescription.person},
+                {"name": "/movie", "value": CommandDescription.movie, "inline": False},
+                {"name": "/tv", "value": CommandDescription.tv, "inline": False},
+                {"name": "/people", "value": CommandDescription.person, "inline": False},
             ],
         )
         buttons = ReplyButtons(
