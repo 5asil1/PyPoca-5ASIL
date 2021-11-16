@@ -53,7 +53,7 @@ class Movie(Cog):
             movie["image"] = {"url": f"https://image.tmdb.org/t/p/w1280/{result.backdrop_path}"}
         for person in result.credits.get("crew", []):
             if person["job"] == "Director":
-                movie["author"] = {"name": person.get("name", person.original_name)}
+                movie["author"] = {"name": person.name}
                 if person.get("profile_path"):
                     movie["author"]["icon_url"] = f"https://image.tmdb.org/t/p/w185/{person.profile_path}"
                 break
@@ -165,7 +165,7 @@ class Movie(Cog):
         max_rating: float = None,
         min_runtime: int = None,
         max_runtime: int = None,
-        page: int = None,
+        page: int = 1,
         language: str = TMDBConfig.language,
         region: str = TMDBConfig.region,
     ) -> None:

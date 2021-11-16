@@ -19,6 +19,10 @@ def test_format_datetime():
     date_formated = utils.format_datetime(date, "%Y-%m-%d", "%d/%m/%Y")
     assert date_formated is None
 
+    date = ""
+    date_formated = utils.format_datetime(date, "%Y-%m-%d", "%d/%m/%Y")
+    assert date_formated is None
+
 
 def test_format_duration():
     duration = 59
@@ -34,5 +38,9 @@ def test_format_duration():
     assert duration_formated == "1h 1min"
 
     duration = None
+    duration_formated = utils.format_duration(duration)
+    assert duration_formated is None
+
+    duration = ""
     duration_formated = utils.format_duration(duration)
     assert duration_formated is None
