@@ -81,11 +81,17 @@ class CommandDescription:
     person = "Tudo sobre artistas: encontre, descubra e obtenha informações"
     tv = "Tudo sobre séries: encontre, descubra e obtenha informações"
     discover_movie = "Descubra filmes por diferentes tipos de filtros"
+    discover_tv = "Descubra seriados por diferentes tipos de filtros"
     popular_movie = "Veja os filmes mais populares"
+    popular_tv = "Veja os seriados mais populares"
     search_movie = "Pesquise por um filme"
-    top_movie = "Veja os filmes com melhor nota de todos os tempos"
+    search_tv = "Pesquise por um seriado"
+    top_movie = "Veja os filmes com melhor nota"
+    top_tv = "Veja os seriados com melhor nota"
     trending_movie = "Veja os filmes da tendência"
+    trending_tv = "Veja os seriados da tendência"
     upcoming_movie = "Veja os próximos filmes nos cinemas"
+    upcoming_tv = "Veja os próximos seriado a serem lançados"
 
 
 class CommandReply:

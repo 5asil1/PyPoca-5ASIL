@@ -81,11 +81,17 @@ class CommandDescription:
     person = "All about people: find, discover and get information"
     tv = "All about TV shows: find, discover and get information"
     discover_movie = "Discover movies by different types of data"
+    discover_tv = "Discover TV shows by different types of data"
     popular_movie = "Get the current popular movies"
+    popular_tv = "Get the current popular TV shows"
     search_movie = "Search for a movie"
+    search_tv = "Search for TV show"
     top_movie = "Get the top rated movies"
+    top_tv = "Get the top rated TV shows"
     trending_movie = "Get the trending movies"
+    trending_tv = "Get the trending TV shows"
     upcoming_movie = "Get the upcoming movies in theatres"
+    upcoming_tv = "Get the upcoming TV shows"
 
 
 class CommandReply:
