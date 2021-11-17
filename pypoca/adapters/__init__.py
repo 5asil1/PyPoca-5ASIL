@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from aiotmdb import AsObj
 
-from pypoca.adapters import movie, tv
+from pypoca.adapters import movie, person, tv
 
 
 class Adapter:
@@ -10,12 +10,16 @@ class Adapter:
             self._embed = movie.embed
             self._option = movie.option
             self._buttons = movie.buttons
+        elif type == "person":
+            self._embed = person.embed
+            self._option = person.option
+            self._buttons = person.buttons
         elif type == "tv":
             self._embed = tv.embed
             self._option = tv.option
             self._buttons = tv.buttons
         else:
-            raise ValueError(f"Adapter 'type' must be 'movie' or 'tv', not {type}")
+            raise ValueError(f"Adapter 'type' must be 'movie', 'person' or 'tv', not {type}")
 
     def embed(self, result: AsObj, region: str) -> dict:
         return self._embed(result, region)
