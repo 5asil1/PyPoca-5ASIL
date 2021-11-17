@@ -1,20 +1,24 @@
 # -*- coding: utf-8 -*-
-from dislash import Option as OptionObj, OptionChoice, OptionType
+from dislash import OptionChoice
 
-from pypoca.languages import Genre, Language, OptionDescription, Region
+from pypoca.languages import Boolean, Genre, Interval, Language
+from pypoca.languages import Region, Sort
 
-__all__ = ("Choice", "Choices", "Option")
+__all__ = ("Choice", "Choices")
 
 
 class Choice:
     """All valid choice options for option."""
 
+    # boolean
+    true = OptionChoice(Boolean.true, True)
+    false = OptionChoice(Boolean.false, False)
     # sort_by
-    popularity = OptionChoice("popularity", "popularity.desc")
-    year = OptionChoice("year", "release_date.desc")
-    rating = OptionChoice("rating", "vote_average.desc")
-    title = OptionChoice("title", "original_title.asc")
-    votes = OptionChoice("votes", "vote_count.desc")
+    popularity = OptionChoice(Sort.popularity, "popularity.desc")
+    year = OptionChoice(Sort.year, "release_date.desc")
+    rating = OptionChoice(Sort.rating, "vote_average.desc")
+    title = OptionChoice(Sort.title, "original_title.asc")
+    votes = OptionChoice(Sort.votes, "vote_count.desc")
     # service
     acorn_tv = OptionChoice("Acorn TV", "87")
     amazon_prime_video = OptionChoice("Amazon Prime Video", "9|119")
@@ -70,8 +74,8 @@ class Choice:
     talk = OptionChoice(Genre.talk, "10767")
     war_and_politics = OptionChoice(Genre.war_and_politics, "10768")
     # interval
-    day = OptionChoice("day", "day")
-    week = OptionChoice("week", "week")
+    day = OptionChoice(Interval.day, "day")
+    week = OptionChoice(Interval.week, "week")
 
 
 class Choices:
@@ -79,6 +83,9 @@ class Choices:
 
     languages = [OptionChoice(value, key.replace("_", "-")) for key, value in vars(Language).items() if key[0] != "_"]
     regions = [OptionChoice(value, key) for key, value in vars(Region).items() if key[0] != "_"]
+    # boolean
+    boolean = [Choice.true, Choice.false]
+    # sort_by
     movie_sort_by = [
         Choice.popularity,
         Choice.year,
@@ -87,7 +94,7 @@ class Choices:
         Choice.votes,
     ]
     tv_sort_by = [Choice.popularity, Choice.year, Choice.rating]
-    intervals = [Choice.day, Choice.week]
+    # service
     movie_services = [
         Choice.acorn_tv,
         Choice.amazon_prime_video,
@@ -134,6 +141,7 @@ class Choices:
         Choice.star_plus,
         Choice.youtube,
     ]
+    # genre
     movie_genres = [
         Choice.action,
         Choice.adventure,
@@ -173,66 +181,5 @@ class Choices:
         Choice.war_and_politics,
         Choice.western,
     ]
-
-
-class Option:
-    """All valid options for slash commands."""
-
-    hide = OptionObj("hide", OptionDescription.hide, OptionType.BOOLEAN)
-    compact = OptionObj("compact", OptionDescription.hide, OptionType.BOOLEAN)
-    query = OptionObj("query", OptionDescription.query, OptionType.STRING, required=True)
-    page = OptionObj("page", OptionDescription.page, OptionType.INTEGER)
-    language = OptionObj(
-        "language",
-        OptionDescription.language,
-        OptionType.STRING,
-        choices=Choices.languages,
-    )
-    region = OptionObj("region", OptionDescription.region, OptionType.STRING, choices=Choices.regions)
-    nsfw = OptionObj("nsfw", OptionDescription.nsfw, OptionType.BOOLEAN)
-    movie_sort_by = OptionObj(
-        "sort_by",
-        OptionDescription.sort_by,
-        OptionType.STRING,
-        choices=Choices.movie_sort_by,
-    )
-    tv_sort_by = OptionObj(
-        "sort_by",
-        OptionDescription.sort_by,
-        OptionType.STRING,
-        choices=Choices.tv_sort_by,
-    )
-    year = OptionObj("year", OptionDescription.year, OptionType.INTEGER)
-    min_year = OptionObj("min_year", OptionDescription.min_year, OptionType.INTEGER)
-    max_year = OptionObj("max_year", OptionDescription.max_year, OptionType.INTEGER)
-    min_votes = OptionObj("min_votes", OptionDescription.min_votes, OptionType.INTEGER)
-    max_votes = OptionObj("max_votes", OptionDescription.max_votes, OptionType.INTEGER)
-    min_rating = OptionObj("min_rating", OptionDescription.min_rating, OptionType.INTEGER)
-    max_rating = OptionObj("max_rating", OptionDescription.max_rating, OptionType.INTEGER)
-    min_runtime = OptionObj("min_runtime", OptionDescription.min_runtime, OptionType.INTEGER)
-    max_runtime = OptionObj("max_runtime", OptionDescription.max_runtime, OptionType.INTEGER)
-    interval = OptionObj(
-        "interval",
-        OptionDescription.interval,
-        OptionType.STRING,
-        choices=Choices.intervals,
-    )
-    movie_service = OptionObj(
-        "service",
-        OptionDescription.service,
-        OptionType.STRING,
-        choices=Choices.movie_services,
-    )
-    tv_service = OptionObj(
-        "service",
-        OptionDescription.service,
-        OptionType.STRING,
-        choices=Choices.tv_services,
-    )
-    movie_genre = OptionObj(
-        "genre",
-        OptionDescription.service,
-        OptionType.STRING,
-        choices=Choices.movie_genres,
-    )
-    tv_genre = OptionObj("genre", OptionDescription.service, OptionType.STRING, choices=Choices.tv_genres)
+    # interval
+    intervals = [Choice.day, Choice.week]

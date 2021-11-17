@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
 
-__all__ = ("Color",)
+__all__ = "Color"
 
 
 class Color:
     """Represents a HEX code color."""
 
-    yellow = 0xF0C434
+    primary = 0xF1CF68
+    secondary = 0x6577C6
+
     red = 0xE0242C
 
-    bot = yellow
+    bot = primary
     error = red
