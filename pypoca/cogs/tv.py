@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-from typing import List
-
-from aiotmdb import TMDB, AsObj
+from aiotmdb import TMDB
 from discord.ext.commands import Bot, Cog
 from dislash import ResponseType, SlashInteraction, slash_command
 
-from pypoca import utils
+from pypoca.adapters import Adapter
 from pypoca.config import TMDBConfig
 from pypoca.embeds import Option, Buttons, Poster, Menu
 from pypoca.exceptions import NotFound
@@ -19,96 +17,19 @@ class TV(Cog):
         self.bot = bot
 
     @staticmethod
-    def _tv(result: AsObj, region: str) -> dict:
-        vote_average = result.get("vote_average")
-        vote_count = result.get("vote_count")
-        genres = [genre["name"] for genre in result.get("genres", [])]
-        networks = [network["name"] for network in result.get("networks", [])]
-        rating = f"{vote_average} ({vote_count} votes)" if vote_average else None
-        status = result.get("status")
-        first_air_date = utils.format_datetime(result.first_air_date)
-        last_air_date = utils.format_datetime(result.last_air_date)
-        number_of_episodes = result.get("number_of_episodes", 0)
-        number_of_seasons = result.get("number_of_seasons", 0)
-        episode_run_time = (
-            sum(result.episode_run_time) / len(result.episode_run_time) if result.get("episode_run_time") else 0
-        )
-        total_duration = utils.format_duration(episode_run_time * number_of_episodes)
-        duration = utils.format_duration(episode_run_time)
-        try:
-            watch_providers = [
-                watch_provider["provider_name"]
-                for watch_provider in result["watch/providers"]["results"][region]["flatrate"]
-            ]
-        except Exception:
-            watch_providers = []
-
-        tv = {
-            "title": result.get("name", result.original_name),
-            "description": result.get("overview"),
-            "fields": [
-                {"name": "Rating", "value": rating or "-"},
-                {"name": "Premiered", "value": first_air_date or "-"},
-                {
-                    "name": "Status",
-                    "value": f"{status} ({last_air_date})" if status == "Ended" else status if status else "-",
-                },
-                {"name": "Episodes", "value": number_of_episodes or "-"},
-                {"name": "Seasons", "value": number_of_seasons or "-"},
-                {"name": "Runtime", "value": f"{duration} ({total_duration} total)"},
-                {"name": "Genre", "value": ", ".join(genres) if genres else "-"},
-                {"name": "Network", "value": networks[0] if networks else "-"},
-                {"name": "Watch on", "value": ", ".join(watch_providers) if watch_providers else "-"},
-            ],
-        }
-        if result.get("homepage"):
-            tv["url"] = result.homepage
-        if result.get("backdrop_path"):
-            tv["image"] = {"url": f"https://image.tmdb.org/t/p/w1280/{result.backdrop_path}"}
-        if result.get("created_by"):
-            director = result.created_by[0]
-            tv["author"] = {"name": director.name}
-            if director.get("profile_path"):
-                tv["author"]["icon_url"] = f"https://image.tmdb.org/t/p/w185/{director.profile_path}"
-        return tv
-
-    @staticmethod
-    def _option(result: AsObj) -> dict:
-        title = result.get("name", result.original_name)
-        release_date = utils.format_datetime(result.get("first_air_date"))
-        vote_average = result.get("vote_average")
-        vote_count = result.get("vote_count")
-        label = f"{title} ({release_date})" if release_date else title
-        description = f"{vote_average} ({vote_count} votes)" if vote_average else ""
-        return {"label": label[:100], "description": description[:100]}
-
-    @staticmethod
-    def _buttons(result: AsObj) -> List[dict]:
-        imdb_id = result.external_ids.get("imdb_id")
-        try:
-            video_key = result.videos["results"][0]["key"]
-        except Exception:
-            video_key = None
-        buttons = [
-            {"label": "Trailer", "url": f"https://www.youtube.com/watch?v={video_key}"},
-            {"label": "Watch", "url": f"https://embed.warezcdn.net/serie/{imdb_id}"},
-            {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}"},
-        ]
-        return buttons
-
     async def _reply(
-        self,
         inter: SlashInteraction,
         *,
-        results: List[AsObj],
+        results: list,
         page: int,
         total_pages: int,
         language: str,
         region: str,
     ) -> None:
+        adapter = Adapter("tv")
         if len(results) > 1:
             embed = Poster(title="TV show results")
-            select_menu = Menu(options=[self._option(result) for result in results])
+            select_menu = Menu(options=[adapter.option(result) for result in results])
             msg = await inter.reply(
                 embed=embed,
                 components=[select_menu],
@@ -129,8 +50,8 @@ class TV(Cog):
             tv_id,
             append_to_response="credits,external_ids,recommendations,videos,watch/providers",
         )
-        embed = Poster(**self._tv(result, region=region))
-        buttons = Buttons(buttons=self._buttons(result))
+        embed = Poster(**adapter.embed(result, region=region))
+        buttons = Buttons(buttons=adapter.buttons(result))
         if len(results) > 1:
             await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
         else:
@@ -158,6 +79,21 @@ class TV(Cog):
             Option.language,
             Option.region,
         ],
+        connectors={
+            Option.tv_sort_by.name: "sort_by",
+            Option.tv_service.name: "service",
+            Option.tv_genre.name: "genre",
+            Option.year.name: "year",
+            Option.min_year.name: "min_year",
+            Option.max_year.name: "max_year",
+            Option.min_votes.name: "min_votes",
+            Option.min_rating.name: "min_rating",
+            Option.min_runtime.name: "min_runtime",
+            Option.max_runtime.name: "max_runtime",
+            Option.page.name: "page",
+            Option.language.name: "language",
+            Option.region.name: "region",
+        },
     )
     async def discover_tv(
         self,
@@ -204,6 +140,7 @@ class TV(Cog):
         name="popular",
         description=CommandDescription.popular_tv,
         options=[Option.page, Option.language, Option.region],
+        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )
     async def popular_tv(
         self,
@@ -235,6 +172,14 @@ class TV(Cog):
             Option.language,
             Option.region,
         ],
+        connectors={
+            Option.query.name: "query",
+            Option.year.name: "year",
+            Option.nsfw.name: "nsfw",
+            Option.page.name: "page",
+            Option.language.name: "language",
+            Option.region.name: "region",
+        },
     )
     async def search_tv(
         self,
@@ -262,6 +207,7 @@ class TV(Cog):
         name="top",
         description=CommandDescription.top_tv,
         options=[Option.page, Option.language, Option.region],
+        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )
     async def top_tv(
         self,
@@ -286,6 +232,7 @@ class TV(Cog):
         name="trending",
         description=CommandDescription.trending_tv,
         options=[Option.interval, Option.language, Option.region],
+        connectors={Option.interval.name: "interval", Option.language.name: "language", Option.region.name: "region"},
     )
     async def trending_tv(
         self,
@@ -313,6 +260,7 @@ class TV(Cog):
         name="upcoming",
         description=CommandDescription.upcoming_tv,
         options=[Option.page, Option.language, Option.region],
+        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )
     async def upcoming_tv(
         self,
