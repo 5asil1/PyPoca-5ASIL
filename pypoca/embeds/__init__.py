@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from pypoca.embeds.color import Color
 from pypoca.embeds.option import Option
-from pypoca.embeds.reply import ReplyButtons, ReplyEmbed, ReplyMenu
+from pypoca.embeds.reply import Buttons, Menu, Poster
 
-__all__ = ("Choice", "ReplyButtons", "ReplyEmbed")
+__all__ = ("Buttons", "Choice", "Color", "Option", "Poster")

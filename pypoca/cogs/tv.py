@@ -7,7 +7,7 @@ from dislash import ResponseType, SlashInteraction, slash_command
 
 from pypoca import utils
 from pypoca.config import TMDBConfig
-from pypoca.embeds import Option, ReplyButtons, ReplyEmbed, ReplyMenu
+from pypoca.embeds import Option, Buttons, Poster, Menu
 from pypoca.exceptions import NotFound
 from pypoca.languages import CommandDescription
 
@@ -107,8 +107,8 @@ class TV(Cog):
         region: str,
     ) -> None:
         if len(results) > 1:
-            embed = ReplyEmbed(title="TV show results")
-            select_menu = ReplyMenu(options=[self._option(result) for result in results])
+            embed = Poster(title="TV show results")
+            select_menu = Menu(options=[self._option(result) for result in results])
             msg = await inter.reply(
                 embed=embed,
                 components=[select_menu],
@@ -129,8 +129,8 @@ class TV(Cog):
             tv_id,
             append_to_response="credits,external_ids,recommendations,videos,watch/providers",
         )
-        embed = ReplyEmbed(**self._tv(result, region=region))
-        buttons = ReplyButtons(buttons=self._buttons(result))
+        embed = Poster(**self._tv(result, region=region))
+        buttons = Buttons(buttons=self._buttons(result))
         if len(results) > 1:
             await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
         else:

@@ -7,8 +7,10 @@ from dislash import ActionRow, ButtonStyle, SelectMenu
 from pypoca.embeds import Color
 from pypoca.languages import Placeholder
 
+__all__ = ("Buttons", "Menu", "Poster")
 
-class ReplyEmbed(Embed):
+
+class Poster(Embed):
     """Represents a Discord embed."""
 
     def __init__(
@@ -32,7 +34,7 @@ class ReplyEmbed(Embed):
             self.add_field(inline=inline, **field)
 
 
-class ReplyButtons(ActionRow):
+class Buttons(ActionRow):
     """Represents a Discord action row."""
 
     def __init__(self, *, buttons: List[dict] = [], **kwargs) -> None:
@@ -46,7 +48,7 @@ class ReplyButtons(ActionRow):
             self.add_button(style=style, **button)
 
 
-class ReplyMenu(SelectMenu):
+class Menu(SelectMenu):
     """Represents a Discord select menu."""
 
     def __init__(self, *, placeholder: str = Placeholder.menu, options: List[dict] = [], **kwargs) -> None:

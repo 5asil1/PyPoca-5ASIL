@@ -4,7 +4,7 @@ from discord.ext.commands import Bot, Cog
 from dislash import CommandOnCooldown, SlashInteraction
 
 from pypoca import log
-from pypoca.embeds import Color, ReplyEmbed
+from pypoca.embeds import Color, Poster
 from pypoca.exceptions import NotFound
 from pypoca.languages import EventReply
 
@@ -38,7 +38,7 @@ class Event(Cog):
                 extra={"locals": locals(), "ctx": vars(inter)},
                 exc_info=e,
             )
-        embed = ReplyEmbed(title=title, description=description, color=Color.error)
+        embed = Poster(title=title, description=description, color=Color.error)
         await inter.reply(embed=embed, ephemeral=True)
 
     @Cog.listener()

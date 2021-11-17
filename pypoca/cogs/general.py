@@ -3,7 +3,7 @@ from discord.ext.commands import Bot, BucketType, Cog
 from dislash import SlashInteraction, cooldown, slash_command
 
 from pypoca.config import BotConfig
-from pypoca.embeds import Option, ReplyButtons, ReplyEmbed
+from pypoca.embeds import Option, Buttons, Poster
 from pypoca.languages import CommandDescription, CommandReply
 
 
@@ -18,7 +18,7 @@ class General(Cog):
     async def ping(self, inter: SlashInteraction, hide: bool = False):
         """Measures latency between the bot service and the Discord client."""
         latency = int(self.bot.latency * 1000)
-        embed = ReplyEmbed(
+        embed = Poster(
             title=CommandReply.ping.title,
             description=CommandReply.ping.description.format(latency=latency),
         )
@@ -28,7 +28,7 @@ class General(Cog):
     @slash_command(name="help", description=CommandDescription.help, options=[Option.hide])
     async def help(self, inter: SlashInteraction, hide: bool = False):
         """The implementation of the help command."""
-        embed = ReplyEmbed(
+        embed = Poster(
             title=CommandReply.help.title,
             description=CommandReply.help.description,
             fields=[
@@ -37,7 +37,7 @@ class General(Cog):
                 {"name": "/people", "value": CommandDescription.person, "inline": False},
             ],
         )
-        buttons = ReplyButtons(
+        buttons = Buttons(
             buttons=[
                 {"label": "Invite", "url": BotConfig.invite_link},
                 {"label": "Vote", "url": BotConfig.vote_link},
