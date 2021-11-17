@@ -4,7 +4,7 @@ from dislash import SlashInteraction, cooldown, slash_command
 
 from pypoca.config import BotConfig
 from pypoca.embeds import Option, Buttons, Poster
-from pypoca.languages import CommandDescription, CommandReply
+from pypoca.languages import Button, CommandDescription, CommandReply
 
 
 class General(Cog):
@@ -14,7 +14,12 @@ class General(Cog):
         self.bot = bot
 
     @cooldown(rate=1, per=3, type=BucketType.channel)
-    @slash_command(name="ping", description=CommandDescription.ping, options=[Option.hide])
+    @slash_command(
+        name="ping",
+        description=CommandDescription.ping,
+        options=[Option.hide],
+        connectors={Option.hide.name: "hide"},
+    )
     async def ping(self, inter: SlashInteraction, hide: bool = False):
         """Measures latency between the bot service and the Discord client."""
         latency = int(self.bot.latency * 1000)
@@ -25,7 +30,12 @@ class General(Cog):
         await inter.reply(embed=embed, ephemeral=hide)
 
     @cooldown(rate=1, per=3, type=BucketType.channel)
-    @slash_command(name="help", description=CommandDescription.help, options=[Option.hide])
+    @slash_command(
+        name="help",
+        description=CommandDescription.help,
+        options=[Option.hide],
+        connectors={Option.hide.name: "hide"},
+    )
     async def help(self, inter: SlashInteraction, hide: bool = False):
         """The implementation of the help command."""
         embed = Poster(
@@ -39,10 +49,10 @@ class General(Cog):
         )
         buttons = Buttons(
             buttons=[
-                {"label": "Invite", "url": BotConfig.invite_link},
-                {"label": "Vote", "url": BotConfig.vote_link},
-                {"label": "Server", "url": BotConfig.server_link},
-                {"label": "Github", "url": BotConfig.github_link},
+                {"label": Button.invite, "url": BotConfig.invite_link},
+                {"label": Button.vote, "url": BotConfig.vote_link},
+                {"label": Button.server, "url": BotConfig.server_link},
+                {"label": Button.github, "url": BotConfig.github_link},
             ],
         )
         await inter.reply(embed=embed, components=[buttons], ephemeral=hide)

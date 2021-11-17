@@ -44,7 +44,7 @@ class Buttons(ActionRow):
     def add_buttons(self, buttons: List[dict]) -> None:
         """Add multiple buttons to the action row object."""
         for button in buttons:
-            style = button.pop("style", ButtonStyle.link)
+            style = button.pop("style", ButtonStyle.link if "url" in button else ButtonStyle.secondary)
             self.add_button(style=style, **button)
 
 

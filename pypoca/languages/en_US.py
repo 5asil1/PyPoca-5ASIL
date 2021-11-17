@@ -3,6 +3,7 @@
 __all__ = (
     "DATETIME_STR",
     "Boolean",
+    "Button",
     "CommandDescription",
     "CommandReply",
     "EventReply",
@@ -33,7 +34,7 @@ class Option:
     """All available option descriptions with the respectives regionalized name."""
 
     query = Object(
-        title="query",
+        title="name",
         description="A text query to search",
     )
     page = Object(
@@ -236,3 +237,12 @@ class Boolean:
 
     true = "yes"
     false = "no"
+
+
+class Button:
+    """All available buttons with the respectives regionalized name."""
+
+    invite = "Invite"
+    vote = "Vote"
+    server = "Server"
+    github = "Github"
