@@ -4,6 +4,7 @@ from discord.ext.commands import Bot, Cog
 from dislash import ResponseType, SlashInteraction, slash_command
 
 from pypoca.adapters import Adapter
+from pypoca.cogs.person import Person
 from pypoca.config import TMDBConfig
 from pypoca.embeds import Option, Buttons, Poster, Menu
 from pypoca.exceptions import NotFound
@@ -53,9 +54,36 @@ class Movie(Cog):
         embed = Poster(**adapter.embed(result, region=region))
         buttons = Buttons(buttons=adapter.buttons(result))
         if len(results) > 1:
-            await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
+            msg = await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
         else:
-            await inter.reply(embed=embed, components=[buttons])
+            msg = await inter.reply(embed=embed, components=[buttons])
+        on_click = msg.create_click_listener(timeout=60)
+
+        @on_click.matching_id("cast")
+        async def on_cast_button(inter: SlashInteraction):
+            await Person._reply(
+                inter,
+                results=result.credits.cast[:20],
+                page=1,
+                total_pages=len(result.credits.cast) // 20,
+                language=language,
+                region=region,
+            )
+
+        @on_click.matching_id("crew")
+        async def on_crew_button(inter: SlashInteraction):
+            await Person._reply(
+                inter,
+                results=result.credits.crew[:20],
+                page=1,
+                total_pages=len(result.credits.crew) // 20,
+                language=language,
+                region=region,
+            )
+
+        @on_click.timeout
+        async def on_timeout():
+            await msg.edit(components=[])
 
     @slash_command(name="movie", description=CommandDescription.movie)
     async def movie(self, inter: SlashInteraction):

@@ -16,13 +16,13 @@ def embed(result: AsObj, region: str) -> dict:
         (person.get("name") or person.original_name)
         if person.media_type == "tv"
         else (person.get("title") or person.original_title)
-        for person in sorted(result.combined_credits.cast, key=lambda x: x.get("popularity", 0), reverse=True)
+        for person in result.combined_credits.cast
     ]
     crew = [
         (person.get("name") or person.original_name)
         if person.media_type == "tv"
         else (person.get("title") or person.original_title)
-        for person in sorted(result.combined_credits.crew, key=lambda x: x.get("popularity", 0), reverse=True)
+        for person in result.combined_credits.crew
     ]
     jobs = cast if known_for_department == "Acting" else crew
 
@@ -45,14 +45,19 @@ def embed(result: AsObj, region: str) -> dict:
 
 def option(result: AsObj) -> dict:
     """Convert a `AsObj` person result to a `dict` with Discord option items."""
-    label = result.get("name")
-    jobs = [
-        known_for.get("title") or known_for.original_title
-        if known_for["media_type"] == "movie"
-        else known_for.get("name") or known_for.get("original_name")
-        for known_for in result["known_for"][:3]
-    ]
-    description = ", ".join(jobs)
+    label = result.get("name") or result.original_name
+    if "character" in result:
+        description = result.character
+    elif "job" in result:
+        description = result.job
+    else:
+        jobs = [
+            known_for.get("title") or known_for.original_title
+            if known_for["media_type"] == "movie"
+            else known_for.get("name") or known_for.get("original_name")
+            for known_for in result["known_for"][:3]
+        ]
+        description = ", ".join(jobs)
     option = {"label": label[:100], "description": description[:100]}
     return option
 
@@ -64,11 +69,7 @@ def buttons(result: AsObj) -> list:
     twitter_id = result.external_ids.get("twitter_id")
     buttons = [
         {"label": "IMDb", "url": f"https://www.imdb.com/name/{imdb_id}", "disabled": imdb_id is None},
-        {
-            "label": "Instagram",
-            "url": f"https://www.instagram.com/{instagram_id}",
-            "disabled": instagram_id is None,
-        },
+        {"label": "Instagram", "url": f"https://www.instagram.com/{instagram_id}", "disabled": instagram_id is None},
         {"label": "Twitter", "url": f"https://www.twitter.com/{twitter_id}", "disabled": twitter_id is None},
     ]
     return buttons
