@@ -39,7 +39,7 @@ class Person(Cog):
             def check(ctx: SlashInteraction):
                 return ctx.author == inter.author
 
-            ctx = await msg.wait_for_dropdown(check)
+            ctx = await msg.wait_for_dropdown(check, timeout=120)
             index = int(ctx.select_menu.selected_options[0].value)
         elif len(results) == 1:
             index = 0

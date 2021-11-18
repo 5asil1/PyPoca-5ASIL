@@ -68,10 +68,10 @@ def buttons(result: AsObj) -> list:
     except Exception:
         video_key = None
     buttons = [
-        {"label": "Trailer", "url": f"https://www.youtube.com/watch?v={video_key}", "disabled": video_key is None},
-        {"label": "Watch", "url": f"https://embed.warezcdn.net/filme/{imdb_id}", "disabled": imdb_id is None},
-        {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": imdb_id is None},
-        {"label": "Cast", "custom_id": "cast", "disabled": result.credits.cast == []},
-        {"label": "Crew", "custom_id": "crew", "disabled": result.credits.crew == []},
+        {"label": "Trailer", "url": f"https://www.youtube.com/watch?v={video_key}", "disabled": not video_key},
+        {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
+        {"label": "Cast", "custom_id": "cast", "disabled": not result.credits.cast},
+        {"label": "Crew", "custom_id": "crew", "disabled": not result.credits.crew},
+        {"label": "Similar", "custom_id": "similar", "disabled": not result.recommendations},
     ]
     return buttons

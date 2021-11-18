@@ -40,7 +40,7 @@ class Movie(Cog):
             def check(ctx: SlashInteraction):
                 return ctx.author == inter.author
 
-            ctx = await msg.wait_for_dropdown(check)
+            ctx = await msg.wait_for_dropdown(check, timeout=120)
             index = int(ctx.select_menu.selected_options[0].value)
         elif len(results) == 1:
             index = 0
@@ -57,9 +57,9 @@ class Movie(Cog):
             msg = await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
         else:
             msg = await inter.reply(embed=embed, components=[buttons])
-        on_click = msg.create_click_listener(timeout=60)
+        on_click = msg.create_click_listener(timeout=120)
 
-        @on_click.not_from_user(ctx.author, cancel_others=True, reset_timeout=False)
+        @on_click.not_from_user(inter.author, cancel_others=True, reset_timeout=False)
         async def on_wrong_user(inter: SlashInteraction):
             """Called in case a button was clicked not by the author."""
             pass
@@ -84,6 +84,18 @@ class Movie(Cog):
                 results=result.credits.crew[:20],
                 page=1,
                 total_pages=len(result.credits.crew) // 20,
+                language=language,
+                region=region,
+            )
+
+        @on_click.matching_id("similar")
+        async def on_similar_button(inter: SlashInteraction):
+            """Called in case the similar button was clicked."""
+            await Movie._reply(
+                inter,
+                results=result.recommendations.results[:20],
+                page=1,
+                total_pages=len(result.recommendations.results) // 20,
                 language=language,
                 region=region,
             )
