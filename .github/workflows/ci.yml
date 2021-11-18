@@ -45,12 +45,12 @@ jobs:
       - name: Format with brunette
         run: |
           pip install brunette
-          brunette pypoca/ --check --config=setup.cfg
+          brunette pypoca/ --config=setup.cfg --check
 
       - name: Find missing docstrings with interrogate
         run: |
           pip install interrogate
-          interrogate pypoca/ -c setup.cfg -v
+          interrogate pypoca/ --config=setup.cfg
 
       - name: Detect unused code with Vulture
         run: |

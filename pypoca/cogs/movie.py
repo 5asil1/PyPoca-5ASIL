@@ -59,8 +59,14 @@ class Movie(Cog):
             msg = await inter.reply(embed=embed, components=[buttons])
         on_click = msg.create_click_listener(timeout=60)
 
+        @on_click.not_from_user(ctx.author, cancel_others=True, reset_timeout=False)
+        async def on_wrong_user(inter: SlashInteraction):
+            """Called in case a button was clicked not by the author."""
+            pass
+
         @on_click.matching_id("cast")
         async def on_cast_button(inter: SlashInteraction):
+            """Called in case the cast button was clicked."""
             await Person._reply(
                 inter,
                 results=result.credits.cast[:20],
@@ -72,6 +78,7 @@ class Movie(Cog):
 
         @on_click.matching_id("crew")
         async def on_crew_button(inter: SlashInteraction):
+            """Called in case the crew button was clicked."""
             await Person._reply(
                 inter,
                 results=result.credits.crew[:20],
@@ -83,6 +90,7 @@ class Movie(Cog):
 
         @on_click.timeout
         async def on_timeout():
+            """Waiting for listener timeout."""
             await msg.edit(components=[])
 
     @slash_command(name="movie", description=CommandDescription.movie)

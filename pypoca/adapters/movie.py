@@ -8,7 +8,6 @@ __all__ = ("embed", "option", "buttons")
 
 def embed(result: AsObj, region: str) -> dict:
     """Convert a `AsObj` movie result to a `dict` with Discord embed items."""
-
     vote_average = result.get("vote_average")
     vote_count = result.get("vote_count")
     genres = [genre["name"] for genre in result.get("genres", [])]
