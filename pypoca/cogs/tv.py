@@ -9,6 +9,7 @@ from pypoca.config import TMDBConfig
 from pypoca.embeds import Option, Buttons, Poster, Menu
 from pypoca.exceptions import NotFound
 from pypoca.languages import CommandDescription
+from pypoca.utils import get_trakt_id
 
 
 class TV(Cog):
@@ -51,6 +52,10 @@ class TV(Cog):
             tv_id,
             append_to_response="credits,external_ids,recommendations,videos,watch/providers",
         )
+        try:
+            result["external_ids"]["trakt"] = await get_trakt_id(tv_id, type="show")
+        except Exception:
+            result["external_ids"]["trakt"] = None
         embed = Poster(**adapter.embed(result, region=region))
         buttons = Buttons(buttons=adapter.buttons(result))
         if len(results) > 1:

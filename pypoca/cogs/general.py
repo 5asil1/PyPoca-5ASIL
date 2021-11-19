@@ -49,10 +49,10 @@ class General(Cog):
         )
         buttons = Buttons(
             buttons=[
-                {"label": Button.invite, "url": BotConfig.invite_link},
-                {"label": Button.vote, "url": BotConfig.vote_link},
-                {"label": Button.server, "url": BotConfig.server_link},
-                {"label": Button.github, "url": BotConfig.github_link},
+                {"label": Button.invite, "url": BotConfig.invite_url},
+                {"label": Button.vote, "url": BotConfig.vote_url},
+                {"label": Button.server, "url": BotConfig.server_url},
+                {"label": Button.github, "url": BotConfig.github_url},
             ],
         )
         await inter.reply(embed=embed, components=[buttons], ephemeral=hide)

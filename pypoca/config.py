@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
 
-DEFAULT_LINK = "https://bot.com"
+DEFAULT_URL = "https://bot.com"
 
 
 class LoggerConfig:
@@ -26,19 +26,19 @@ class BotConfig:
         guilds_ids = list(map(int, os.environ.get("TEST_GUILDS_ID").split(",")))
     except AttributeError:
         guilds_ids = None
-    language = os.environ.get("BOT_LANGUAGE", "pt_BR")
-    invite_link = os.environ.get("BOT_INVITE_LINK", DEFAULT_LINK)
-    vote_link = os.environ.get("BOT_VOTE_LINK", DEFAULT_LINK)
-    server_link = os.environ.get("BOT_SERVER_LINK", DEFAULT_LINK)
-    github_link = os.environ.get("BOT_GITHUB_LINK", DEFAULT_LINK)
+    language = os.environ.get("BOT_LANGUAGE", "en_US")
+    invite_url = os.environ.get("BOT_INVITE_URL", DEFAULT_URL)
+    vote_url = os.environ.get("BOT_VOTE_URL", DEFAULT_URL)
+    server_url = os.environ.get("BOT_SERVER_URL", DEFAULT_URL)
+    github_url = os.environ.get("BOT_GITHUB_URL", DEFAULT_URL)
 
 
 class TMDBConfig:
     """TMDB configuration variables"""
 
     key = os.environ.get("TMDB_KEY")
-    language = os.environ.get("TMDB_LANGUAGE", "pt-BR")
-    region = os.environ.get("TMDB_REGION", "BR")
+    language = os.environ.get("TMDB_LANGUAGE", "en-US")
+    region = os.environ.get("TMDB_REGION", "US")
     debug = os.environ.get("TMDB_DEBUG")
 
 
@@ -47,3 +47,10 @@ class BugsnagConfig:
 
     key = os.environ.get("BUGSNAG_KEY")
     level = os.environ.get("BUGSNAG_LEVEL")
+
+
+class TraktTVConfig:
+    """TraktTV configuration variables"""
+
+    client_id = os.environ.get("TRAKT_TV_CLIENT_ID")
+    client_secret = os.environ.get("TRAKT_TV_CLIENT_ID")

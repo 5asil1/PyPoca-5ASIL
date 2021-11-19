@@ -22,6 +22,14 @@ def embed(result: AsObj, region: str) -> dict:
         ]
     except Exception:
         watch_providers = []
+    try:
+        trakt_id = result["external_ids"]["trakt"]
+        watch_providers = [
+            f"[{watch_provider}]({utils.watch_provider_url(watch_provider, 'movie', trakt_id, region)})"
+            for watch_provider in watch_providers
+        ]
+    except Exception:
+        pass
 
     embed = {
         "title": result.get("title") or result.original_title,
@@ -72,6 +80,6 @@ def buttons(result: AsObj) -> list:
         {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
         {"label": "Cast", "custom_id": "cast", "disabled": not result.credits.cast},
         {"label": "Crew", "custom_id": "crew", "disabled": not result.credits.crew},
-        {"label": "Similar", "custom_id": "similar", "disabled": not result.recommendations},
+        {"label": "Similar", "custom_id": "similar", "disabled": not result.recommendations.results},
     ]
     return buttons
