@@ -49,6 +49,12 @@ class BugsnagConfig:
     level = os.environ.get("BUGSNAG_LEVEL")
 
 
+class DashbotConfig:
+    """Dashbot configuration variables"""
+
+    key = os.environ.get("DASHBOT_KEY")
+
+
 class TraktTVConfig:
     """TraktTV configuration variables"""
 

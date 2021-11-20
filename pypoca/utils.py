@@ -5,6 +5,14 @@ from datetime import datetime
 from pypoca.languages import DATETIME_STR
 from pypoca.config import TraktTVConfig
 
+__all__ = (
+    "format_datetime",
+    "format_duration",
+    "get_trakt_id",
+    "watch_provider_url",
+    "slash_data_option_to_str",
+)
+
 
 def format_datetime(value: str, from_format: str = "%Y-%m-%d", to_format: str = DATETIME_STR) -> str:
     """Convert a datetime string to different string format."""
@@ -44,3 +52,17 @@ def watch_provider_url(watch_provider: str, type: str, trakt_id: str, region: st
     raw_url = f"https://trakt.tv/watchnow/{type}/{trakt_id}/1/{region}/{watch_provider}"
     url = raw_url.replace(" ", "_").lower()
     return url
+
+
+def slash_data_option_to_str(data_options: dict) -> str:
+    """Convert a Slash Interaction data option to string."""
+    options = []
+    for option in data_options.values():
+        if option.name and option.value:
+            options.append(f"{option.name}={option.value}")
+        elif option.name:
+            options.append(option.name)
+        if option.options:
+            for opt in option.options.values():
+                options.append(f"{opt.name}={opt.value}")
+    return " ".join(options)

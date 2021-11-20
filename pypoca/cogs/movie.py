@@ -3,13 +3,13 @@ from aiotmdb import TMDB
 from discord.ext.commands import Bot, Cog
 from dislash import ResponseType, SlashInteraction, slash_command
 
+from pypoca import utils
 from pypoca.adapters import Adapter
 from pypoca.cogs.person import Person
 from pypoca.config import TMDBConfig
 from pypoca.embeds import Option, Buttons, Poster, Menu
 from pypoca.exceptions import NotFound
 from pypoca.languages import CommandDescription
-from pypoca.utils import get_trakt_id
 
 
 class Movie(Cog):
@@ -41,7 +41,7 @@ class Movie(Cog):
             def check(ctx: SlashInteraction):
                 return ctx.author == inter.author
 
-            ctx = await msg.wait_for_dropdown(check, timeout=120)
+            ctx = await msg.wait_for_dropdown(check)
             index = int(ctx.select_menu.selected_options[0].value)
         elif len(results) == 1:
             index = 0
@@ -53,7 +53,7 @@ class Movie(Cog):
             append_to_response="credits,external_ids,recommendations,videos,watch/providers",
         )
         try:
-            result["external_ids"]["trakt"] = await get_trakt_id(movie_id, type="movie")
+            result["external_ids"]["trakt"] = await utils.get_trakt_id(movie_id, type="movie")
         except Exception:
             result["external_ids"]["trakt"] = None
         embed = Poster(**adapter.embed(result, region=region))
