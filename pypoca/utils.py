@@ -2,7 +2,7 @@
 from aiohttp import ClientSession
 from datetime import datetime
 
-from pypoca.languages import DATETIME_STR
+from pypoca.languages import DATETIME_FORMAT
 from pypoca.config import TraktTVConfig
 
 __all__ = (
@@ -14,7 +14,7 @@ __all__ = (
 )
 
 
-def format_datetime(value: str, from_format: str = "%Y-%m-%d", to_format: str = DATETIME_STR) -> str:
+def format_datetime(value: str, from_format: str = "%Y-%m-%d", to_format: str = DATETIME_FORMAT) -> str:
     """Convert a datetime string to different string format."""
     if not value:
         return None
@@ -26,11 +26,15 @@ def format_duration(value: str) -> str:
     if not value:
         return None
     hours, minutes = divmod(int(value), 60)
-    if hours == 0:
-        return f"{minutes}min"
-    if minutes == 0:
-        return f"{hours}h"
-    return f"{hours}h {minutes}min"
+    days, hours = divmod(int(hours), 24)
+    duration = ""
+    if days != 0:
+        duration += f"{days}d "
+    if hours != 0:
+        duration += f"{hours}h "
+    if minutes != 0:
+        duration += f"{minutes}min "
+    return duration
 
 
 async def get_trakt_id(tmdb_id: str, type: str) -> str:

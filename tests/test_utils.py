@@ -27,15 +27,31 @@ def test_format_datetime():
 def test_format_duration():
     duration = 59
     duration_formated = utils.format_duration(duration)
-    assert duration_formated == "59min"
+    assert duration_formated == "59min "
 
     duration = 60
     duration_formated = utils.format_duration(duration)
-    assert duration_formated == "1h"
+    assert duration_formated == "1h "
 
     duration = 61
     duration_formated = utils.format_duration(duration)
-    assert duration_formated == "1h 1min"
+    assert duration_formated == "1h 1min "
+
+    duration = 1440
+    duration_formated = utils.format_duration(duration)
+    assert duration_formated == "1d "
+
+    duration = 1441
+    duration_formated = utils.format_duration(duration)
+    assert duration_formated == "1d 1min "
+
+    duration = 1500
+    duration_formated = utils.format_duration(duration)
+    assert duration_formated == "1d 1h "
+
+    duration = 1501
+    duration_formated = utils.format_duration(duration)
+    assert duration_formated == "1d 1h 1min "
 
     duration = None
     duration_formated = utils.format_duration(duration)
