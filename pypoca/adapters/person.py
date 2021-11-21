@@ -72,5 +72,15 @@ def buttons(result: AsObj) -> list:
         {"label": "IMDb", "url": f"https://www.imdb.com/name/{imdb_id}", "disabled": imdb_id is None},
         {"label": "Instagram", "url": f"https://www.instagram.com/{instagram_id}", "disabled": instagram_id is None},
         {"label": "Twitter", "url": f"https://www.twitter.com/{twitter_id}", "disabled": twitter_id is None},
+        {
+            "label": Field.acting,
+            "custom_id": "acting",
+            "disabled": not result.movie_credits.cast and not result.tv_credits.cast,
+        },
+        {
+            "label": Field.jobs,
+            "custom_id": "jobs",
+            "disabled": not result.movie_credits.crew and not result.tv_credits.crew,
+        },
     ]
     return buttons

@@ -246,6 +246,7 @@ class Button:
 class Field:
     """All available fields with the respectives regionalized name."""
 
+    acting = "Acting"
     birthday = "Birthday"
     born = "Place of birth"
     cast = "Cast"
@@ -254,6 +255,7 @@ class Field:
     episodes = "Episodes"
     genre = "Genre"
     know_for = "Know for"
+    jobs = "Jobs"
     network = "Network"
     rating = "Rating"
     released = "Released"

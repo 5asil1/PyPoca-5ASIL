@@ -5,11 +5,12 @@ from dislash import ResponseType, SlashInteraction, slash_command
 
 from pypoca import utils
 from pypoca.adapters import Adapter
-from pypoca.cogs.person import Person
 from pypoca.config import TMDBConfig
 from pypoca.embeds import Option, Buttons, Poster, Menu
 from pypoca.exceptions import NotFound
 from pypoca.languages import CommandDescription, CommandReply
+
+__all__ = ("Movie", "setup")
 
 
 class Movie(Cog):
@@ -72,7 +73,8 @@ class Movie(Cog):
         @on_click.matching_id("cast")
         async def on_cast_button(inter: SlashInteraction):
             """Called in case the cast button was clicked."""
-            await Person._reply(
+            person = inter.bot.get_cog("Person")
+            await person._reply(
                 inter,
                 results=result.credits.cast[:20],
                 page=1,
@@ -84,7 +86,8 @@ class Movie(Cog):
         @on_click.matching_id("crew")
         async def on_crew_button(inter: SlashInteraction):
             """Called in case the crew button was clicked."""
-            await Person._reply(
+            person = inter.bot.get_cog("Person")
+            await person._reply(
                 inter,
                 results=result.credits.crew[:20],
                 page=1,

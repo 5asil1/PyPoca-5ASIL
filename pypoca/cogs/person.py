@@ -9,6 +9,8 @@ from pypoca.embeds import Option, Buttons, Poster, Menu
 from pypoca.exceptions import NotFound
 from pypoca.languages import CommandDescription, CommandReply
 
+__all__ = ("Person", "setup")
+
 
 class Person(Cog):
     """`Person` cog has all person related commands."""
@@ -48,14 +50,61 @@ class Person(Cog):
         person_id = results[index].id
         result = await TMDB.person(language=language, region=region).details(
             person_id,
-            append_to_response="combined_credits,external_ids",
+            append_to_response="combined_credits,movie_credits,tv_credits,external_ids",
         )
         embed = Poster(**adapter.embed(result, region=region))
         buttons = Buttons(buttons=adapter.buttons(result))
         if len(results) > 1:
-            await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
+            msg = await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
         else:
-            await inter.reply(embed=embed, components=[buttons])
+            msg = await inter.reply(embed=embed, components=[buttons])
+        on_click = msg.create_click_listener(timeout=120)
+
+        @on_click.not_from_user(inter.author, cancel_others=True, reset_timeout=False)
+        async def on_wrong_user(inter: SlashInteraction):
+            """Called in case a button was clicked not by the author."""
+            pass
+
+        @on_click.matching_id("acting")
+        async def on_acting_button(inter: SlashInteraction):
+            """Called in case the acting button was clicked."""
+            if len(result.movie_credits.crew) >= len(result.tv_credits.crew):
+                cog = inter.bot.get_cog("Movie")
+                results = result.movie_credits.cast
+            else:
+                cog = inter.bot.get_cog("TV")
+                results = result.tv_credits.cast
+            await cog._reply(
+                inter,
+                results=results[:20],
+                page=1,
+                total_pages=len(results) // 20,
+                language=language,
+                region=region,
+            )
+
+        @on_click.matching_id("jobs")
+        async def on_jobs_button(inter: SlashInteraction):
+            """Called in case the jobs button was clicked."""
+            if len(result.movie_credits.crew) >= len(result.tv_credits.crew):
+                cog = inter.bot.get_cog("Movie")
+                results = result.movie_credits.crew
+            else:
+                cog = inter.bot.get_cog("TV")
+                results = result.tv_credits.crew
+            await cog._reply(
+                inter,
+                results=results[:20],
+                page=1,
+                total_pages=len(results) // 20,
+                language=language,
+                region=region,
+            )
+
+        @on_click.timeout
+        async def on_timeout():
+            """Waiting for listener timeout."""
+            await msg.edit(components=[])
 
     @slash_command(name="people", description=CommandDescription.person)
     async def person(self, inter: SlashInteraction):

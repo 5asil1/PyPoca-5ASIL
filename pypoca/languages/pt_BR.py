@@ -246,6 +246,7 @@ class Button:
 class Field:
     """All available fields with the respectives regionalized name."""
 
+    acting = "Atuações"
     birthday = "Aniversário"
     born = "Naturalidade"
     cast = "Elenco"
@@ -253,7 +254,8 @@ class Field:
     deathday = "Falecimento"
     episodes = "Episódios"
     genre = "Gêneros"
-    know_for = "Conhecido por"
+    know_for = "Trabalhou em"
+    jobs = "Trabalhos"
     network = "Rede"
     rating = "Nota"
     released = "Lançamento"
