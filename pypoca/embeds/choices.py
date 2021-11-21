@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from dislash import OptionChoice
 
-from pypoca.languages import Boolean, Genre, Interval, Language
+from pypoca.languages import FALSE, TRUE, Genre, Interval, Language
 from pypoca.languages import Region, Sort
 
 __all__ = ("Choice", "Choices")
@@ -11,8 +11,8 @@ class Choice:
     """All valid choice options for option."""
 
     # boolean
-    true = OptionChoice(Boolean.true, True)
-    false = OptionChoice(Boolean.false, False)
+    true = OptionChoice(TRUE, True)
+    false = OptionChoice(FALSE, False)
     # sort_by
     popularity = OptionChoice(Sort.popularity, "popularity.desc")
     year = OptionChoice(Sort.year, "release_date.desc")

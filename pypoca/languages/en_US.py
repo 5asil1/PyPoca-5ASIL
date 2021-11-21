@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
 
 __all__ = (
-    "DATETIME_STR",
-    "Boolean",
+    "DATETIME_FORMAT",
+    "FALSE",
+    "PLACEHOLDER",
+    "TRUE",
     "Button",
     "CommandDescription",
     "CommandReply",
     "EventReply",
+    "Field",
     "Genre",
     "Interval",
     "Language",
     "Option",
-    "Placeholder",
     "Region",
     "Sort",
 )
 
-DATETIME_STR = "%Y/%m/%d"
+DATETIME_FORMAT = "%Y/%m/%d"
+PLACEHOLDER = "Select one of the options..."
+TRUE = "yes"
+FALSE = "no"
 
 
 class Object:
@@ -111,12 +116,6 @@ class Option:
     )
 
 
-class Placeholder:
-    """All available placeholders with the respectives regionalized name."""
-
-    menu = "Select one of the options..."
-
-
 class EventReply:
     """All available event replies with the respectives regionalized name."""
 
@@ -167,6 +166,9 @@ class CommandReply:
         title="Available commands",
         description="Millions of movies, TV shows and people to discover. Explore now!",
     )
+    movie = Object(title="Movie results")
+    tv = Object(title="TV show results")
+    person = Object(title="People results")
 
 
 class Language:
@@ -232,13 +234,6 @@ class Interval:
     week = "week"
 
 
-class Boolean:
-    """True and False boolean options with the respectives regionalized name."""
-
-    true = "yes"
-    false = "no"
-
-
 class Button:
     """All available buttons with the respectives regionalized name."""
 
@@ -246,3 +241,25 @@ class Button:
     vote = "Vote"
     server = "Server"
     github = "Github"
+
+
+class Field:
+    """All available fields with the respectives regionalized name."""
+
+    birthday = "Birthday"
+    born = "Place of birth"
+    cast = "Cast"
+    crew = "Crew"
+    deathday = "Day of death"
+    episodes = "Episodes"
+    genre = "Genre"
+    know_for = "Know for"
+    network = "Network"
+    rating = "Rating"
+    released = "Released"
+    runtime = "Runtime"
+    seasons = "Seasons"
+    similar = "Similar"
+    studios = "Studios"
+    trailer = "Trailer"
+    watch = "Watch on"

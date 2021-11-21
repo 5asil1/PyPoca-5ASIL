@@ -2,6 +2,7 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
+from pypoca.languages import Field
 
 __all__ = ("embed", "option", "buttons")
 
@@ -30,10 +31,10 @@ def embed(result: AsObj, region: str) -> dict:
         "title": result.name,
         "description": result.get("biography"),
         "fields": [
-            {"name": "Birthday", "value": birthday or "-"},
-            {"name": "Deathday", "value": deathday or "-"},
-            {"name": "Born", "value": place_of_birth or "-"},
-            {"name": "Know for", "value": ", ".join(jobs[:5]) if jobs else "-"},
+            {"name": Field.birthday, "value": birthday or "-"},
+            {"name": Field.deathday, "value": deathday or "-"},
+            {"name": Field.born, "value": place_of_birth or "-"},
+            {"name": Field.know_for, "value": ", ".join(jobs[:5]) if jobs else "-"},
         ],
     }
     if result.get("homepage"):

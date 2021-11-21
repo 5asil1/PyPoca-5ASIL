@@ -1,22 +1,27 @@
 # -*- coding: utf-8 -*-
 
 __all__ = (
-    "DATETIME_STR",
-    "Boolean",
+    "DATETIME_FORMAT",
+    "FALSE",
+    "PLACEHOLDER",
+    "TRUE",
     "Button",
     "CommandDescription",
     "CommandReply",
     "EventReply",
+    "Field",
     "Genre",
     "Interval",
     "Language",
     "Option",
-    "Placeholder",
     "Region",
     "Sort",
 )
 
-DATETIME_STR = "%d/%m/%Y"
+DATETIME_FORMAT = "%d/%m/%Y"
+PLACEHOLDER = "Selecione uma das opções..."
+TRUE = "sim"
+FALSE = "não"
 
 
 class Object:
@@ -111,12 +116,6 @@ class Option:
     )
 
 
-class Placeholder:
-    """All available placeholders with the respectives regionalized name."""
-
-    menu = "Selecione uma das opções..."
-
-
 class EventReply:
     """All available event replies with the respectives regionalized name."""
 
@@ -143,18 +142,18 @@ class CommandDescription:
     person = "Tudo sobre artistas: encontre, descubra e obtenha informações"
     tv = "Tudo sobre séries: encontre, descubra e obtenha informações"
     discover_movie = "Descubra filmes por diferentes tipos de filtros"
-    discover_tv = "Descubra seriados por diferentes tipos de filtros"
+    discover_tv = "Descubra séries por diferentes tipos de filtros"
     popular_movie = "Veja os filmes mais populares"
     popular_person = "Veja os artistas mais populares"
-    popular_tv = "Veja os seriados mais populares"
+    popular_tv = "Veja os séries mais populares"
     search_movie = "Pesquise por um filme"
     search_person = "Pesquise por um artista"
     search_tv = "Pesquise por um seriado"
     top_movie = "Veja os filmes com melhor nota"
-    top_tv = "Veja os seriados com melhor nota"
+    top_tv = "Veja os séries com melhor nota"
     trending_movie = "Veja os filmes da tendência"
     trending_person = "Veja os artistas da tendência"
-    trending_tv = "Veja os seriados da tendência"
+    trending_tv = "Veja os séries da tendência"
     upcoming_movie = "Veja os próximos filmes nos cinemas"
     upcoming_tv = "Veja os próximos seriado a serem lançados"
 
@@ -167,6 +166,9 @@ class CommandReply:
         title="Comandos disponíveis",
         description="Milhões de filmes, séries e artistas para descobrir. Explore agora!",
     )
+    movie = Object(title="Filmes encontrados")
+    tv = Object(title="Séries encontrados")
+    person = Object(title="Artistas encontrados")
 
 
 class Language:
@@ -232,13 +234,6 @@ class Interval:
     week = "semana"
 
 
-class Boolean:
-    """True and False boolean options with the respectives regionalized name."""
-
-    true = "sim"
-    false = "não"
-
-
 class Button:
     """All available buttons with the respectives regionalized name."""
 
@@ -246,3 +241,25 @@ class Button:
     vote = "Votar"
     server = "Servidor"
     github = "Github"
+
+
+class Field:
+    """All available fields with the respectives regionalized name."""
+
+    birthday = "Aniversário"
+    born = "Naturalidade"
+    cast = "Elenco"
+    crew = "Equipe"
+    deathday = "Falecimento"
+    episodes = "Episódios"
+    genre = "Gêneros"
+    know_for = "Conhecido por"
+    network = "Rede"
+    rating = "Nota"
+    released = "Lançamento"
+    runtime = "Duração"
+    seasons = "Temporadas"
+    similar = "Similares"
+    studios = "Estúdios"
+    trailer = "Trailer"
+    watch = "Assista em"

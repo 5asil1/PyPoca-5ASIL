@@ -2,6 +2,7 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
+from pypoca.languages import Field
 
 __all__ = ("embed", "option", "buttons")
 
@@ -49,12 +50,12 @@ def embed(result: AsObj, region: str) -> dict:
                 "name": "Status",
                 "value": f"{status} ({last_air_date})" if status == "Ended" else status if status else "-",
             },
-            {"name": "Episodes", "value": number_of_episodes or "-"},
-            {"name": "Seasons", "value": number_of_seasons or "-"},
-            {"name": "Runtime", "value": f"{duration} ({total_duration} total)"},
-            {"name": "Genre", "value": ", ".join(genres) if genres else "-"},
-            {"name": "Network", "value": networks[0] if networks else "-"},
-            {"name": "Watch on", "value": ", ".join(watch_providers) if watch_providers else "-"},
+            {"name": Field.episodes, "value": number_of_episodes or "-"},
+            {"name": Field.seasons, "value": number_of_seasons or "-"},
+            {"name": Field.runtime, "value": f"{duration} ({total_duration} total)"},
+            {"name": Field.genre, "value": ", ".join(genres) if genres else "-"},
+            {"name": Field.network, "value": ", ".join(networks) if networks else "-"},
+            {"name": Field.watch, "value": ", ".join(watch_providers) if watch_providers else "-"},
         ],
     }
     if result.get("homepage"):
@@ -89,10 +90,10 @@ def buttons(result: AsObj) -> list:
     except Exception:
         video_key = None
     buttons = [
-        {"label": "Trailer", "url": f"https://www.youtube.com/watch?v={video_key}", "disabled": not video_key},
+        {"label": Field.trailer, "url": f"https://www.youtube.com/watch?v={video_key}", "disabled": not video_key},
         {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
-        {"label": "Cast", "custom_id": "cast", "disabled": not result.credits.cast},
-        {"label": "Crew", "custom_id": "crew", "disabled": not result.credits.crew},
-        {"label": "Similar", "custom_id": "similar", "disabled": not result.recommendations.results},
+        {"label": Field.cast, "custom_id": "cast", "disabled": not result.credits.cast},
+        {"label": Field.crew, "custom_id": "crew", "disabled": not result.credits.crew},
+        {"label": Field.similar, "custom_id": "similar", "disabled": not result.recommendations.results},
     ]
     return buttons

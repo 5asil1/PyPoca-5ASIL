@@ -7,7 +7,7 @@ from pypoca.adapters import Adapter
 from pypoca.config import TMDBConfig
 from pypoca.embeds import Option, Buttons, Poster, Menu
 from pypoca.exceptions import NotFound
-from pypoca.languages import CommandDescription
+from pypoca.languages import CommandDescription, CommandReply
 
 
 class Person(Cog):
@@ -28,7 +28,7 @@ class Person(Cog):
     ) -> None:
         adapter = Adapter("person")
         if len(results) > 1:
-            embed = Poster(title="People results")
+            embed = Poster(title=CommandReply.person.title)
             select_menu = Menu(options=[adapter.option(result) for result in results])
             msg = await inter.reply(
                 embed=embed,
