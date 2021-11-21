@@ -6,17 +6,6 @@ from logging import Logger
 import bugsnag
 from bugsnag.handlers import BugsnagHandler
 
-DEFAULT_LEVEL = "INFO"
-DEFAULT_FORMAT = "%(asctime)s [%(levelname)s] %(module)s.py:%(lineno)s %(message)s"
-
-
-def get_bugsnag_handler(api_key: str = None, level: str = "ERROR", **kwargs) -> BugsnagHandler:
-    """Handler for Bugsnag notifier application-wide."""
-    bugsnag.configure(api_key=api_key, **kwargs)
-    bugsnag_handler = BugsnagHandler(extra_fields={"log": ["__repr__"], "locals": ["locals"], "ctx": ["ctx"]})
-    bugsnag_handler.setLevel(level)
-    return bugsnag_handler
-
 
 def config_logger(filename: str, config: dict, level: str, format: str) -> None:
     """Logging configuration.
@@ -33,17 +22,31 @@ def config_logger(filename: str, config: dict, level: str, format: str) -> None:
         logging.basicConfig(level=level, format=format)
 
 
+def get_bugsnag_handler(api_key: str = None, level: str = "ERROR", **kwargs) -> BugsnagHandler:
+    """Handler for Bugsnag notifier application-wide."""
+    if api_key is None:
+        return None
+    bugsnag.configure(api_key=api_key, **kwargs)
+    bugsnag_handler = BugsnagHandler(extra_fields={"log": ["__repr__"], "locals": ["locals"], "ctx": ["ctx"]})
+    bugsnag_handler.setLevel(level)
+    return bugsnag_handler
+
+
 def get_logger(
     name: str = None,
     *,
     filename_config: str = None,
     dict_config: dict = {},
-    level: str = DEFAULT_LEVEL,
-    format: str = DEFAULT_FORMAT,
+    level: str = "INFO",
+    format: str = "%(asctime)s [%(levelname)s] %(module)s.py:%(lineno)s %(message)s",
     bugsnag_handler_config: dict = {},
 ) -> Logger:
     """Generate all configured loggers."""
     config_logger(filename=filename_config, config=dict_config, level=level, format=format)
     logger = logging.getLogger(name)
-    logger.addHandler(get_bugsnag_handler(**bugsnag_handler_config))
+    bugsnag_handler = get_bugsnag_handler(**bugsnag_handler_config)
+    if bugsnag_handler is None:
+        logger.warning("No Bugsnag API key configured, couldn't notify")
+    else:
+        logger.addHandler(bugsnag_handler)
     return logger
