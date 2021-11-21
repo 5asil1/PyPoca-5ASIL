@@ -2,7 +2,7 @@
 from typing import List
 
 from discord.embeds import Embed
-from dislash import ActionRow, ButtonStyle, SelectMenu
+from dislash import ActionRow, Button, ButtonStyle, SelectMenu
 
 from pypoca.embeds import Color
 from pypoca.languages import Placeholder
@@ -44,8 +44,9 @@ class Buttons(ActionRow):
     def add_buttons(self, buttons: List[dict]) -> None:
         """Add multiple buttons to the action row object."""
         for button in buttons:
-            style = button.pop("style", ButtonStyle.link if "url" in button else ButtonStyle.secondary)
-            self.add_button(style=style, **button)
+            style = button.get("style") or "link" if "url" in button else "secondary"
+            button["style"] = getattr(ButtonStyle, style)
+            self.components.append(Button.from_dict(button))
 
 
 class Menu(SelectMenu):
