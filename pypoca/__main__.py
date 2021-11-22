@@ -11,7 +11,7 @@ def run() -> None:
     Connect to Discord client (WebSocket and API). Load all cogs. Start the health
     check server. And finally, run a loop event initialization blocking call.
     """
-    bot = Bot(command_prefix=BotConfig.prefix)
+    bot = Bot(command_prefix=None, help_command=None)
     client = InteractionClient(bot, test_guilds=BotConfig.guilds_ids)
 
     for cog in BotConfig.cogs:
