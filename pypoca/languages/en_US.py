@@ -257,6 +257,7 @@ class Field:
     know_for = "Know for"
     jobs = "Jobs"
     network = "Network"
+    premiered = "Premiered"
     rating = "Rating"
     released = "Released"
     runtime = "Runtime"

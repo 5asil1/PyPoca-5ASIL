@@ -44,8 +44,8 @@ def embed(result: AsObj, region: str) -> dict:
         "title": result.get("name") or result.original_name,
         "description": result.get("overview"),
         "fields": [
-            {"name": "Rating", "value": rating or "-"},
-            {"name": "Premiered", "value": first_air_date or "-"},
+            {"name": Field.rating, "value": rating or "-"},
+            {"name": Field.premiered, "value": first_air_date or "-"},
             {
                 "name": "Status",
                 "value": f"{status} ({last_air_date})" if status == "Ended" else status if status else "-",

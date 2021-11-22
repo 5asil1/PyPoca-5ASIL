@@ -257,6 +257,7 @@ class Field:
     know_for = "Trabalhou em"
     jobs = "Trabalhos"
     network = "Rede"
+    premiered = "Estreia"
     rating = "Nota"
     released = "Lançamento"
     runtime = "Duração"
