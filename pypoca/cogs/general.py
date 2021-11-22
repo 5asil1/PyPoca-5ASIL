@@ -6,6 +6,8 @@ from pypoca.config import BotConfig
 from pypoca.embeds import Option, Buttons, Poster
 from pypoca.languages import Button, CommandDescription, CommandReply
 
+__all__ = ("General", "setup")
+
 
 class General(Cog):
     """`General` cog has the basic commands."""
@@ -13,7 +15,7 @@ class General(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @cooldown(rate=1, per=3, type=BucketType.channel)
+    @cooldown(rate=1, per=5, type=BucketType.member)
     @slash_command(
         name="ping",
         description=CommandDescription.ping,
@@ -29,7 +31,7 @@ class General(Cog):
         )
         await inter.reply(embed=embed, ephemeral=hide)
 
-    @cooldown(rate=1, per=3, type=BucketType.channel)
+    @cooldown(rate=1, per=5, type=BucketType.member)
     @slash_command(
         name="help",
         description=CommandDescription.help,

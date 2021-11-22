@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from discord import Activity, ActivityType
+from discord import Activity, ActivityType, Guild
 from discord.ext.commands import Bot, Cog
 from dislash import CommandOnCooldown, SlashInteraction
 
@@ -7,6 +7,8 @@ from pypoca import log
 from pypoca.embeds import Color, Poster
 from pypoca.exceptions import NotFound
 from pypoca.languages import EventReply
+
+__all__ = ("Event", "setup")
 
 
 class Event(Cog):
@@ -20,6 +22,10 @@ class Event(Cog):
         """Called when the client is done preparing the data received from Discord."""
         activity = Activity(type=ActivityType.watching, name="/help")
         await self.bot.change_presence(activity=activity)
+
+    @Cog.listener()
+    async def on_guild_join(self, guild: Guild) -> None:
+        """Called when a Guild is either created by the Client or when the Client joins a guild."""
 
     @Cog.listener()
     async def on_slash_command_error(self, inter: SlashInteraction, e: Exception) -> None:

@@ -24,7 +24,7 @@ class BotConfig:
     prefix = os.environ.get("BOT_PREFIX", "/")
     try:
         guilds_ids = list(map(int, os.environ.get("TEST_GUILDS_ID").split(",")))
-    except AttributeError:
+    except Exception:
         guilds_ids = None
     language = os.environ.get("BOT_LANGUAGE", "en_US")
     invite_url = os.environ.get("BOT_INVITE_URL", DEFAULT_URL)

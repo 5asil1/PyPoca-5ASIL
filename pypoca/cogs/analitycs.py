@@ -9,6 +9,8 @@ from typing import Union
 from pypoca import log, utils
 from pypoca.config import DashbotConfig
 
+__all__ = ("Analytics", "Dashbot", "setup")
+
 
 class Dashbot:
     """Dashbot provides easy access to bot analytics."""
