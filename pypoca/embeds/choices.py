@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from dislash import OptionChoice
 
-from pypoca.languages import FALSE, TRUE, Genre, Interval, Language
-from pypoca.languages import Region, Sort
+from pypoca.languages import FALSE, TRUE, Genre, Interval, Language, Region, Sort
 
 __all__ = ("Choice", "Choices")
 

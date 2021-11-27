@@ -3,7 +3,7 @@ from discord.ext.commands import Bot, BucketType, Cog
 from dislash import SlashInteraction, cooldown, slash_command
 
 from pypoca.config import BotConfig
-from pypoca.embeds import Option, Buttons, Poster
+from pypoca.embeds import Buttons, Option, Poster
 from pypoca.languages import Button, CommandDescription, CommandReply
 
 __all__ = ("General", "setup")

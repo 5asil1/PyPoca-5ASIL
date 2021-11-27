@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 import asyncio
+from typing import Union
+
 from aiohttp import ClientSession
 from discord import Embed, Message
 from discord.ext.commands import Bot, Cog
 from dislash import SlashInteraction
-from typing import Union
 
 from pypoca import log, utils
 from pypoca.config import DashbotConfig

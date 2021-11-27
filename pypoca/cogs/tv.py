@@ -6,7 +6,7 @@ from dislash import ResponseType, SlashInteraction, slash_command
 from pypoca import utils
 from pypoca.adapters import Adapter
 from pypoca.config import TMDBConfig
-from pypoca.embeds import Option, Buttons, Poster, Menu
+from pypoca.embeds import Buttons, Menu, Option, Poster
 from pypoca.exceptions import NotFound
 from pypoca.languages import CommandDescription, CommandReply
 

@@ -1,9 +1,10 @@
 # -*- coding: utf-8 -*-
-from aiohttp import ClientSession
 from datetime import datetime
 
-from pypoca.languages import DATETIME_FORMAT
+from aiohttp import ClientSession
+
 from pypoca.config import TraktTVConfig
+from pypoca.languages import DATETIME_FORMAT
 
 __all__ = (
     "format_datetime",
