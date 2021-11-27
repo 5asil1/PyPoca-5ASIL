@@ -8,7 +8,7 @@ from discord.ext.commands import Bot, Cog
 from dislash import SlashInteraction
 
 from pypoca import log, utils
-from pypoca.config import DashbotConfig
+from pypoca.config import Config
 
 __all__ = ("Analytics", "Dashbot", "setup")
 
@@ -16,7 +16,7 @@ __all__ = ("Analytics", "Dashbot", "setup")
 class Dashbot:
     """Dashbot provides easy access to bot analytics."""
 
-    api_key = DashbotConfig.key
+    api_key = Config.dashbot.key
 
     @staticmethod
     async def _request(type: str, *, user_id: str, text: str, **kwargs) -> None:

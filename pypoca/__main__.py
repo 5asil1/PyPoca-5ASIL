@@ -2,7 +2,7 @@
 from discord.ext.commands import Bot
 from dislash import InteractionClient
 
-from pypoca.config import BotConfig
+from pypoca.config import Config
 
 
 def run() -> None:
@@ -12,13 +12,13 @@ def run() -> None:
     check server. And finally, run a loop event initialization blocking call.
     """
     bot = Bot(command_prefix=None, help_command=None)
-    client = InteractionClient(bot, test_guilds=BotConfig.guilds_ids)
+    client = InteractionClient(bot, test_guilds=Config.bot.guilds_ids)
 
-    for cog in BotConfig.cogs:
+    for cog in Config.bot.cogs:
         cog = cog[:-3].replace("/", ".")
         bot.load_extension(cog)
 
-    bot.run(BotConfig.token)
+    bot.run(Config.bot.token)
     client.teardown()
 
 

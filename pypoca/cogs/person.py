@@ -4,7 +4,7 @@ from discord.ext.commands import Bot, Cog
 from dislash import ResponseType, SlashInteraction, slash_command
 
 from pypoca.adapters import Adapter
-from pypoca.config import TMDBConfig
+from pypoca.config import Config
 from pypoca.embeds import Buttons, Menu, Option, Poster
 from pypoca.exceptions import NotFound
 from pypoca.languages import CommandDescription, CommandReply
@@ -120,8 +120,8 @@ class Person(Cog):
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = TMDBConfig.language,
-        region: str = TMDBConfig.region,
+        language: str = Config.tmdb.language,
+        region: str = Config.tmdb.region,
     ) -> None:
         """Subcommand to get the current popular person."""
         person = TMDB.person(language=language, region=region)
@@ -159,8 +159,8 @@ class Person(Cog):
         query: str,
         nsfw: bool = False,
         page: int = 1,
-        language: str = TMDBConfig.language,
-        region: str = TMDBConfig.region,
+        language: str = Config.tmdb.language,
+        region: str = Config.tmdb.region,
     ) -> None:
         """Subcommand to search for a person."""
         search = TMDB.search(language=language, region=region)
@@ -184,8 +184,8 @@ class Person(Cog):
         self,
         inter: SlashInteraction,
         interval: str = "day",
-        language: str = TMDBConfig.language,
-        region: str = TMDBConfig.region,
+        language: str = Config.tmdb.language,
+        region: str = Config.tmdb.region,
     ) -> None:
         """Subcommand get the trending persons."""
         trending = TMDB.trending(language=language, region=region)

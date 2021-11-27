@@ -4,14 +4,6 @@ import os
 DEFAULT_URL = "https://bot.com"
 
 
-class LoggerConfig:
-    """Logging configuration variables"""
-
-    level = os.environ.get("LOG_LEVEL", "INFO")
-    format = os.environ.get("LOG_FORMAT")
-    filename = os.environ.get("LOG_FILE_CONFIG")
-
-
 class BotConfig:
     """Bot configuration variables"""
 
@@ -33,13 +25,12 @@ class BotConfig:
     github_url = os.environ.get("BOT_GITHUB_URL", DEFAULT_URL)
 
 
-class TMDBConfig:
-    """TMDB configuration variables"""
+class LoggerConfig:
+    """Logging configuration variables"""
 
-    key = os.environ.get("TMDB_KEY")
-    language = os.environ.get("TMDB_LANGUAGE", "en-US")
-    region = os.environ.get("TMDB_REGION", "US")
-    debug = os.environ.get("TMDB_DEBUG")
+    level = os.environ.get("LOG_LEVEL", "INFO")
+    format = os.environ.get("LOG_FORMAT")
+    filename = os.environ.get("LOG_FILE_CONFIG")
 
 
 class BugsnagConfig:
@@ -55,8 +46,28 @@ class DashbotConfig:
     key = os.environ.get("DASHBOT_KEY")
 
 
+class TMDBConfig:
+    """TMDB configuration variables"""
+
+    key = os.environ.get("TMDB_KEY")
+    language = os.environ.get("TMDB_LANGUAGE", "en-US")
+    region = os.environ.get("TMDB_REGION", "US")
+    debug = os.environ.get("TMDB_DEBUG")
+
+
 class TraktTVConfig:
     """TraktTV configuration variables"""
 
     client_id = os.environ.get("TRAKT_TV_CLIENT_ID")
     client_secret = os.environ.get("TRAKT_TV_CLIENT_ID")
+
+
+class Config:
+    """All configuration variables"""
+
+    bot = BotConfig
+    logger = LoggerConfig
+    bugsnag = BugsnagConfig
+    dashbot = DashbotConfig
+    tmdb = TMDBConfig
+    trakt_tv = TraktTVConfig

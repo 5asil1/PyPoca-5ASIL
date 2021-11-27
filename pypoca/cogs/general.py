@@ -2,7 +2,7 @@
 from discord.ext.commands import Bot, BucketType, Cog
 from dislash import SlashInteraction, cooldown, slash_command
 
-from pypoca.config import BotConfig
+from pypoca.config import Config
 from pypoca.embeds import Buttons, Option, Poster
 from pypoca.languages import Button, CommandDescription, CommandReply
 
@@ -51,10 +51,10 @@ class General(Cog):
         )
         buttons = Buttons(
             buttons=[
-                {"label": Button.invite, "url": BotConfig.invite_url},
-                {"label": Button.vote, "url": BotConfig.vote_url},
-                {"label": Button.server, "url": BotConfig.server_url},
-                {"label": Button.github, "url": BotConfig.github_url},
+                {"label": Button.invite, "url": Config.bot.invite_url},
+                {"label": Button.vote, "url": Config.bot.vote_url},
+                {"label": Button.server, "url": Config.bot.server_url},
+                {"label": Button.github, "url": Config.bot.github_url},
             ],
         )
         await inter.reply(embed=embed, components=[buttons], ephemeral=hide)

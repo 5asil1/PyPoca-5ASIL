@@ -7,46 +7,41 @@ import bugsnag
 from bugsnag.handlers import BugsnagHandler
 
 
-def config_logger(filename: str, config: dict, level: str, format: str) -> None:
+def config_logger(file_config: str, dict_config: dict, **basic_config) -> None:
     """Logging configuration.
 
-    If 'filename' has passed, read the logging configuration from a ConfigParser-format file.
-    Else, if 'config' has passed, start up a socket server on the specified port, and listen
+    If 'file_config' has passed, read the logging configuration from a ConfigParser-format file.
+    Else, if 'dict_config' has passed, start up a socket server on the specified port, and listen
     for new configurations. Else, do basic configuration for the logging system.
     """
-    if filename:
-        logging.config.fileConfig(filename)
-    elif config:
-        logging.config.dictConfig(config)
+    if file_config:
+        logging.config.fileConfig(file_config)
+    elif dict_config:
+        logging.config.dictConfig(dict_config)
     else:
-        logging.basicConfig(level=level, format=format)
+        logging.basicConfig(**basic_config)
 
 
-def get_bugsnag_handler(api_key: str = None, level: str = "ERROR", **kwargs) -> BugsnagHandler:
+def inject_bugsnag_handler(logger: Logger, api_key: str = None, **kwargs) -> BugsnagHandler:
     """Handler for Bugsnag notifier application-wide."""
     if api_key is None:
+        logger.warning("No Bugsnag API key configured, couldn't notify")
         return None
     bugsnag.configure(api_key=api_key, **kwargs)
     bugsnag_handler = BugsnagHandler(extra_fields={"log": ["__repr__"], "locals": ["locals"], "ctx": ["ctx"]})
-    bugsnag_handler.setLevel(level)
-    return bugsnag_handler
+    logger.addHandler(bugsnag_handler)
 
 
 def get_logger(
     name: str = None,
     *,
-    filename_config: str = None,
-    dict_config: dict = {},
-    level: str = "INFO",
-    format: str = "%(asctime)s [%(levelname)s] %(module)s.py:%(lineno)s %(message)s",
-    bugsnag_handler_config: dict = {},
+    file_config: str = None,
+    dict_config: dict = None,
+    bugsnag_config: dict = None,
+    **basic_config,
 ) -> Logger:
     """Generate all configured loggers."""
-    config_logger(filename=filename_config, config=dict_config, level=level, format=format)
+    config_logger(file_config=file_config, dict_config=dict_config, **basic_config)
     logger = logging.getLogger(name)
-    bugsnag_handler = get_bugsnag_handler(**bugsnag_handler_config)
-    if bugsnag_handler is None:
-        logger.warning("No Bugsnag API key configured, couldn't notify")
-    else:
-        logger.addHandler(bugsnag_handler)
+    inject_bugsnag_handler(logger, **bugsnag_config)
     return logger

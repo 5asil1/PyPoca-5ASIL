@@ -3,7 +3,7 @@ from datetime import datetime
 
 from aiohttp import ClientSession
 
-from pypoca.config import TraktTVConfig
+from pypoca.config import Config
 from pypoca.languages import DATETIME_FORMAT
 
 __all__ = (
@@ -43,7 +43,7 @@ async def get_trakt_id(tmdb_id: str, type: str) -> str:
     headers = {
         "Content-Type": "application/json",
         "trakt-api-version": "2",
-        "trakt-api-key": TraktTVConfig.client_id,
+        "trakt-api-key": Config.trakt_tv.client_id,
     }
     async with ClientSession() as session:
         async with session.get(f"https://api.trakt.tv/search/tmdb/{tmdb_id}", headers=headers) as response:

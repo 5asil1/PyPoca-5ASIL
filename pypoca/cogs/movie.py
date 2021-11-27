@@ -5,7 +5,7 @@ from dislash import ResponseType, SlashInteraction, slash_command
 
 from pypoca import utils
 from pypoca.adapters import Adapter
-from pypoca.config import TMDBConfig
+from pypoca.config import Config
 from pypoca.embeds import Buttons, Menu, Option, Poster
 from pypoca.exceptions import NotFound
 from pypoca.languages import CommandDescription, CommandReply
@@ -174,8 +174,8 @@ class Movie(Cog):
         min_runtime: int = None,
         max_runtime: int = None,
         page: int = 1,
-        language: str = TMDBConfig.language,
-        region: str = TMDBConfig.region,
+        language: str = Config.tmdb.language,
+        region: str = Config.tmdb.region,
     ) -> None:
         """Subcommand to discover movies by different types of data."""
         discover = TMDB.discover(language=language, region=region)
@@ -214,8 +214,8 @@ class Movie(Cog):
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = TMDBConfig.language,
-        region: str = TMDBConfig.region,
+        language: str = Config.tmdb.language,
+        region: str = Config.tmdb.region,
     ) -> None:
         """Subcommand to get the current popular movies."""
         movie = TMDB.movie(language=language, region=region)
@@ -256,8 +256,8 @@ class Movie(Cog):
         year: int = None,
         nsfw: bool = False,
         page: int = 1,
-        language: str = TMDBConfig.language,
-        region: str = TMDBConfig.region,
+        language: str = Config.tmdb.language,
+        region: str = Config.tmdb.region,
     ) -> None:
         """Subcommand to search for a movie."""
         search = TMDB.search(language=language, region=region)
@@ -281,8 +281,8 @@ class Movie(Cog):
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = TMDBConfig.language,
-        region: str = TMDBConfig.region,
+        language: str = Config.tmdb.language,
+        region: str = Config.tmdb.region,
     ) -> None:
         """Subcommand get the top rated movies."""
         movie = TMDB.movie(language=language, region=region)
@@ -306,8 +306,8 @@ class Movie(Cog):
         self,
         inter: SlashInteraction,
         interval: str = "day",
-        language: str = TMDBConfig.language,
-        region: str = TMDBConfig.region,
+        language: str = Config.tmdb.language,
+        region: str = Config.tmdb.region,
     ) -> None:
         """Subcommand get the trending movies."""
         trending = TMDB.trending(language=language, region=region)
@@ -334,8 +334,8 @@ class Movie(Cog):
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = TMDBConfig.language,
-        region: str = TMDBConfig.region,
+        language: str = Config.tmdb.language,
+        region: str = Config.tmdb.region,
     ) -> None:
         """Subcommand get the upcoming movies in theatres."""
         movie = TMDB.movie(language=language, region=region)

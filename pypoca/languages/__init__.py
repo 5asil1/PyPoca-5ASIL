@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from pypoca.config import BotConfig
+from pypoca.config import Config
 
-if BotConfig.language == "en_US":
+if Config.bot.language == "en_US":
     from pypoca.languages.en_US import *  # NOQA
-elif BotConfig.language == "pt_BR":
+elif Config.bot.language == "pt_BR":
     from pypoca.languages.pt_BR import *  # NOQA
 else:
     from pypoca.languages.en_US import *  # NOQA
