@@ -43,11 +43,6 @@ class General(Cog):
         embed = Poster(
             title=CommandReply.help.title,
             description=CommandReply.help.description,
-            fields=[
-                {"name": "/movie", "value": CommandDescription.movie, "inline": False},
-                {"name": "/tv", "value": CommandDescription.tv, "inline": False},
-                {"name": "/people", "value": CommandDescription.person, "inline": False},
-            ],
         )
         buttons = Buttons(
             buttons=[

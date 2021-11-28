@@ -18,6 +18,7 @@ __all__ = (
     "Sort",
 )
 
+BLANK_EMOJI = "<:blank:914183315056111627>"
 DATETIME_FORMAT = "%d/%m/%Y"
 PLACEHOLDER = "Selecione uma das opções..."
 TRUE = "sim"
@@ -162,13 +163,31 @@ class CommandReply:
     """All available command replies with the respectives regionalized name."""
 
     ping = Object(title="Pong!", description="Latência: {latency}ms")
-    help = Object(
-        title="Comandos disponíveis",
-        description="Milhões de filmes, séries e artistas para descobrir. Explore agora!",
-    )
     movie = Object(title="Filmes encontrados")
     tv = Object(title="Séries encontrados")
     person = Object(title="Artistas encontrados")
+    help = Object(
+        title="",
+        description=f"""
+        **/movie**
+        {BLANK_EMOJI} **discover** {CommandDescription.discover_movie}
+        {BLANK_EMOJI} **popular** {CommandDescription.popular_movie}
+        {BLANK_EMOJI} **search** {CommandDescription.search_movie}
+        {BLANK_EMOJI} **top** {CommandDescription.top_movie}
+        {BLANK_EMOJI} **trending** {CommandDescription.trending_movie}
+        {BLANK_EMOJI} **upcoming** {CommandDescription.upcoming_movie}
+        **/tv**
+        {BLANK_EMOJI} **discover** {CommandDescription.discover_tv}
+        {BLANK_EMOJI} **popular** {CommandDescription.popular_tv}
+        {BLANK_EMOJI} **search** {CommandDescription.search_tv}
+        {BLANK_EMOJI} **top** {CommandDescription.top_tv}
+        {BLANK_EMOJI} **trending** {CommandDescription.trending_tv}
+        {BLANK_EMOJI} **upcoming** {CommandDescription.upcoming_tv}
+        **/people**
+        {BLANK_EMOJI} **popular** {CommandDescription.popular_person}
+        {BLANK_EMOJI} **search** {CommandDescription.search_person}
+        {BLANK_EMOJI} **trending** {CommandDescription.trending_person}""",
+    )
 
 
 class Language:
@@ -237,8 +256,8 @@ class Interval:
 class Button:
     """All available buttons with the respectives regionalized name."""
 
-    invite = "Adicionar"
-    vote = "Votar"
+    invite = "Adicione"
+    vote = "Vote"
     server = "Servidor"
     github = "Github"
 
