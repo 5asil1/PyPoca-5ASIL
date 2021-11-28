@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
 
-DEFAULT_URL = "https://bot.com"
-
 
 class BotConfig:
     """Bot configuration variables"""
@@ -19,10 +17,10 @@ class BotConfig:
     except Exception:
         guilds_ids = None
     language = os.environ.get("BOT_LANGUAGE", "en_US")
-    invite_url = os.environ.get("BOT_INVITE_URL", DEFAULT_URL)
-    vote_url = os.environ.get("BOT_VOTE_URL", DEFAULT_URL)
-    server_url = os.environ.get("BOT_SERVER_URL", DEFAULT_URL)
-    github_url = os.environ.get("BOT_GITHUB_URL", DEFAULT_URL)
+    invite_url = os.environ.get("BOT_INVITE_URL")
+    vote_url = os.environ.get("BOT_VOTE_URL")
+    server_url = os.environ.get("BOT_SERVER_URL")
+    github_url = os.environ.get("BOT_GITHUB_URL")
 
 
 class LoggerConfig:

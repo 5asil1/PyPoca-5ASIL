@@ -5,7 +5,7 @@ from aiohttp import ClientSession
 
 from pypoca.config import Config
 
-__all__ = ("Dashbot")
+__all__ = "Dashbot"
 
 
 class Dashbot:
