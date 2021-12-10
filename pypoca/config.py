@@ -63,6 +63,7 @@ class TraktTVConfig:
 class Config:
     """All configuration variables"""
 
+    debug = bool(os.environ.get("DEBUG", False))
     bot = BotConfig
     logger = LoggerConfig
     bugsnag = BugsnagConfig

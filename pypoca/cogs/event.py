@@ -4,6 +4,7 @@ from discord.ext.commands import Bot, Cog
 from dislash import CommandOnCooldown, SlashInteraction
 
 from pypoca import log
+from pypoca.config import Config
 from pypoca.embeds import Color, Poster
 from pypoca.exceptions import NotFound
 from pypoca.languages import EventReply
@@ -22,6 +23,12 @@ class Event(Cog):
         """Called when the client is done preparing the data received from Discord."""
         activity = Activity(type=ActivityType.watching, name="/help")
         await self.bot.change_presence(activity=activity)
+
+        if Config.debug is True:
+            from pypoca.overwatch import Watcher
+
+            watcher = Watcher(self.bot, path="pypoca/cogs", loop=self.bot.loop)
+            await watcher.start()
 
     @Cog.listener()
     async def on_guild_join(self, guild: Guild) -> None:
