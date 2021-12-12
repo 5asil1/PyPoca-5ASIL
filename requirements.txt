@@ -5,6 +5,7 @@ dislash.py>=1.4.9
 pyyaml>=6.0
 # database
 pony>=0.7.14
+psycopg2>=2.9.2
 # tools
 aiohttp>=3.6.0  # dashbot and trakt.tv
 bugsnag==4.1.1
