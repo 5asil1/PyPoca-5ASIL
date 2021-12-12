@@ -3,6 +3,7 @@ from discord.ext import commands
 from dislash import InteractionClient
 
 from pypoca.config import Config
+from pypoca.entities import Server, init_db
 
 
 class Servers(dict):
@@ -12,14 +13,16 @@ class Servers(dict):
 
     def __getitem__(self, server_id: int) -> dict:
         if not hasattr(self, str(server_id)):
+            server = Server.fetch(id=server_id)
             data = {
-                "language": Config.bot.language,
-                "region": Config.bot.region,
+                "language": server.language if server else Config.bot.language,
+                "region": server.language if server else Config.bot.region,
             }
             setattr(self, str(server_id), data)
         return getattr(self, str(server_id))
 
     def __setitem__(self, server_id: int, data: dict) -> dict:
+        Server.update_or_create(id=server_id, **data)
         setattr(self, str(server_id), data)
         return getattr(self, str(server_id))
 
@@ -37,6 +40,7 @@ def run() -> None:
     for cog in Config.bot.cogs:
         bot.load_extension(cog[:-3].replace("/", "."))
 
+    init_db(provider=Config.database.provider, credentials=Config.database.credentials)
     bot.run(Config.bot.token)
     client.teardown()
 

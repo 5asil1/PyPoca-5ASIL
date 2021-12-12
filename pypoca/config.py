@@ -24,6 +24,20 @@ class BotConfig:
     site_url = os.environ.get("BOT_SITE_URL")
 
 
+class DatabaseConfig:
+    """Database configuration variables"""
+
+    provider = os.environ.get("DB_PROVIDER")
+    credentials = {
+        "filename": os.environ.get("DB_FILENAME"),
+        "user": os.environ.get("DB_USER"),
+        "password": os.environ.get("DB_PASSWORD"),
+        "host": os.environ.get("DB_HOST"),
+        "database": os.environ.get("DB_NAME"),
+        "dns": os.environ.get("DB_DNS"),
+    }
+
+
 class LoggerConfig:
     """Logging configuration variables"""
 
@@ -64,6 +78,7 @@ class Config:
 
     debug = bool(os.environ.get("DEBUG", False))
     bot = BotConfig
+    database = DatabaseConfig
     logger = LoggerConfig
     bugsnag = BugsnagConfig
     dashbot = DashbotConfig
