@@ -8,7 +8,7 @@ from pypoca.adapters import Adapter
 from pypoca.config import Config
 from pypoca.embeds import Buttons, Menu, Option, Poster
 from pypoca.exceptions import NotFound
-from pypoca.languages import CommandDescription, CommandReply
+from pypoca.languages import Command
 
 __all__ = ("TV", "setup")
 
@@ -31,7 +31,7 @@ class TV(Cog):
     ) -> None:
         adapter = Adapter("tv")
         if len(results) > 1:
-            embed = Poster(title=CommandReply.tv.title)
+            embed = Poster(title=Command.tv.reply["title"])
             select_menu = Menu(options=[adapter.option(result) for result in results])
             msg = await inter.reply(
                 embed=embed,
@@ -113,13 +113,13 @@ class TV(Cog):
             """Waiting for listener timeout."""
             await msg.edit(components=[])
 
-    @slash_command(name="tv", description=CommandDescription.tv)
+    @slash_command(name="tv", description=Command.tv.description)
     async def tv(self, inter: SlashInteraction):
         """Command that groups tv-related subcommands."""
 
     @tv.sub_command(
         name="discover",
-        description=CommandDescription.discover_tv,
+        description=Command.discover_tv.description,
         options=[
             Option.tv_sort_by,
             Option.tv_service,
@@ -194,7 +194,7 @@ class TV(Cog):
 
     @tv.sub_command(
         name="popular",
-        description=CommandDescription.popular_tv,
+        description=Command.popular_tv.description,
         options=[Option.page, Option.language, Option.region],
         connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )
@@ -219,7 +219,7 @@ class TV(Cog):
 
     @tv.sub_command(
         name="search",
-        description=CommandDescription.search_tv,
+        description=Command.search_tv.description,
         options=[
             Option.query,
             Option.year,
@@ -261,7 +261,7 @@ class TV(Cog):
 
     @tv.sub_command(
         name="top",
-        description=CommandDescription.top_tv,
+        description=Command.top_tv.description,
         options=[Option.page, Option.language, Option.region],
         connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )
@@ -286,7 +286,7 @@ class TV(Cog):
 
     @tv.sub_command(
         name="trending",
-        description=CommandDescription.trending_tv,
+        description=Command.trending_tv.description,
         options=[Option.interval, Option.language, Option.region],
         connectors={Option.interval.name: "interval", Option.language.name: "language", Option.region.name: "region"},
     )
@@ -314,7 +314,7 @@ class TV(Cog):
 
     @tv.sub_command(
         name="upcoming",
-        description=CommandDescription.upcoming_tv,
+        description=Command.upcoming_tv.description,
         options=[Option.page, Option.language, Option.region],
         connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )

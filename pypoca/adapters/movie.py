@@ -2,7 +2,7 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
-from pypoca.languages import Field
+from pypoca.languages import Command
 
 __all__ = ("embed", "option", "buttons")
 
@@ -36,12 +36,15 @@ def embed(result: AsObj, region: str) -> dict:
         "title": result.get("title") or result.original_title,
         "description": result.get("overview"),
         "fields": [
-            {"name": Field.rating, "value": rating or "-"},
-            {"name": Field.released, "value": release_date or "-"},
-            {"name": Field.watch, "value": ", ".join(watch_providers) if watch_providers else "-"},
-            {"name": Field.runtime, "value": duration or "-"},
-            {"name": Field.genre, "value": ", ".join(genres) if genres else "-"},
-            {"name": Field.studios, "value": ", ".join(production_companies) if production_companies else "-"},
+            {"name": Command.movie.fields["rating"], "value": rating or "-"},
+            {"name": Command.movie.fields["released"], "value": release_date or "-"},
+            {"name": Command.movie.fields["watch"], "value": ", ".join(watch_providers) if watch_providers else "-"},
+            {"name": Command.movie.fields["runtime"], "value": duration or "-"},
+            {"name": Command.movie.fields["genre"], "value": ", ".join(genres) if genres else "-"},
+            {
+                "name": Command.movie.fields["studios"],
+                "value": ", ".join(production_companies) if production_companies else "-",
+            },
         ],
     }
     if result.get("homepage"):
@@ -77,10 +80,18 @@ def buttons(result: AsObj) -> list:
     except Exception:
         video_key = None
     buttons = [
-        {"label": Field.trailer, "url": f"https://www.youtube.com/watch?v={video_key}", "disabled": not video_key},
+        {
+            "label": Command.movie.buttons["trailer"],
+            "url": f"https://www.youtube.com/watch?v={video_key}",
+            "disabled": not video_key,
+        },
         {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
-        {"label": Field.cast, "custom_id": "cast", "disabled": not result.credits.cast},
-        {"label": Field.crew, "custom_id": "crew", "disabled": not result.credits.crew},
-        {"label": Field.similar, "custom_id": "similar", "disabled": not result.recommendations.results},
+        {"label": Command.movie.buttons["cast"], "custom_id": "cast", "disabled": not result.credits.cast},
+        {"label": Command.movie.buttons["crew"], "custom_id": "crew", "disabled": not result.credits.crew},
+        {
+            "label": Command.movie.buttons["similar"],
+            "custom_id": "similar",
+            "disabled": not result.recommendations.results,
+        },
     ]
     return buttons

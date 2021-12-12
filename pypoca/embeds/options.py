@@ -3,7 +3,7 @@ from dislash import Option as OptionClass
 from dislash import OptionType
 
 from pypoca.embeds.choices import Choices
-from pypoca.languages import Option as OptionObject
+from pypoca.languages import Option as OptionLang
 
 __all__ = "Option"
 
@@ -12,114 +12,106 @@ class Option:
     """All valid options for slash commands."""
 
     language = OptionClass(
-        OptionObject.language.title,
-        OptionObject.language.description,
+        OptionLang.language.title,
+        OptionLang.language.description,
         OptionType.STRING,
         choices=Choices.languages,
     )
     region = OptionClass(
-        OptionObject.region.title,
-        OptionObject.region.description,
+        OptionLang.region.title,
+        OptionLang.region.description,
         OptionType.STRING,
         choices=Choices.regions,
     )
-    hide = OptionClass(
-        OptionObject.hide.title, OptionObject.hide.description, OptionType.STRING, choices=Choices.boolean
-    )
+    hide = OptionClass(OptionLang.hide.title, OptionLang.hide.description, OptionType.STRING, choices=Choices.boolean)
     query = OptionClass(
-        OptionObject.query.title,
-        OptionObject.query.description,
+        OptionLang.query.title,
+        OptionLang.query.description,
         OptionType.STRING,
         required=True,
     )
-    page = OptionClass(OptionObject.page.title, OptionObject.page.description, OptionType.INTEGER)
-    nsfw = OptionClass(
-        OptionObject.nsfw.title, OptionObject.nsfw.description, OptionType.STRING, choices=Choices.boolean
-    )
-    year = OptionClass(OptionObject.year.title, OptionObject.year.description, OptionType.INTEGER)
+    page = OptionClass(OptionLang.page.title, OptionLang.page.description, OptionType.INTEGER)
+    nsfw = OptionClass(OptionLang.nsfw.title, OptionLang.nsfw.description, OptionType.STRING, choices=Choices.boolean)
+    year = OptionClass(OptionLang.year.title, OptionLang.year.description, OptionType.INTEGER)
     min_year = OptionClass(
-        OptionObject.min_year.title,
-        OptionObject.min_year.description,
+        OptionLang.min_year.title,
+        OptionLang.min_year.description,
         OptionType.INTEGER,
     )
     max_year = OptionClass(
-        OptionObject.max_year.title,
-        OptionObject.max_year.description,
+        OptionLang.max_year.title,
+        OptionLang.max_year.description,
         OptionType.INTEGER,
     )
     min_votes = OptionClass(
-        OptionObject.min_votes.title,
-        OptionObject.min_votes.description,
+        OptionLang.min_votes.title,
+        OptionLang.min_votes.description,
         OptionType.INTEGER,
     )
     max_votes = OptionClass(
-        OptionObject.max_votes.title,
-        OptionObject.max_votes.description,
+        OptionLang.max_votes.title,
+        OptionLang.max_votes.description,
         OptionType.INTEGER,
     )
     min_rating = OptionClass(
-        OptionObject.min_rating.title,
-        OptionObject.min_rating.description,
+        OptionLang.min_rating.title,
+        OptionLang.min_rating.description,
         OptionType.INTEGER,
     )
     max_rating = OptionClass(
-        OptionObject.max_rating.title,
-        OptionObject.max_rating.description,
+        OptionLang.max_rating.title,
+        OptionLang.max_rating.description,
         OptionType.INTEGER,
     )
     min_runtime = OptionClass(
-        OptionObject.min_runtime.title,
-        OptionObject.min_runtime.description,
+        OptionLang.min_runtime.title,
+        OptionLang.min_runtime.description,
         OptionType.INTEGER,
     )
     max_runtime = OptionClass(
-        OptionObject.max_runtime.title,
-        OptionObject.max_runtime.description,
+        OptionLang.max_runtime.title,
+        OptionLang.max_runtime.description,
         OptionType.INTEGER,
     )
-    # sort_by
     movie_sort_by = OptionClass(
-        OptionObject.sort_by.title,
-        OptionObject.sort_by.description,
+        OptionLang.sort_by.title,
+        OptionLang.sort_by.description,
         OptionType.STRING,
         choices=Choices.movie_sort_by,
     )
     tv_sort_by = OptionClass(
-        OptionObject.sort_by.title,
-        OptionObject.sort_by.description,
+        OptionLang.sort_by.title,
+        OptionLang.sort_by.description,
         OptionType.STRING,
         choices=Choices.tv_sort_by,
     )
-    # service
     movie_service = OptionClass(
-        OptionObject.service.title,
-        OptionObject.service.description,
+        OptionLang.service.title,
+        OptionLang.service.description,
         OptionType.STRING,
         choices=Choices.movie_services,
     )
     tv_service = OptionClass(
-        OptionObject.service.title,
-        OptionObject.service.description,
+        OptionLang.service.title,
+        OptionLang.service.description,
         OptionType.STRING,
         choices=Choices.tv_services,
     )
-    # genre
     movie_genre = OptionClass(
-        OptionObject.genre.title,
-        OptionObject.genre.description,
+        OptionLang.genre.title,
+        OptionLang.genre.description,
         OptionType.STRING,
         choices=Choices.movie_genres,
     )
     tv_genre = OptionClass(
-        OptionObject.genre.title,
-        OptionObject.genre.description,
+        OptionLang.genre.title,
+        OptionLang.genre.description,
         OptionType.STRING,
         choices=Choices.tv_genres,
     )
-    # interval
     interval = OptionClass(
-        OptionObject.interval.title,
-        OptionObject.interval.description,
+        OptionLang.interval.title,
+        OptionLang.interval.description,
         OptionType.STRING,
         choices=Choices.intervals,
     )

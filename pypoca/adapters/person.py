@@ -2,7 +2,7 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
-from pypoca.languages import Field
+from pypoca.languages import Command
 
 __all__ = ("embed", "option", "buttons")
 
@@ -31,10 +31,10 @@ def embed(result: AsObj, region: str) -> dict:
         "title": result.name,
         "description": result.get("biography"),
         "fields": [
-            {"name": Field.birthday, "value": birthday or "-"},
-            {"name": Field.deathday, "value": deathday or "-"},
-            {"name": Field.born, "value": place_of_birth or "-"},
-            {"name": Field.know_for, "value": ", ".join(jobs[:5]) if jobs else "-"},
+            {"name": Command.person.fields["birthday"], "value": birthday or "-"},
+            {"name": Command.person.fields["deathday"], "value": deathday or "-"},
+            {"name": Command.person.fields["born"], "value": place_of_birth or "-"},
+            {"name": Command.person.fields["know_for"], "value": ", ".join(jobs[:5]) if jobs else "-"},
         ],
     }
     if result.get("homepage"):
@@ -73,12 +73,12 @@ def buttons(result: AsObj) -> list:
         {"label": "Instagram", "url": f"https://www.instagram.com/{instagram_id}", "disabled": instagram_id is None},
         {"label": "Twitter", "url": f"https://www.twitter.com/{twitter_id}", "disabled": twitter_id is None},
         {
-            "label": Field.acting,
+            "label": Command.person.buttons["acting"],
             "custom_id": "acting",
             "disabled": not result.movie_credits.cast and not result.tv_credits.cast,
         },
         {
-            "label": Field.jobs,
+            "label": Command.person.buttons["jobs"],
             "custom_id": "jobs",
             "disabled": not result.movie_credits.crew and not result.tv_credits.crew,
         },

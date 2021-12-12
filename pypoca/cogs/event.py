@@ -7,13 +7,13 @@ from pypoca import log
 from pypoca.config import Config
 from pypoca.embeds import Color, Poster
 from pypoca.exceptions import NotFound
-from pypoca.languages import EventReply
+from pypoca.languages import Event
 
-__all__ = ("Event", "setup")
+__all__ = ("Events", "setup")
 
 
-class Event(Cog):
-    """`Event` cog handles the different types of events listened by Client."""
+class Events(Cog):
+    """`Events` cog handles the different types of events listened by Client."""
 
     def __init__(self, bot: Bot) -> None:
         self.bot = bot
@@ -38,14 +38,14 @@ class Event(Cog):
     async def on_slash_command_error(self, inter: SlashInteraction, e: Exception) -> None:
         """Called when a slash command fails due to some error."""
         if isinstance(e, CommandOnCooldown):
-            title = (EventReply.cooldown.title.format(command_name=inter.data.name),)
-            description = (EventReply.cooldown.title.format(command_name=e.retry_after),)
+            title = (Event.cooldown.title.format(command_name=inter.data.name),)
+            description = (Event.cooldown.title.format(command_name=e.retry_after),)
         elif isinstance(e, NotFound):
-            title = EventReply.not_found.title
-            description = EventReply.not_found.description
+            title = Event.not_found.title
+            description = Event.not_found.description
         else:
-            title = EventReply.exception.title.format(command_name=inter.data.name)
-            description = EventReply.exception.description.format(error=str(e))
+            title = Event.exception.title.format(command_name=inter.data.name)
+            description = Event.exception.description.format(error=str(e))
             log.error(
                 f"{inter}. {e}",
                 extra={"locals": locals(), "ctx": vars(inter)},
@@ -56,5 +56,5 @@ class Event(Cog):
 
 
 def setup(bot: Bot) -> None:
-    """Setup `Event` cog."""
-    bot.add_cog(Event(bot))
+    """Setup `Events` cog."""
+    bot.add_cog(Events(bot))

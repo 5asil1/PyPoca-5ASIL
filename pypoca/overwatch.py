@@ -70,11 +70,7 @@ class Watcher:
                 for change_type, change_path in reverse_ordered_changes:
                     filename = self.get_cog_name(change_path)
                     new_dir = self.get_dotted_cog_path(change_path)
-                    cog_dir = (
-                        f"{new_dir}.{filename.lower()}"
-                        if new_dir
-                        else f"{self.path}.{filename.lower()}"
-                    )
+                    cog_dir = f"{new_dir}.{filename.lower()}" if new_dir else f"{self.path}.{filename.lower()}"
                     if change_type == Change.deleted:
                         await self.unload(cog_dir)
                     elif change_type == Change.added:

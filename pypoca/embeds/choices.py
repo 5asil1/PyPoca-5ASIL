@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from dislash import OptionChoice
 
-from pypoca.languages import FALSE, TRUE, Genre, Interval, Language, Region, Sort
+from pypoca.languages import FALSE, TRUE, Option
 
 __all__ = ("Choice", "Choices")
 
@@ -12,12 +12,18 @@ class Choice:
     # boolean
     true = OptionChoice(TRUE, True)
     false = OptionChoice(FALSE, False)
+    # language
+    en_US = OptionChoice(Option.language.choices["en_US"], "en_US")
+    pt_BR = OptionChoice(Option.language.choices["pt_BR"], "pt_BR")
+    # region
+    US = OptionChoice(Option.region.choices["US"], "US")
+    BR = OptionChoice(Option.region.choices["BR"], "BR")
     # sort_by
-    popularity = OptionChoice(Sort.popularity, "popularity.desc")
-    year = OptionChoice(Sort.year, "release_date.desc")
-    rating = OptionChoice(Sort.rating, "vote_average.desc")
-    title = OptionChoice(Sort.title, "original_title.asc")
-    votes = OptionChoice(Sort.votes, "vote_count.desc")
+    popularity = OptionChoice(Option.sort_by.choices["popularity"], "popularity.desc")
+    year = OptionChoice(Option.sort_by.choices["year"], "release_date.desc")
+    rating = OptionChoice(Option.sort_by.choices["rating"], "vote_average.desc")
+    title = OptionChoice(Option.sort_by.choices["title"], "original_title.asc")
+    votes = OptionChoice(Option.sort_by.choices["votes"], "vote_count.desc")
     # service
     acorn_tv = OptionChoice("Acorn TV", "87")
     amazon_prime_video = OptionChoice("Amazon Prime Video", "9|119")
@@ -45,46 +51,44 @@ class Choice:
     vix = OptionChoice("VIX", "457")
     youtube = OptionChoice("YouTube", "192")
     # genre
-    action = OptionChoice(Genre.action, "28")
-    adventure = OptionChoice(Genre.adventure, "12")
-    animation = OptionChoice(Genre.animation, "16")
-    comedy = OptionChoice(Genre.comedy, "35")
-    crime = OptionChoice(Genre.crime, "80")
-    documentary = OptionChoice(Genre.documentary, "99")
-    drama = OptionChoice(Genre.drama, "18")
-    family = OptionChoice(Genre.family, "10751")
-    fantasy = OptionChoice(Genre.fantasy, "14")
-    history = OptionChoice(Genre.history, "36")
-    horror = OptionChoice(Genre.horror, "27")
-    music = OptionChoice(Genre.music, "10402")
-    mystery = OptionChoice(Genre.mystery, "9648")
-    romance = OptionChoice(Genre.romance, "10749")
-    syfy = OptionChoice(Genre.syfy, "878")
-    tv = OptionChoice(Genre.tv, "10770")
-    thriller = OptionChoice(Genre.thriller, "53")
-    war = OptionChoice(Genre.war, "10752")
-    western = OptionChoice(Genre.western, "37")
-    action_and_adventure = OptionChoice(Genre.action_and_adventure, "10759")
-    kids = OptionChoice(Genre.kids, "10762")
-    news = OptionChoice(Genre.news, "10763")
-    reality = OptionChoice(Genre.reality, "10764")
-    syfy_and_fantasy = OptionChoice(Genre.syfy_and_fantasy, "10765")
-    soap = OptionChoice(Genre.soap, "10766")
-    talk = OptionChoice(Genre.talk, "10767")
-    war_and_politics = OptionChoice(Genre.war_and_politics, "10768")
+    action = OptionChoice(Option.genre.choices["action"], "28")
+    adventure = OptionChoice(Option.genre.choices["adventure"], "12")
+    animation = OptionChoice(Option.genre.choices["animation"], "16")
+    comedy = OptionChoice(Option.genre.choices["comedy"], "35")
+    crime = OptionChoice(Option.genre.choices["crime"], "80")
+    documentary = OptionChoice(Option.genre.choices["documentary"], "99")
+    drama = OptionChoice(Option.genre.choices["drama"], "18")
+    family = OptionChoice(Option.genre.choices["family"], "10751")
+    fantasy = OptionChoice(Option.genre.choices["fantasy"], "14")
+    history = OptionChoice(Option.genre.choices["history"], "36")
+    horror = OptionChoice(Option.genre.choices["horror"], "27")
+    music = OptionChoice(Option.genre.choices["music"], "10402")
+    mystery = OptionChoice(Option.genre.choices["mystery"], "9648")
+    romance = OptionChoice(Option.genre.choices["romance"], "10749")
+    syfy = OptionChoice(Option.genre.choices["syfy"], "878")
+    tv = OptionChoice(Option.genre.choices["tv"], "10770")
+    thriller = OptionChoice(Option.genre.choices["thriller"], "53")
+    war = OptionChoice(Option.genre.choices["war"], "10752")
+    western = OptionChoice(Option.genre.choices["western"], "37")
+    action_and_adventure = OptionChoice(Option.genre.choices["action_and_adventure"], "10759")
+    kids = OptionChoice(Option.genre.choices["kids"], "10762")
+    news = OptionChoice(Option.genre.choices["news"], "10763")
+    reality = OptionChoice(Option.genre.choices["reality"], "10764")
+    syfy_and_fantasy = OptionChoice(Option.genre.choices["syfy_and_fantasy"], "10765")
+    soap = OptionChoice(Option.genre.choices["soap"], "10766")
+    talk = OptionChoice(Option.genre.choices["talk"], "10767")
+    war_and_politics = OptionChoice(Option.genre.choices["war_and_politics"], "10768")
     # interval
-    day = OptionChoice(Interval.day, "day")
-    week = OptionChoice(Interval.week, "week")
+    day = OptionChoice(Option.interval.choices["day"], "day")
+    week = OptionChoice(Option.interval.choices["week"], "week")
 
 
 class Choices:
     """All valid list of choice options for option."""
 
-    languages = [OptionChoice(value, key.replace("_", "-")) for key, value in vars(Language).items() if key[0] != "_"]
-    regions = [OptionChoice(value, key) for key, value in vars(Region).items() if key[0] != "_"]
-    # boolean
+    languages = [Choice.pt_BR, Choice.en_US]
+    regions = [Choice.BR, Choice.US]
     boolean = [Choice.true, Choice.false]
-    # sort_by
     movie_sort_by = [
         Choice.popularity,
         Choice.year,
@@ -93,7 +97,6 @@ class Choices:
         Choice.votes,
     ]
     tv_sort_by = [Choice.popularity, Choice.year, Choice.rating]
-    # service
     movie_services = [
         Choice.acorn_tv,
         Choice.amazon_prime_video,
@@ -140,7 +143,6 @@ class Choices:
         Choice.star_plus,
         Choice.youtube,
     ]
-    # genre
     movie_genres = [
         Choice.action,
         Choice.adventure,
@@ -180,5 +182,4 @@ class Choices:
         Choice.war_and_politics,
         Choice.western,
     ]
-    # interval
     intervals = [Choice.day, Choice.week]

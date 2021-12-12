@@ -7,7 +7,7 @@ from pypoca.adapters import Adapter
 from pypoca.config import Config
 from pypoca.embeds import Buttons, Menu, Option, Poster
 from pypoca.exceptions import NotFound
-from pypoca.languages import CommandDescription, CommandReply
+from pypoca.languages import Command
 
 __all__ = ("Person", "setup")
 
@@ -30,7 +30,7 @@ class Person(Cog):
     ) -> None:
         adapter = Adapter("person")
         if len(results) > 1:
-            embed = Poster(title=CommandReply.person.title)
+            embed = Poster(title=Command.person.reply["title"])
             select_menu = Menu(options=[adapter.option(result) for result in results])
             msg = await inter.reply(
                 embed=embed,
@@ -106,13 +106,13 @@ class Person(Cog):
             """Waiting for listener timeout."""
             await msg.edit(components=[])
 
-    @slash_command(name="people", description=CommandDescription.person)
+    @slash_command(name="people", description=Command.person.description)
     async def person(self, inter: SlashInteraction):
         """Command that groups person-related subcommands."""
 
     @person.sub_command(
         name="popular",
-        description=CommandDescription.popular_person,
+        description=Command.popular_person.description,
         options=[Option.page, Option.language, Option.region],
         connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )
@@ -137,7 +137,7 @@ class Person(Cog):
 
     @person.sub_command(
         name="search",
-        description=CommandDescription.search_person,
+        description=Command.search_person.description,
         options=[
             Option.query,
             Option.nsfw,
@@ -176,7 +176,7 @@ class Person(Cog):
 
     @person.sub_command(
         name="trending",
-        description=CommandDescription.trending_person,
+        description=Command.trending_person.description,
         options=[Option.interval, Option.language, Option.region],
         connectors={Option.interval.name: "interval", Option.language.name: "language", Option.region.name: "region"},
     )

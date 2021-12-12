@@ -2,7 +2,7 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
-from pypoca.languages import Field
+from pypoca.languages import Command
 
 __all__ = ("embed", "option", "buttons")
 
@@ -44,18 +44,18 @@ def embed(result: AsObj, region: str) -> dict:
         "title": result.get("name") or result.original_name,
         "description": result.get("overview"),
         "fields": [
-            {"name": Field.rating, "value": rating or "-"},
-            {"name": Field.premiered, "value": first_air_date or "-"},
+            {"name": Command.tv.fields["rating"], "value": rating or "-"},
+            {"name": Command.tv.fields["premiered"], "value": first_air_date or "-"},
             {
                 "name": "Status",
                 "value": f"{status} ({last_air_date})" if status == "Ended" else status if status else "-",
             },
-            {"name": Field.episodes, "value": number_of_episodes or "-"},
-            {"name": Field.seasons, "value": number_of_seasons or "-"},
-            {"name": Field.runtime, "value": f"{duration} ({total_duration} total)"},
-            {"name": Field.genre, "value": ", ".join(genres) if genres else "-"},
-            {"name": Field.network, "value": ", ".join(networks) if networks else "-"},
-            {"name": Field.watch, "value": ", ".join(watch_providers) if watch_providers else "-"},
+            {"name": Command.tv.fields["episodes"], "value": number_of_episodes or "-"},
+            {"name": Command.tv.fields["seasons"], "value": number_of_seasons or "-"},
+            {"name": Command.tv.fields["runtime"], "value": f"{duration} ({total_duration} total)"},
+            {"name": Command.tv.fields["genre"], "value": ", ".join(genres) if genres else "-"},
+            {"name": Command.tv.fields["network"], "value": ", ".join(networks) if networks else "-"},
+            {"name": Command.tv.fields["watch"], "value": ", ".join(watch_providers) if watch_providers else "-"},
         ],
     }
     if result.get("homepage"):
@@ -90,10 +90,18 @@ def buttons(result: AsObj) -> list:
     except Exception:
         video_key = None
     buttons = [
-        {"label": Field.trailer, "url": f"https://www.youtube.com/watch?v={video_key}", "disabled": not video_key},
+        {
+            "label": Command.tv.buttons["trailer"],
+            "url": f"https://www.youtube.com/watch?v={video_key}",
+            "disabled": not video_key,
+        },
         {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
-        {"label": Field.cast, "custom_id": "cast", "disabled": not result.credits.cast},
-        {"label": Field.crew, "custom_id": "crew", "disabled": not result.credits.crew},
-        {"label": Field.similar, "custom_id": "similar", "disabled": not result.recommendations.results},
+        {"label": Command.tv.buttons["cast"], "custom_id": "cast", "disabled": not result.credits.cast},
+        {"label": Command.tv.buttons["crew"], "custom_id": "crew", "disabled": not result.credits.crew},
+        {
+            "label": Command.tv.buttons["similar"],
+            "custom_id": "similar",
+            "disabled": not result.recommendations.results,
+        },
     ]
     return buttons

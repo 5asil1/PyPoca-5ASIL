@@ -8,7 +8,7 @@ from pypoca.adapters import Adapter
 from pypoca.config import Config
 from pypoca.embeds import Buttons, Menu, Option, Poster
 from pypoca.exceptions import NotFound
-from pypoca.languages import CommandDescription, CommandReply
+from pypoca.languages import Command
 
 __all__ = ("Movie", "setup")
 
@@ -31,7 +31,7 @@ class Movie(Cog):
     ) -> None:
         adapter = Adapter("movie")
         if len(results) > 1:
-            embed = Poster(title=CommandReply.movie.title)
+            embed = Poster(title=Command.movie.reply["title"])
             select_menu = Menu(options=[adapter.option(result) for result in results])
             msg = await inter.reply(
                 embed=embed,
@@ -113,13 +113,13 @@ class Movie(Cog):
             """Waiting for listener timeout."""
             await msg.edit(components=[])
 
-    @slash_command(name="movie", description=CommandDescription.movie)
+    @slash_command(name="movie", description=Command.movie.description)
     async def movie(self, inter: SlashInteraction):
         """Command that groups movie-related subcommands."""
 
     @movie.sub_command(
         name="discover",
-        description=CommandDescription.discover_movie,
+        description=Command.discover_movie.description,
         options=[
             Option.movie_sort_by,
             Option.movie_service,
@@ -206,7 +206,7 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="popular",
-        description=CommandDescription.popular_movie,
+        description=Command.popular_movie.description,
         options=[Option.page, Option.language, Option.region],
         connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )
@@ -231,7 +231,7 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="search",
-        description=CommandDescription.search_movie,
+        description=Command.search_movie.description,
         options=[
             Option.query,
             Option.year,
@@ -273,7 +273,7 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="top",
-        description=CommandDescription.top_movie,
+        description=Command.top_movie.description,
         options=[Option.page, Option.language, Option.region],
         connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )
@@ -298,7 +298,7 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="trending",
-        description=CommandDescription.trending_movie,
+        description=Command.trending_movie.description,
         options=[Option.interval, Option.language, Option.region],
         connectors={Option.interval.name: "interval", Option.language.name: "language", Option.region.name: "region"},
     )
@@ -326,7 +326,7 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="upcoming",
-        description=CommandDescription.upcoming_movie,
+        description=Command.upcoming_movie.description,
         options=[Option.page, Option.language, Option.region],
         connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
     )

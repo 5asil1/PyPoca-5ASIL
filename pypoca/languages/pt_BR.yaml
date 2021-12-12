@@ -1,0 +1,213 @@
+---
+y: sim
+n: não
+datetime_format: '%d/%m/%Y'
+placeholder: Selecione uma das opções...
+
+emoji:
+ black: '<:blank:914183315056111627>'
+
+command:
+ ping:
+  description: Obtenha a latência da PyPoca
+  reply:
+   title: Pong!
+   description: 'Latência: {latency}ms'
+ help:
+  description: Veja o menu de ajuda da PyPoca
+  reply:
+   buttons:
+    invite: Adicione
+    vote: Vote
+    server: Servidor
+    github: Github
+ movie:
+  description: 'Tudo sobre filmes: encontre, descubra e obtenha informações'
+  reply:
+   title: Filmes encontrados
+   fields:
+    genre: Gêneros
+    rating: Nota
+    released: Lançamento
+    runtime: Duração
+    studios: Estúdios
+    watch: Assista em
+   buttons:
+    cast: Elenco
+    crew: Equipe
+    similar: Similares
+    trailer: Trailer
+ person:
+  description: 'Tudo sobre artistas: encontre, descubra e obtenha informações'
+  reply:
+   title: Artistas encontrados
+   fields:
+    birthday: Aniversário
+    born: Naturalidade
+    deathday: Falecimento
+    know_for: Trabalhou em
+   buttons:
+    acting: Atuações
+    jobs: Trabalhos
+ tv:
+  description: 'Tudo sobre séries: encontre, descubra e obtenha informações'
+  reply:
+   title: Séries encontrados
+   fields:
+    episodes: Episódios
+    genre: Gêneros
+    network: Rede
+    premiered: Estreia
+    rating: Nota
+    runtime: Duração
+    seasons: Temporadas
+    studios: Estúdios
+    watch: Assista em
+   buttons:
+    cast: Elenco
+    crew: Equipe
+    similar: Similares
+    trailer: Trailer
+ discover_movie:
+  description: Descubra filmes por diferentes tipos de filtros
+ discover_tv:
+  description: Descubra séries por diferentes tipos de filtros
+ popular_movie:
+  description: Veja os filmes mais populares
+ popular_person:
+  description: Veja os artistas mais populares
+ popular_tv:
+  description: Veja os séries mais populares
+ search_movie:
+  description: Pesquise por um filme
+ search_person:
+  description: Pesquise por um artista
+ search_tv:
+  description: Pesquise por um seriado
+ top_movie:
+  description: Veja os filmes com melhor nota
+ top_tv:
+  description: Veja os séries com melhor nota
+ trending_movie:
+  description: Veja os filmes da tendência
+ trending_person:
+  description: Veja os artistas da tendência
+ trending_tv:
+  description: Veja os séries da tendência
+ upcoming_movie:
+  description: Veja os próximos filmes nos cinemas
+ upcoming_tv:
+  description: Veja os próximos seriado a serem lançados
+
+option:
+ query:
+  title: nome
+  description: Uma consulta de texto para pesquisar
+ page:
+  title: página
+  description: Especifique qual página consultar
+ language:
+  title: idioma
+  description: Um idioma para exibir os dados traduzidos
+  choices:
+   en_US: Inglês
+   pt_BR: Português
+ region:
+  title: região
+  description: Uma região para filtrar as datas de lançamento e onde assistir
+  choices:
+   BR: Brasil
+   US: Estados Unidos
+ nsfw:
+  title: adulto
+  description: Escolha se deseja incluir conteúdo adulto (pornografia) nos resultados
+ sort_by:
+  title: ordenar
+  description: Escolha uma das muitas opções de classificação disponíveis
+  choices:
+   popularity: popularidade
+   year: lançamento
+   rating: nota
+   title: alfabética
+   votes: votos
+ year:
+  title: ano
+  description: Incluir apenas resultados com uma data de lançamento igual ao valor especificado
+ min_year:
+  title: ano-mínimo
+  description: Incluir apenas resultados com uma data de lançamento maior ou igual ao valor especificado
+ max_year:
+  title: ano-máximo
+  description: Incluir apenas resultados com uma data de lançamento menor ou igual ao valor especificado
+ min_votes:
+  title: votos-mínimos
+  description: Incluir apenas resultados com contagem de votos maior ou igual ao valor especificado
+ max_votes:
+  title: votos-máximos
+  description: Incluir apenas resultados com contagem de votos menor ou igual ao valor especificado
+ min_rating:
+  title: nota-mínima
+  description: Incluir apenas resultados com classificação maior ou igual ao valor especificado
+ max_rating:
+  title: nota-máxima
+  description: Incluir apenas resultados com classificação menor ou igual ao valor especificado
+ min_runtime:
+  title: duração-mínima
+  description: Incluir apenas resultados com uma duração maior ou igual a um valor
+ max_runtime:
+  title: duração-máxima
+  description: Incluir apenas resultados com uma duração menor ou igual a um valor
+ interval:
+  title: intervalo
+  description: Escolha entre as tendências do dia ou semana
+  choices:
+   day: dia
+   week: semana
+ hide:
+  title: esconder
+  description: A resposta do comando será visível apenas para você
+ service:
+  title: serviço
+  description: Filtrar os resultados por serviço de streaming ou canal específico
+ genre:
+  title: gênero
+  description: Filtrar os resultados por um gênero específico
+  choices:
+   action: ação
+   action_and_adventure: ação & aventura
+   adventure: aventura
+   animation: animação
+   comedy: comédia
+   crime: crime
+   documentary: documentário
+   drama: drama
+   family: família
+   fantasy: fantasia
+   history: história
+   horror: terror
+   kids: infantil
+   music: musical
+   mystery: mistério
+   news: notícia
+   reality: reality show
+   romance: romance
+   soap: soap
+   syfy: ficção científica
+   syfy_and_fantasy: ficção científica & fantasia
+   talk: talk show
+   tv: TV
+   thriller: thriller
+   war: guerra
+   war_and_politics: guerra & política
+   western: faroeste
+
+event:
+ cooldown:
+  title: 'Aguarde para usar o comando `{command_name}`'
+  description: 'Por favor, aguarde {time:.2f} segundos para usar o comando'
+ not_found:
+  title: Nenhum resultado encontrado
+  description: Não foi possível encontrar nenhuma correspondência para essas especificações
+ exception:
+  title: 'Ocorreu um erro inesperado com o comando `{command_name}`'
+  description: 'Erro: {error}'
