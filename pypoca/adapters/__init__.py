@@ -21,11 +21,11 @@ class Adapter:
         else:
             raise ValueError(f"Adapter 'type' must be 'movie', 'person' or 'tv', not {type}")
 
-    def embed(self, result: AsObj, region: str) -> dict:
-        return self._embed(result, region)
+    def embed(self, result: AsObj, language: str, region: str) -> dict:
+        return self._embed(result, language, region)
 
-    def option(self, result: AsObj) -> dict:
-        return self._option(result)
+    def option(self, result: AsObj, language: str) -> dict:
+        return self._option(result, language)
 
-    def buttons(self, result: AsObj) -> dict:
-        return self._buttons(result)
+    def buttons(self, result: AsObj, language: str) -> dict:
+        return self._buttons(result, language)

@@ -5,7 +5,6 @@ from discord.embeds import Embed
 from dislash import ActionRow, Button, ButtonStyle, SelectMenu
 
 from pypoca.embeds import Color
-from pypoca.languages import PLACEHOLDER
 
 __all__ = ("Buttons", "Menu", "Poster")
 
@@ -52,7 +51,7 @@ class Buttons(ActionRow):
 class Menu(SelectMenu):
     """Represents a Discord select menu."""
 
-    def __init__(self, *, placeholder: str = PLACEHOLDER, options: List[dict] = [], **kwargs) -> None:
+    def __init__(self, *, placeholder: str, options: List[dict] = [], **kwargs) -> None:
         super().__init__(placeholder=placeholder, **kwargs)
         self.add_buttons(options)
 

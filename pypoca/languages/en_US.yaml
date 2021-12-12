@@ -4,9 +4,6 @@ n: 'no'
 datetime_format: '%Y/%m/%d'
 placeholder: Select one of the options...
 
-emoji:
- black: '<:blank:914183315056111627>'
-
 command:
  ping:
   description: Get PyPoca's latency
@@ -20,7 +17,7 @@ command:
     invite: Invite
     vote: Vote
     server: Server
-    github: Github
+    site: Site
  movie:
   description: 'All about movies: find, discover and get information'
   reply:

@@ -4,11 +4,11 @@ from pypoca import utils
 
 def test_format_datetime():
     date = "2020-12-31"
-    date_formated = utils.format_datetime(date, "%Y-%m-%d", "%d/%m/%Y")
+    date_formated = utils.format_datetime(date, "%d/%m/%Y", "%Y-%m-%d")
     assert date_formated == "31/12/2020"
 
     date = "2020-12-31"
-    date_formated = utils.format_datetime(date, "%Y-%m-%d", "%Y/%m/%d")
+    date_formated = utils.format_datetime(date, "%Y/%m/%d", "%Y-%m-%d")
     assert date_formated == "2020/12/31"
 
     date = "2020-12-31"
@@ -16,11 +16,11 @@ def test_format_datetime():
     assert date_formated == "2020/12/31"
 
     date = None
-    date_formated = utils.format_datetime(date, "%Y-%m-%d", "%d/%m/%Y")
+    date_formated = utils.format_datetime(date, "%d/%m/%Y", "%Y-%m-%d")
     assert date_formated is None
 
     date = ""
-    date_formated = utils.format_datetime(date, "%Y-%m-%d", "%d/%m/%Y")
+    date_formated = utils.format_datetime(date, "%d/%m/%Y", "%Y-%m-%d")
     assert date_formated is None
 
 

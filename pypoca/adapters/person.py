@@ -2,15 +2,15 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
-from pypoca.languages import Command
+from pypoca.languages import Language
 
 __all__ = ("embed", "option", "buttons")
 
 
-def embed(result: AsObj, region: str) -> dict:
+def embed(result: AsObj, language: str, region: str) -> dict:
     """Convert a `AsObj` person result to a `dict` with Discord embed items."""
-    birthday = utils.format_datetime(result.get("birthday"))
-    deathday = utils.format_datetime(result.get("deathday"))
+    birthday = utils.format_datetime(result.get("birthday"), to_format=Language(language).datetime_format)
+    deathday = utils.format_datetime(result.get("deathday"), to_format=Language(language).datetime_format)
     place_of_birth = result.get("place_of_birth")
     known_for_department = result.get("known_for_department")
     cast = [
@@ -31,10 +31,10 @@ def embed(result: AsObj, region: str) -> dict:
         "title": result.name,
         "description": result.get("biography"),
         "fields": [
-            {"name": Command.person.fields["birthday"], "value": birthday or "-"},
-            {"name": Command.person.fields["deathday"], "value": deathday or "-"},
-            {"name": Command.person.fields["born"], "value": place_of_birth or "-"},
-            {"name": Command.person.fields["know_for"], "value": ", ".join(jobs[:5]) if jobs else "-"},
+            {"name": Language(language).commands["person"]["reply"]["fields"]["birthday"], "value": birthday or "-"},
+            {"name": Language(language).commands["person"]["reply"]["fields"]["deathday"], "value": deathday or "-"},
+            {"name": Language(language).commands["person"]["reply"]["fields"]["born"], "value": place_of_birth or "-"},
+            {"name": Language(language).commands["person"]["reply"]["fields"]["know_for"], "value": ", ".join(jobs[:5]) if jobs else "-"},
         ],
     }
     if result.get("homepage"):
@@ -44,7 +44,7 @@ def embed(result: AsObj, region: str) -> dict:
     return embed
 
 
-def option(result: AsObj) -> dict:
+def option(result: AsObj, language: str) -> dict:
     """Convert a `AsObj` person result to a `dict` with Discord option items."""
     label = result.get("name") or result.original_name
     if "character" in result:
@@ -63,7 +63,7 @@ def option(result: AsObj) -> dict:
     return option
 
 
-def buttons(result: AsObj) -> list:
+def buttons(result: AsObj, language: str) -> list:
     """Convert a `AsObj` person result to a `dict` with Discord buttons items."""
     imdb_id = result.external_ids.get("imdb_id")
     instagram_id = result.external_ids.get("instagram_id")
@@ -73,12 +73,12 @@ def buttons(result: AsObj) -> list:
         {"label": "Instagram", "url": f"https://www.instagram.com/{instagram_id}", "disabled": instagram_id is None},
         {"label": "Twitter", "url": f"https://www.twitter.com/{twitter_id}", "disabled": twitter_id is None},
         {
-            "label": Command.person.buttons["acting"],
+            "label": Language(language).commands["person"]["reply"]["buttons"]["acting"],
             "custom_id": "acting",
             "disabled": not result.movie_credits.cast and not result.tv_credits.cast,
         },
         {
-            "label": Command.person.buttons["jobs"],
+            "label": Language(language).commands["person"]["reply"]["buttons"]["jobs"],
             "custom_id": "jobs",
             "disabled": not result.movie_credits.crew and not result.tv_credits.crew,
         },

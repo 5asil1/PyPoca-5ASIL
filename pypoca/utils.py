@@ -4,7 +4,6 @@ from datetime import datetime
 from aiohttp import ClientSession
 
 from pypoca.config import Config
-from pypoca.languages import DATETIME_FORMAT
 
 __all__ = (
     "format_datetime",
@@ -15,7 +14,7 @@ __all__ = (
 )
 
 
-def format_datetime(value: str, from_format: str = "%Y-%m-%d", to_format: str = DATETIME_FORMAT) -> str:
+def format_datetime(value: str, to_format: str, from_format: str = "%Y-%m-%d") -> str:
     """Convert a datetime string to different string format."""
     if not value:
         return None

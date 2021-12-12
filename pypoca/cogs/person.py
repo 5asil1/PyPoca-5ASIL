@@ -4,10 +4,9 @@ from discord.ext.commands import Bot, Cog
 from dislash import ResponseType, SlashInteraction, slash_command
 
 from pypoca.adapters import Adapter
-from pypoca.config import Config
 from pypoca.embeds import Buttons, Menu, Option, Poster
 from pypoca.exceptions import NotFound
-from pypoca.languages import Command
+from pypoca.languages import DEFAULT_LANGUAGE, Language
 
 __all__ = ("Person", "setup")
 
@@ -30,8 +29,11 @@ class Person(Cog):
     ) -> None:
         adapter = Adapter("person")
         if len(results) > 1:
-            embed = Poster(title=Command.person.reply["title"])
-            select_menu = Menu(options=[adapter.option(result) for result in results])
+            embed = Poster(title=Language(language).commands["person"]["reply"]["title"])
+            select_menu = Menu(
+                placeholder=Language(language).placeholder,
+                options=[adapter.option(result, language) for result in results],
+            )
             msg = await inter.reply(
                 embed=embed,
                 components=[select_menu],
@@ -52,8 +54,8 @@ class Person(Cog):
             person_id,
             append_to_response="combined_credits,movie_credits,tv_credits,external_ids",
         )
-        embed = Poster(**adapter.embed(result, region=region))
-        buttons = Buttons(buttons=adapter.buttons(result))
+        embed = Poster(**adapter.embed(result, language, region))
+        buttons = Buttons(buttons=adapter.buttons(result, language))
         if len(results) > 1:
             msg = await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
         else:
@@ -106,24 +108,25 @@ class Person(Cog):
             """Waiting for listener timeout."""
             await msg.edit(components=[])
 
-    @slash_command(name="people", description=Command.person.description)
+    @slash_command(name="people", description=DEFAULT_LANGUAGE.commands["person"]["description"])
     async def person(self, inter: SlashInteraction):
         """Command that groups person-related subcommands."""
 
     @person.sub_command(
         name="popular",
-        description=Command.popular_person.description,
-        options=[Option.page, Option.language, Option.region],
-        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["popular_person"]["description"],
+        options=[Option.page, Option.region],
+        connectors={Option.page.name: "page", Option.region.name: "region"},
     )
     async def popular_person(
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand to get the current popular person."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         person = TMDB.person(language=language, region=region)
         results = await person.popular(page=page)
         await self._reply(
@@ -137,19 +140,17 @@ class Person(Cog):
 
     @person.sub_command(
         name="search",
-        description=Command.search_person.description,
+        description=DEFAULT_LANGUAGE.commands["search_person"]["description"],
         options=[
             Option.query,
             Option.nsfw,
             Option.page,
-            Option.language,
             Option.region,
         ],
         connectors={
             Option.query.name: "query",
             Option.nsfw.name: "nsfw",
             Option.page.name: "page",
-            Option.language.name: "language",
             Option.region.name: "region",
         },
     )
@@ -159,10 +160,11 @@ class Person(Cog):
         query: str,
         nsfw: bool = False,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand to search for a person."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         search = TMDB.search(language=language, region=region)
         results = await search.person(query, page=page, include_adult=nsfw)
         await self._reply(
@@ -176,18 +178,19 @@ class Person(Cog):
 
     @person.sub_command(
         name="trending",
-        description=Command.trending_person.description,
-        options=[Option.interval, Option.language, Option.region],
-        connectors={Option.interval.name: "interval", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["trending_person"]["description"],
+        options=[Option.interval, Option.region],
+        connectors={Option.interval.name: "interval", Option.region.name: "region"},
     )
     async def trending_person(
         self,
         inter: SlashInteraction,
         interval: str = "day",
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand get the trending persons."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         trending = TMDB.trending(language=language, region=region)
         if interval == "day":
             results = await trending.person_day()

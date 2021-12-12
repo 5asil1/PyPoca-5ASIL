@@ -4,9 +4,6 @@ n: não
 datetime_format: '%d/%m/%Y'
 placeholder: Selecione uma das opções...
 
-emoji:
- black: '<:blank:914183315056111627>'
-
 command:
  ping:
   description: Obtenha a latência da PyPoca
@@ -20,7 +17,7 @@ command:
     invite: Adicione
     vote: Vote
     server: Servidor
-    github: Github
+    site: Site
  movie:
   description: 'Tudo sobre filmes: encontre, descubra e obtenha informações'
   reply:

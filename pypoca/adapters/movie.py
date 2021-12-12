@@ -2,19 +2,19 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
-from pypoca.languages import Command
+from pypoca.languages import Language
 
 __all__ = ("embed", "option", "buttons")
 
 
-def embed(result: AsObj, region: str) -> dict:
+def embed(result: AsObj, language: str, region: str) -> dict:
     """Convert a `AsObj` movie result to a `dict` with Discord embed items."""
     vote_average = result.get("vote_average")
     vote_count = result.get("vote_count")
     genres = [genre["name"] for genre in result.get("genres", [])]
     production_companies = [company["name"] for company in result.get("production_companies", [])]
     rating = f"{vote_average} ({vote_count} votes)" if vote_average else None
-    release_date = utils.format_datetime(result.release_date) or result.get("status")
+    release_date = utils.format_datetime(result.release_date, to_format=Language(language).datetime_format) or result.get("status")
     duration = utils.format_duration(result.get("runtime"))
     try:
         watch_providers = [
@@ -36,13 +36,13 @@ def embed(result: AsObj, region: str) -> dict:
         "title": result.get("title") or result.original_title,
         "description": result.get("overview"),
         "fields": [
-            {"name": Command.movie.fields["rating"], "value": rating or "-"},
-            {"name": Command.movie.fields["released"], "value": release_date or "-"},
-            {"name": Command.movie.fields["watch"], "value": ", ".join(watch_providers) if watch_providers else "-"},
-            {"name": Command.movie.fields["runtime"], "value": duration or "-"},
-            {"name": Command.movie.fields["genre"], "value": ", ".join(genres) if genres else "-"},
+            {"name": Language(language).commands["movie"]["reply"]["fields"]["rating"], "value": rating or "-"},
+            {"name": Language(language).commands["movie"]["reply"]["fields"]["released"], "value": release_date or "-"},
+            {"name": Language(language).commands["movie"]["reply"]["fields"]["watch"], "value": ", ".join(watch_providers) if watch_providers else "-"},
+            {"name": Language(language).commands["movie"]["reply"]["fields"]["runtime"], "value": duration or "-"},
+            {"name": Language(language).commands["movie"]["reply"]["fields"]["genre"], "value": ", ".join(genres) if genres else "-"},
             {
-                "name": Command.movie.fields["studios"],
+                "name": Language(language).commands["movie"]["reply"]["fields"]["studios"],
                 "value": ", ".join(production_companies) if production_companies else "-",
             },
         ],
@@ -60,10 +60,10 @@ def embed(result: AsObj, region: str) -> dict:
     return embed
 
 
-def option(result: AsObj) -> dict:
+def option(result: AsObj, language: str) -> dict:
     """Convert a `AsObj` movie result to a `dict` with Discord option items."""
     title = result.get("title") or result.original_title
-    release_date = utils.format_datetime(result.get("release_date"))
+    release_date = utils.format_datetime(result.get("release_date"), to_format=Language(language).datetime_format)
     vote_average = result.get("vote_average")
     vote_count = result.get("vote_count")
     label = f"{title} ({release_date})" if release_date else title
@@ -72,7 +72,7 @@ def option(result: AsObj) -> dict:
     return option
 
 
-def buttons(result: AsObj) -> list:
+def buttons(result: AsObj, language: str) -> list:
     """Convert a `AsObj` movie result to a `dict` with Discord buttons items."""
     imdb_id = result.external_ids.get("imdb_id")
     try:
@@ -81,15 +81,15 @@ def buttons(result: AsObj) -> list:
         video_key = None
     buttons = [
         {
-            "label": Command.movie.buttons["trailer"],
+            "label": Language(language).commands["movie"]["reply"]["buttons"]["trailer"],
             "url": f"https://www.youtube.com/watch?v={video_key}",
             "disabled": not video_key,
         },
         {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
-        {"label": Command.movie.buttons["cast"], "custom_id": "cast", "disabled": not result.credits.cast},
-        {"label": Command.movie.buttons["crew"], "custom_id": "crew", "disabled": not result.credits.crew},
+        {"label": Language(language).commands["movie"]["reply"]["buttons"]["cast"], "custom_id": "cast", "disabled": not result.credits.cast},
+        {"label": Language(language).commands["movie"]["reply"]["buttons"]["crew"], "custom_id": "crew", "disabled": not result.credits.crew},
         {
-            "label": Command.movie.buttons["similar"],
+            "label": Language(language).commands["movie"]["reply"]["buttons"]["similar"],
             "custom_id": "similar",
             "disabled": not result.recommendations.results,
         },

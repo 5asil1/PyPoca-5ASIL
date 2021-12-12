@@ -4,4 +4,6 @@ from pypoca.embeds.colors import Color
 from pypoca.embeds.options import Option
 from pypoca.embeds.reply import Buttons, Menu, Poster
 
-__all__ = ("Buttons", "Choice", "Choices", "Color", "Option", "Poster")
+BLANK_EMOJI = "<:blank:914183315056111627>"
+
+__all__ = ("BLANK_EMOJI", "Buttons", "Choice", "Choices", "Color", "Option", "Poster")

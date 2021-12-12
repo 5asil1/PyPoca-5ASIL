@@ -16,11 +16,12 @@ class BotConfig:
         guilds_ids = list(map(int, os.environ.get("TEST_GUILDS_ID").split(",")))
     except Exception:
         guilds_ids = None
-    language = os.environ.get("BOT_LANGUAGE", "en_US")
+    language = os.environ.get("BOT_LANGUAGE", "en-US")
+    region = os.environ.get("BOT_REGION", "US")
     invite_url = os.environ.get("BOT_INVITE_URL")
     vote_url = os.environ.get("BOT_VOTE_URL")
     server_url = os.environ.get("BOT_SERVER_URL")
-    github_url = os.environ.get("BOT_GITHUB_URL")
+    site_url = os.environ.get("BOT_SITE_URL")
 
 
 class LoggerConfig:
@@ -48,8 +49,6 @@ class TMDBConfig:
     """TMDB configuration variables"""
 
     key = os.environ.get("TMDB_KEY")
-    language = os.environ.get("TMDB_LANGUAGE", "en-US")
-    region = os.environ.get("TMDB_REGION", "US")
     debug = os.environ.get("TMDB_DEBUG")
 
 

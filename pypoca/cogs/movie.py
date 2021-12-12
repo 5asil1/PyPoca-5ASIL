@@ -5,10 +5,9 @@ from dislash import ResponseType, SlashInteraction, slash_command
 
 from pypoca import utils
 from pypoca.adapters import Adapter
-from pypoca.config import Config
 from pypoca.embeds import Buttons, Menu, Option, Poster
 from pypoca.exceptions import NotFound
-from pypoca.languages import Command
+from pypoca.languages import DEFAULT_LANGUAGE, Language
 
 __all__ = ("Movie", "setup")
 
@@ -31,8 +30,11 @@ class Movie(Cog):
     ) -> None:
         adapter = Adapter("movie")
         if len(results) > 1:
-            embed = Poster(title=Command.movie.reply["title"])
-            select_menu = Menu(options=[adapter.option(result) for result in results])
+            embed = Poster(title=Language(language).commands["movie"]["reply"]["title"])
+            select_menu = Menu(
+                placeholder=Language(language).placeholder,
+                options=[adapter.option(result, language) for result in results],
+            )
             msg = await inter.reply(
                 embed=embed,
                 components=[select_menu],
@@ -57,8 +59,8 @@ class Movie(Cog):
             result["external_ids"]["trakt"] = await utils.get_trakt_id(movie_id, type="movie")
         except Exception:
             result["external_ids"]["trakt"] = None
-        embed = Poster(**adapter.embed(result, region=region))
-        buttons = Buttons(buttons=adapter.buttons(result))
+        embed = Poster(**adapter.embed(result, language, region))
+        buttons = Buttons(buttons=adapter.buttons(result, language))
         if len(results) > 1:
             msg = await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
         else:
@@ -113,13 +115,13 @@ class Movie(Cog):
             """Waiting for listener timeout."""
             await msg.edit(components=[])
 
-    @slash_command(name="movie", description=Command.movie.description)
+    @slash_command(name="movie", description=DEFAULT_LANGUAGE.commands["movie"]["description"])
     async def movie(self, inter: SlashInteraction):
         """Command that groups movie-related subcommands."""
 
     @movie.sub_command(
         name="discover",
-        description=Command.discover_movie.description,
+        description=DEFAULT_LANGUAGE.commands["discover_movie"]["description"],
         options=[
             Option.movie_sort_by,
             Option.movie_service,
@@ -135,7 +137,6 @@ class Movie(Cog):
             Option.min_runtime,
             Option.max_runtime,
             Option.page,
-            Option.language,
             Option.region,
         ],
         connectors={
@@ -153,7 +154,6 @@ class Movie(Cog):
             Option.min_runtime.name: "min_runtime",
             Option.max_runtime.name: "max_runtime",
             Option.page.name: "page",
-            Option.language.name: "language",
             Option.region.name: "region",
         },
     )
@@ -174,10 +174,11 @@ class Movie(Cog):
         min_runtime: int = None,
         max_runtime: int = None,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand to discover movies by different types of data."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         discover = TMDB.discover(language=language, region=region)
         results = await discover.movies(
             page=page,
@@ -206,18 +207,19 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="popular",
-        description=Command.popular_movie.description,
-        options=[Option.page, Option.language, Option.region],
-        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["popular_movie"]["description"],
+        options=[Option.page, Option.region],
+        connectors={Option.page.name: "page", Option.region.name: "region"},
     )
     async def popular_movie(
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand to get the current popular movies."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         movie = TMDB.movie(language=language, region=region)
         results = await movie.popular(page=page)
         await self._reply(
@@ -231,13 +233,12 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="search",
-        description=Command.search_movie.description,
+        description=DEFAULT_LANGUAGE.commands["search_movie"]["description"],
         options=[
             Option.query,
             Option.year,
             Option.nsfw,
             Option.page,
-            Option.language,
             Option.region,
         ],
         connectors={
@@ -245,7 +246,6 @@ class Movie(Cog):
             Option.year.name: "year",
             Option.nsfw.name: "nsfw",
             Option.page.name: "page",
-            Option.language.name: "language",
             Option.region.name: "region",
         },
     )
@@ -256,10 +256,11 @@ class Movie(Cog):
         year: int = None,
         nsfw: bool = False,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand to search for a movie."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         search = TMDB.search(language=language, region=region)
         results = await search.movies(query, page=page, include_adult=nsfw, year=year)
         await self._reply(
@@ -273,18 +274,19 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="top",
-        description=Command.top_movie.description,
-        options=[Option.page, Option.language, Option.region],
-        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["top_movie"]["description"],
+        options=[Option.page, Option.region],
+        connectors={Option.page.name: "page", Option.region.name: "region"},
     )
     async def top_movie(
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand get the top rated movies."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         movie = TMDB.movie(language=language, region=region)
         results = await movie.top_rated(page=page)
         await self._reply(
@@ -298,18 +300,19 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="trending",
-        description=Command.trending_movie.description,
-        options=[Option.interval, Option.language, Option.region],
-        connectors={Option.interval.name: "interval", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["trending_movie"]["description"],
+        options=[Option.interval, Option.region],
+        connectors={Option.interval.name: "interval", Option.region.name: "region"},
     )
     async def trending_movie(
         self,
         inter: SlashInteraction,
         interval: str = "day",
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand get the trending movies."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         trending = TMDB.trending(language=language, region=region)
         if interval == "day":
             results = await trending.movies_day()
@@ -326,18 +329,19 @@ class Movie(Cog):
 
     @movie.sub_command(
         name="upcoming",
-        description=Command.upcoming_movie.description,
-        options=[Option.page, Option.language, Option.region],
-        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["upcoming_movie"]["description"],
+        options=[Option.page, Option.region],
+        connectors={Option.page.name: "page", Option.region.name: "region"},
     )
     async def upcoming_movie(
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand get the upcoming movies in theatres."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         movie = TMDB.movie(language=language, region=region)
         results = await movie.upcoming(page=page)
         await self._reply(

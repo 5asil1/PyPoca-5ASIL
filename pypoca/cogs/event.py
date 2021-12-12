@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from discord import Activity, ActivityType, Guild
+from discord import Activity, ActivityType
 from discord.ext.commands import Bot, Cog
 from dislash import CommandOnCooldown, SlashInteraction
 
@@ -7,7 +7,7 @@ from pypoca import log
 from pypoca.config import Config
 from pypoca.embeds import Color, Poster
 from pypoca.exceptions import NotFound
-from pypoca.languages import Event
+from pypoca.languages import Language
 
 __all__ = ("Events", "setup")
 
@@ -31,21 +31,18 @@ class Events(Cog):
             await watcher.start()
 
     @Cog.listener()
-    async def on_guild_join(self, guild: Guild) -> None:
-        """Called when a Guild is either created by the Client or when the Client joins a guild."""
-
-    @Cog.listener()
     async def on_slash_command_error(self, inter: SlashInteraction, e: Exception) -> None:
         """Called when a slash command fails due to some error."""
+        language = self.bot.servers[inter.guild_id]["language"]
         if isinstance(e, CommandOnCooldown):
-            title = (Event.cooldown.title.format(command_name=inter.data.name),)
-            description = (Event.cooldown.title.format(command_name=e.retry_after),)
+            title = (Language(language).events["cooldown"]["title"].format(command_name=inter.data.name),)
+            description = (Language(language).events["cooldown"]["description"].format(command_name=e.retry_after),)
         elif isinstance(e, NotFound):
-            title = Event.not_found.title
-            description = Event.not_found.description
+            title = Language(language).events["not_found"]["title"]
+            description = Language(language).events["not_found"]["description"]
         else:
-            title = Event.exception.title.format(command_name=inter.data.name)
-            description = Event.exception.description.format(error=str(e))
+            title = Language(language).events["exception"]["title"].format(command_name=inter.data.name)
+            description = Language(language).events["exception"]["description"].format(error=str(e))
             log.error(
                 f"{inter}. {e}",
                 extra={"locals": locals(), "ctx": vars(inter)},

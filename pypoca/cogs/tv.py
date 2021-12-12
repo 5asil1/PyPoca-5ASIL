@@ -5,10 +5,9 @@ from dislash import ResponseType, SlashInteraction, slash_command
 
 from pypoca import utils
 from pypoca.adapters import Adapter
-from pypoca.config import Config
 from pypoca.embeds import Buttons, Menu, Option, Poster
 from pypoca.exceptions import NotFound
-from pypoca.languages import Command
+from pypoca.languages import DEFAULT_LANGUAGE, Language
 
 __all__ = ("TV", "setup")
 
@@ -31,8 +30,11 @@ class TV(Cog):
     ) -> None:
         adapter = Adapter("tv")
         if len(results) > 1:
-            embed = Poster(title=Command.tv.reply["title"])
-            select_menu = Menu(options=[adapter.option(result) for result in results])
+            embed = Poster(title=Language(language).commands["tv"]["reply"]["title"])
+            select_menu = Menu(
+                placeholder=Language(language).placeholder,
+                options=[adapter.option(result, language) for result in results],
+            )
             msg = await inter.reply(
                 embed=embed,
                 components=[select_menu],
@@ -57,8 +59,8 @@ class TV(Cog):
             result["external_ids"]["trakt"] = await utils.get_trakt_id(tv_id, type="show")
         except Exception:
             result["external_ids"]["trakt"] = None
-        embed = Poster(**adapter.embed(result, region=region))
-        buttons = Buttons(buttons=adapter.buttons(result))
+        embed = Poster(**adapter.embed(result, language, region))
+        buttons = Buttons(buttons=adapter.buttons(result, language))
         if len(results) > 1:
             msg = await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
         else:
@@ -113,13 +115,13 @@ class TV(Cog):
             """Waiting for listener timeout."""
             await msg.edit(components=[])
 
-    @slash_command(name="tv", description=Command.tv.description)
+    @slash_command(name="tv", description=DEFAULT_LANGUAGE.commands["tv"]["description"])
     async def tv(self, inter: SlashInteraction):
         """Command that groups tv-related subcommands."""
 
     @tv.sub_command(
         name="discover",
-        description=Command.discover_tv.description,
+        description=DEFAULT_LANGUAGE.commands["discover_tv"]["description"],
         options=[
             Option.tv_sort_by,
             Option.tv_service,
@@ -132,7 +134,6 @@ class TV(Cog):
             Option.min_runtime,
             Option.max_runtime,
             Option.page,
-            Option.language,
             Option.region,
         ],
         connectors={
@@ -147,7 +148,6 @@ class TV(Cog):
             Option.min_runtime.name: "min_runtime",
             Option.max_runtime.name: "max_runtime",
             Option.page.name: "page",
-            Option.language.name: "language",
             Option.region.name: "region",
         },
     )
@@ -165,10 +165,11 @@ class TV(Cog):
         min_runtime: int = None,
         max_runtime: int = None,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand to discover TV shows by different types of data."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         discover = TMDB.discover(language=language, region=region)
         results = await discover.tv_shows(
             page=page,
@@ -194,18 +195,19 @@ class TV(Cog):
 
     @tv.sub_command(
         name="popular",
-        description=Command.popular_tv.description,
-        options=[Option.page, Option.language, Option.region],
-        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["popular_tv"]["description"],
+        options=[Option.page, Option.region],
+        connectors={Option.page.name: "page", Option.region.name: "region"},
     )
     async def popular_tv(
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand to get the current popular TV shows."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         tv = TMDB.tv(language=language, region=region)
         results = await tv.popular(page=page)
         await self._reply(
@@ -219,13 +221,12 @@ class TV(Cog):
 
     @tv.sub_command(
         name="search",
-        description=Command.search_tv.description,
+        description=DEFAULT_LANGUAGE.commands["search_tv"]["description"],
         options=[
             Option.query,
             Option.year,
             Option.nsfw,
             Option.page,
-            Option.language,
             Option.region,
         ],
         connectors={
@@ -233,7 +234,6 @@ class TV(Cog):
             Option.year.name: "year",
             Option.nsfw.name: "nsfw",
             Option.page.name: "page",
-            Option.language.name: "language",
             Option.region.name: "region",
         },
     )
@@ -244,10 +244,11 @@ class TV(Cog):
         year: int = None,
         nsfw: bool = False,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand to search for a TV show."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         search = TMDB.search(language=language, region=region)
         results = await search.tv_shows(query, page=page, include_adult=nsfw, first_air_date_year=year)
         await self._reply(
@@ -261,18 +262,19 @@ class TV(Cog):
 
     @tv.sub_command(
         name="top",
-        description=Command.top_tv.description,
-        options=[Option.page, Option.language, Option.region],
-        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["top_tv"]["description"],
+        options=[Option.page, Option.region],
+        connectors={Option.page.name: "page", Option.region.name: "region"},
     )
     async def top_tv(
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand get the top rated TV shows."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         tv = TMDB.tv(language=language, region=region)
         results = await tv.top_rated(page=page)
         await self._reply(
@@ -286,18 +288,19 @@ class TV(Cog):
 
     @tv.sub_command(
         name="trending",
-        description=Command.trending_tv.description,
-        options=[Option.interval, Option.language, Option.region],
-        connectors={Option.interval.name: "interval", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["trending_tv"]["description"],
+        options=[Option.interval, Option.region],
+        connectors={Option.interval.name: "interval", Option.region.name: "region"},
     )
     async def trending_tv(
         self,
         inter: SlashInteraction,
         interval: str = "day",
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand get the trending TV shows."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         trending = TMDB.trending(language=language, region=region)
         if interval == "day":
             results = await trending.tv_shows_day()
@@ -314,18 +317,19 @@ class TV(Cog):
 
     @tv.sub_command(
         name="upcoming",
-        description=Command.upcoming_tv.description,
-        options=[Option.page, Option.language, Option.region],
-        connectors={Option.page.name: "page", Option.language.name: "language", Option.region.name: "region"},
+        description=DEFAULT_LANGUAGE.commands["upcoming_tv"]["description"],
+        options=[Option.page, Option.region],
+        connectors={Option.page.name: "page", Option.region.name: "region"},
     )
     async def upcoming_tv(
         self,
         inter: SlashInteraction,
         page: int = 1,
-        language: str = Config.tmdb.language,
-        region: str = Config.tmdb.region,
+        region: str = None,
     ) -> None:
         """Subcommand get the upcoming TV shows in theatres."""
+        language = self.bot.servers[inter.guild_id]["language"]
+        region = self.bot.servers[inter.guild_id]["region"]
         tv = TMDB.tv(language=language, region=region)
         results = await tv.on_the_air(page=page)
         await self._reply(

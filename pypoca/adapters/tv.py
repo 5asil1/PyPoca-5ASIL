@@ -2,12 +2,12 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
-from pypoca.languages import Command
+from pypoca.languages import Language
 
 __all__ = ("embed", "option", "buttons")
 
 
-def embed(result: AsObj, region: str) -> dict:
+def embed(result: AsObj, language: str, region: str) -> dict:
     """Convert a `AsObj` TV show result to a `dict` with Discord embed items."""
     vote_average = result.get("vote_average")
     vote_count = result.get("vote_count")
@@ -15,8 +15,8 @@ def embed(result: AsObj, region: str) -> dict:
     networks = [network["name"] for network in result.get("networks", [])]
     rating = f"{vote_average} ({vote_count} votes)" if vote_average else None
     status = result.get("status")
-    first_air_date = utils.format_datetime(result.first_air_date)
-    last_air_date = utils.format_datetime(result.last_air_date)
+    first_air_date = utils.format_datetime(result.first_air_date, to_format=Language(language).datetime_format)
+    last_air_date = utils.format_datetime(result.last_air_date, to_format=Language(language).datetime_format)
     number_of_episodes = result.get("number_of_episodes", 0)
     number_of_seasons = result.get("number_of_seasons", 0)
     episode_run_time = (
@@ -44,18 +44,18 @@ def embed(result: AsObj, region: str) -> dict:
         "title": result.get("name") or result.original_name,
         "description": result.get("overview"),
         "fields": [
-            {"name": Command.tv.fields["rating"], "value": rating or "-"},
-            {"name": Command.tv.fields["premiered"], "value": first_air_date or "-"},
+            {"name": Language(language).commands["tv"]["reply"]["fields"]["rating"], "value": rating or "-"},
+            {"name": Language(language).commands["tv"]["reply"]["fields"]["premiered"], "value": first_air_date or "-"},
             {
                 "name": "Status",
                 "value": f"{status} ({last_air_date})" if status == "Ended" else status if status else "-",
             },
-            {"name": Command.tv.fields["episodes"], "value": number_of_episodes or "-"},
-            {"name": Command.tv.fields["seasons"], "value": number_of_seasons or "-"},
-            {"name": Command.tv.fields["runtime"], "value": f"{duration} ({total_duration} total)"},
-            {"name": Command.tv.fields["genre"], "value": ", ".join(genres) if genres else "-"},
-            {"name": Command.tv.fields["network"], "value": ", ".join(networks) if networks else "-"},
-            {"name": Command.tv.fields["watch"], "value": ", ".join(watch_providers) if watch_providers else "-"},
+            {"name": Language(language).commands["tv"]["reply"]["fields"]["episodes"], "value": number_of_episodes or "-"},
+            {"name": Language(language).commands["tv"]["reply"]["fields"]["seasons"], "value": number_of_seasons or "-"},
+            {"name": Language(language).commands["tv"]["reply"]["fields"]["runtime"], "value": f"{duration} ({total_duration} total)"},
+            {"name": Language(language).commands["tv"]["reply"]["fields"]["genre"], "value": ", ".join(genres) if genres else "-"},
+            {"name": Language(language).commands["tv"]["reply"]["fields"]["network"], "value": ", ".join(networks) if networks else "-"},
+            {"name": Language(language).commands["tv"]["reply"]["fields"]["watch"], "value": ", ".join(watch_providers) if watch_providers else "-"},
         ],
     }
     if result.get("homepage"):
@@ -70,10 +70,10 @@ def embed(result: AsObj, region: str) -> dict:
     return embed
 
 
-def option(result: AsObj) -> dict:
+def option(result: AsObj, language: str) -> dict:
     """Convert a `AsObj` TV show result to a `dict` with Discord option items."""
     title = result.get("name") or result.original_name
-    release_date = utils.format_datetime(result.get("first_air_date"))
+    release_date = utils.format_datetime(result.get("first_air_date"), to_format=Language(language).datetime_format)
     vote_average = result.get("vote_average")
     vote_count = result.get("vote_count")
     label = f"{title} ({release_date})" if release_date else title
@@ -82,7 +82,7 @@ def option(result: AsObj) -> dict:
     return option
 
 
-def buttons(result: AsObj) -> list:
+def buttons(result: AsObj, language: str) -> list:
     """Convert a `AsObj` TV show result to a `dict` with Discord buttons items."""
     imdb_id = result.external_ids.get("imdb_id")
     try:
@@ -91,15 +91,15 @@ def buttons(result: AsObj) -> list:
         video_key = None
     buttons = [
         {
-            "label": Command.tv.buttons["trailer"],
+            "label": Language(language).commands["tv"]["reply"]["buttons"]["trailer"],
             "url": f"https://www.youtube.com/watch?v={video_key}",
             "disabled": not video_key,
         },
         {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
-        {"label": Command.tv.buttons["cast"], "custom_id": "cast", "disabled": not result.credits.cast},
-        {"label": Command.tv.buttons["crew"], "custom_id": "crew", "disabled": not result.credits.crew},
+        {"label": Language(language).commands["tv"]["reply"]["buttons"]["cast"], "custom_id": "cast", "disabled": not result.credits.cast},
+        {"label": Language(language).commands["tv"]["reply"]["buttons"]["crew"], "custom_id": "crew", "disabled": not result.credits.crew},
         {
-            "label": Command.tv.buttons["similar"],
+            "label": Language(language).commands["tv"]["reply"]["buttons"]["similar"],
             "custom_id": "similar",
             "disabled": not result.recommendations.results,
         },
