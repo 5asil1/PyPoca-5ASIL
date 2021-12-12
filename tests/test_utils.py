@@ -12,7 +12,7 @@ def test_format_datetime():
     assert date_formated == "2020/12/31"
 
     date = "2020-12-31"
-    date_formated = utils.format_datetime(date)
+    date_formated = utils.format_datetime(date, "%Y/%m/%d")
     assert date_formated == "2020/12/31"
 
     date = None
