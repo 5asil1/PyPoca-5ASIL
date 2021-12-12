@@ -34,7 +34,10 @@ def embed(result: AsObj, language: str, region: str) -> dict:
             {"name": Language(language).commands["person"]["reply"]["fields"]["birthday"], "value": birthday or "-"},
             {"name": Language(language).commands["person"]["reply"]["fields"]["deathday"], "value": deathday or "-"},
             {"name": Language(language).commands["person"]["reply"]["fields"]["born"], "value": place_of_birth or "-"},
-            {"name": Language(language).commands["person"]["reply"]["fields"]["know_for"], "value": ", ".join(jobs[:5]) if jobs else "-"},
+            {
+                "name": Language(language).commands["person"]["reply"]["fields"]["know_for"],
+                "value": ", ".join(jobs[:5]) if jobs else "-",
+            },
         ],
     }
     if result.get("homepage"):

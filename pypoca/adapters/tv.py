@@ -45,17 +45,38 @@ def embed(result: AsObj, language: str, region: str) -> dict:
         "description": result.get("overview"),
         "fields": [
             {"name": Language(language).commands["tv"]["reply"]["fields"]["rating"], "value": rating or "-"},
-            {"name": Language(language).commands["tv"]["reply"]["fields"]["premiered"], "value": first_air_date or "-"},
+            {
+                "name": Language(language).commands["tv"]["reply"]["fields"]["premiered"],
+                "value": first_air_date or "-",
+            },
             {
                 "name": "Status",
                 "value": f"{status} ({last_air_date})" if status == "Ended" else status if status else "-",
             },
-            {"name": Language(language).commands["tv"]["reply"]["fields"]["episodes"], "value": number_of_episodes or "-"},
-            {"name": Language(language).commands["tv"]["reply"]["fields"]["seasons"], "value": number_of_seasons or "-"},
-            {"name": Language(language).commands["tv"]["reply"]["fields"]["runtime"], "value": f"{duration} ({total_duration} total)"},
-            {"name": Language(language).commands["tv"]["reply"]["fields"]["genre"], "value": ", ".join(genres) if genres else "-"},
-            {"name": Language(language).commands["tv"]["reply"]["fields"]["network"], "value": ", ".join(networks) if networks else "-"},
-            {"name": Language(language).commands["tv"]["reply"]["fields"]["watch"], "value": ", ".join(watch_providers) if watch_providers else "-"},
+            {
+                "name": Language(language).commands["tv"]["reply"]["fields"]["episodes"],
+                "value": number_of_episodes or "-",
+            },
+            {
+                "name": Language(language).commands["tv"]["reply"]["fields"]["seasons"],
+                "value": number_of_seasons or "-",
+            },
+            {
+                "name": Language(language).commands["tv"]["reply"]["fields"]["runtime"],
+                "value": f"{duration} ({total_duration} total)",
+            },
+            {
+                "name": Language(language).commands["tv"]["reply"]["fields"]["genre"],
+                "value": ", ".join(genres) if genres else "-",
+            },
+            {
+                "name": Language(language).commands["tv"]["reply"]["fields"]["network"],
+                "value": ", ".join(networks) if networks else "-",
+            },
+            {
+                "name": Language(language).commands["tv"]["reply"]["fields"]["watch"],
+                "value": ", ".join(watch_providers) if watch_providers else "-",
+            },
         ],
     }
     if result.get("homepage"):
@@ -96,8 +117,16 @@ def buttons(result: AsObj, language: str) -> list:
             "disabled": not video_key,
         },
         {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
-        {"label": Language(language).commands["tv"]["reply"]["buttons"]["cast"], "custom_id": "cast", "disabled": not result.credits.cast},
-        {"label": Language(language).commands["tv"]["reply"]["buttons"]["crew"], "custom_id": "crew", "disabled": not result.credits.crew},
+        {
+            "label": Language(language).commands["tv"]["reply"]["buttons"]["cast"],
+            "custom_id": "cast",
+            "disabled": not result.credits.cast,
+        },
+        {
+            "label": Language(language).commands["tv"]["reply"]["buttons"]["crew"],
+            "custom_id": "crew",
+            "disabled": not result.credits.crew,
+        },
         {
             "label": Language(language).commands["tv"]["reply"]["buttons"]["similar"],
             "custom_id": "similar",

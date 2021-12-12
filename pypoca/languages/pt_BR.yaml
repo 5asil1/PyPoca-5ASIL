@@ -18,6 +18,13 @@ command:
     vote: Vote
     server: Servidor
     site: Site
+ setting:
+  description: 'Opções de configuração do servidor'
+ language:
+  description: 'Altere o idioma do bot no seu servidor'
+  reply:
+   title: 'Idioma alterado'
+   description: 'As respostas serão mostradas em português (`pt-BR`)'
  movie:
   description: 'Tudo sobre filmes: encontre, descubra e obtenha informações'
   reply:
@@ -202,6 +209,9 @@ event:
  cooldown:
   title: 'Aguarde para usar o comando `{command_name}`'
   description: 'Por favor, aguarde {time:.2f} segundos para usar o comando'
+ not_allowed:
+  title: Permissão negada
+  description: Você precisa ser administrador para executar esse comando
  not_found:
   title: Nenhum resultado encontrado
   description: Não foi possível encontrar nenhuma correspondência para essas especificações

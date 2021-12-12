@@ -44,7 +44,7 @@ class General(Cog):
         language = self.bot.servers[inter.guild_id]["language"]
         embed = Poster(
             title="",
-            description=f'''
+            description=f"""
             **/movie**
             {BLANK_EMOJI} **discover** {Language(language).commands["discover_movie"]["description"]}
             {BLANK_EMOJI} **popular** {Language(language).commands["popular_movie"]["description"]}
@@ -65,13 +65,19 @@ class General(Cog):
             {BLANK_EMOJI} **trending** {Language(language).commands["trending_person"]["description"]}
             **/setting**
             {BLANK_EMOJI} **language** {Language(language).commands["language"]["description"]}
-            ''',
+            """,
         )
         buttons = Buttons(
             buttons=[
-                {"label": Language(language).commands["help"]["reply"]["buttons"]["invite"], "url": Config.bot.invite_url},
+                {
+                    "label": Language(language).commands["help"]["reply"]["buttons"]["invite"],
+                    "url": Config.bot.invite_url,
+                },
                 {"label": Language(language).commands["help"]["reply"]["buttons"]["vote"], "url": Config.bot.vote_url},
-                {"label": Language(language).commands["help"]["reply"]["buttons"]["server"], "url": Config.bot.server_url},
+                {
+                    "label": Language(language).commands["help"]["reply"]["buttons"]["server"],
+                    "url": Config.bot.server_url,
+                },
                 {"label": Language(language).commands["help"]["reply"]["buttons"]["site"], "url": Config.bot.site_url},
             ],
         )

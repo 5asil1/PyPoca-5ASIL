@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from discord import Activity, ActivityType
 from discord.ext.commands import Bot, Cog
-from dislash import CommandOnCooldown, SlashInteraction
+from dislash import CommandOnCooldown, MissingPermissions, SlashInteraction
 
 from pypoca import log
 from pypoca.config import Config
@@ -35,8 +35,11 @@ class Events(Cog):
         """Called when a slash command fails due to some error."""
         language = self.bot.servers[inter.guild_id]["language"]
         if isinstance(e, CommandOnCooldown):
-            title = (Language(language).events["cooldown"]["title"].format(command_name=inter.data.name),)
-            description = (Language(language).events["cooldown"]["description"].format(command_name=e.retry_after),)
+            title = Language(language).events["cooldown"]["title"].format(command_name=inter.data.name)
+            description = Language(language).events["cooldown"]["description"].format(time=e.retry_after)
+        elif isinstance(e, MissingPermissions):
+            title = Language(language).events["not_allowed"]["title"]
+            description = Language(language).events["not_allowed"]["description"]
         elif isinstance(e, NotFound):
             title = Language(language).events["not_found"]["title"]
             description = Language(language).events["not_found"]["description"]

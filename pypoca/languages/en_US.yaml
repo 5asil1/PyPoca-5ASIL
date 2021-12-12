@@ -18,6 +18,13 @@ command:
     vote: Vote
     server: Server
     site: Site
+ setting:
+  description: 'Server setting options'
+ language:
+  description: 'Change the bot language on your server'
+  reply:
+   title: 'Language changed'
+   description: 'Answers will be displayed in English (`en-US`)'
  movie:
   description: 'All about movies: find, discover and get information'
   reply:
@@ -202,6 +209,9 @@ event:
  cooldown:
   title: 'Command `{command_name}` is on cooldown'
   description: 'You are on cooldown. Try again in {time:.2f} seconds'
+ not_allowed:
+  title: Missing permissions
+  description: You must be administrator to execute this command
  not_found:
   title: No results found
   description: Could not find any match for these specifications

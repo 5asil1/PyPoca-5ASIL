@@ -2,7 +2,8 @@
 from __future__ import annotations
 
 from datetime import datetime
-from pony.orm import Database, PrimaryKey, Optional, Required, db_session
+
+from pony.orm import Database, Optional, PrimaryKey, Required, db_session
 
 db = Database()
 

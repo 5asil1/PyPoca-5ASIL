@@ -14,7 +14,9 @@ def embed(result: AsObj, language: str, region: str) -> dict:
     genres = [genre["name"] for genre in result.get("genres", [])]
     production_companies = [company["name"] for company in result.get("production_companies", [])]
     rating = f"{vote_average} ({vote_count} votes)" if vote_average else None
-    release_date = utils.format_datetime(result.release_date, to_format=Language(language).datetime_format) or result.get("status")
+    release_date = utils.format_datetime(
+        result.release_date, to_format=Language(language).datetime_format
+    ) or result.get("status")
     duration = utils.format_duration(result.get("runtime"))
     try:
         watch_providers = [
@@ -37,10 +39,19 @@ def embed(result: AsObj, language: str, region: str) -> dict:
         "description": result.get("overview"),
         "fields": [
             {"name": Language(language).commands["movie"]["reply"]["fields"]["rating"], "value": rating or "-"},
-            {"name": Language(language).commands["movie"]["reply"]["fields"]["released"], "value": release_date or "-"},
-            {"name": Language(language).commands["movie"]["reply"]["fields"]["watch"], "value": ", ".join(watch_providers) if watch_providers else "-"},
+            {
+                "name": Language(language).commands["movie"]["reply"]["fields"]["released"],
+                "value": release_date or "-",
+            },
+            {
+                "name": Language(language).commands["movie"]["reply"]["fields"]["watch"],
+                "value": ", ".join(watch_providers) if watch_providers else "-",
+            },
             {"name": Language(language).commands["movie"]["reply"]["fields"]["runtime"], "value": duration or "-"},
-            {"name": Language(language).commands["movie"]["reply"]["fields"]["genre"], "value": ", ".join(genres) if genres else "-"},
+            {
+                "name": Language(language).commands["movie"]["reply"]["fields"]["genre"],
+                "value": ", ".join(genres) if genres else "-",
+            },
             {
                 "name": Language(language).commands["movie"]["reply"]["fields"]["studios"],
                 "value": ", ".join(production_companies) if production_companies else "-",
@@ -86,8 +97,16 @@ def buttons(result: AsObj, language: str) -> list:
             "disabled": not video_key,
         },
         {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
-        {"label": Language(language).commands["movie"]["reply"]["buttons"]["cast"], "custom_id": "cast", "disabled": not result.credits.cast},
-        {"label": Language(language).commands["movie"]["reply"]["buttons"]["crew"], "custom_id": "crew", "disabled": not result.credits.crew},
+        {
+            "label": Language(language).commands["movie"]["reply"]["buttons"]["cast"],
+            "custom_id": "cast",
+            "disabled": not result.credits.cast,
+        },
+        {
+            "label": Language(language).commands["movie"]["reply"]["buttons"]["crew"],
+            "custom_id": "crew",
+            "disabled": not result.credits.crew,
+        },
         {
             "label": Language(language).commands["movie"]["reply"]["buttons"]["similar"],
             "custom_id": "similar",
