@@ -16,7 +16,7 @@ class Servers(dict):
             server = Server.fetch(id=server_id)
             data = {
                 "language": server.language if server else Config.bot.language,
-                "region": server.language if server else Config.bot.region,
+                "region": server.region if server else Config.bot.region,
             }
             setattr(self, str(server_id), data)
         return getattr(self, str(server_id))
