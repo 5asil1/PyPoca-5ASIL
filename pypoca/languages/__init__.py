@@ -51,7 +51,9 @@ class Language:
 
 
 LANGUAGES = {}
-for filename in [filename for filename in os.listdir("pypoca/languages") if filename.endswith(".yaml")]:
+for filename in os.listdir("pypoca/languages"):
+    if not filename.endswith(".yaml"):
+        continue
     language = filename[:-5].replace("_", "-")
     LANGUAGES[language] = Language(language)
 DEFAULT_LANGUAGE = LANGUAGES[Config.bot.language.replace("_", "-")]

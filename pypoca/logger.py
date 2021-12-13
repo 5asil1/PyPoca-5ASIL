@@ -29,6 +29,7 @@ def inject_bugsnag_handler(logger: Logger, api_key: str = None, **kwargs) -> Bug
         return None
     bugsnag.configure(api_key=api_key, **kwargs)
     bugsnag_handler = BugsnagHandler(extra_fields={"log": ["__repr__"], "locals": ["locals"], "ctx": ["ctx"]})
+    bugsnag_handler.setLevel(logging.ERROR)
     logger.addHandler(bugsnag_handler)
 
 

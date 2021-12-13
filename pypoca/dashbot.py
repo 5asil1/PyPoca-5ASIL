@@ -59,6 +59,6 @@ class Dashbot:
                 locale=guild_id,
                 user_id=author_id,
                 user_name=author_name,
-                embed=embed,
+                embed={k: v for k, v in embed.items() if v},
             )
         )
