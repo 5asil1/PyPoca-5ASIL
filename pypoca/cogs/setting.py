@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
+from discord import Embed
 from discord.ext.commands import Bot, BucketType, Cog
 from dislash import SlashInteraction, cooldown, has_permissions, slash_command
 
-from pypoca.embeds import Option, Poster
+from pypoca.embeds import Color, Option
 from pypoca.languages import DEFAULT_LANGUAGE, Language
 
 __all__ = ("Setting", "setup")
@@ -29,10 +30,10 @@ class Setting(Cog):
     async def language(self, inter: SlashInteraction, language: str) -> None:
         """Subcommand to change bot language in server."""
         self.bot.servers[inter.guild_id] = {"language": language, "region": language[3:]}
-        embed = Poster(
-            title=Language(language).commands["language"]["reply"]["title"],
-            description=Language(language).commands["language"]["reply"]["description"],
-        )
+        quotes = Language(language)
+        title = quotes.commands["language"]["reply"]["title"]
+        description = quotes.commands["language"]["reply"]["description"]
+        embed = Embed(title=title, description=description, color=Color.bot)
         await inter.reply(embed=embed)
 
 

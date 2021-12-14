@@ -2,6 +2,7 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
+from pypoca.embeds import Color
 from pypoca.languages import Language
 
 __all__ = ("embed", "option", "buttons")
@@ -37,24 +38,37 @@ def embed(result: AsObj, language: str, region: str) -> dict:
     embed = {
         "title": result.get("title") or result.original_title,
         "description": result.get("overview"),
+        "color": Color.bot,
         "fields": [
-            {"name": Language(language).commands["movie"]["reply"]["fields"]["rating"], "value": rating or "-"},
+            {
+                "name": Language(language).commands["movie"]["reply"]["fields"]["rating"],
+                "value": rating or "-",
+                "inline": True,
+            },
             {
                 "name": Language(language).commands["movie"]["reply"]["fields"]["released"],
                 "value": release_date or "-",
+                "inline": True,
             },
             {
                 "name": Language(language).commands["movie"]["reply"]["fields"]["watch"],
                 "value": ", ".join(watch_providers) if watch_providers else "-",
+                "inline": True,
             },
-            {"name": Language(language).commands["movie"]["reply"]["fields"]["runtime"], "value": duration or "-"},
+            {
+                "name": Language(language).commands["movie"]["reply"]["fields"]["runtime"],
+                "value": duration or "-",
+                "inline": True,
+            },
             {
                 "name": Language(language).commands["movie"]["reply"]["fields"]["genre"],
                 "value": ", ".join(genres) if genres else "-",
+                "inline": True,
             },
             {
                 "name": Language(language).commands["movie"]["reply"]["fields"]["studios"],
                 "value": ", ".join(production_companies) if production_companies else "-",
+                "inline": True,
             },
         ],
     }
@@ -95,22 +109,31 @@ def buttons(result: AsObj, language: str) -> list:
             "label": Language(language).commands["movie"]["reply"]["buttons"]["trailer"],
             "url": f"https://www.youtube.com/watch?v={video_key}",
             "disabled": not video_key,
+            "style": 5,
         },
-        {"label": "IMDb", "url": f"https://www.imdb.com/title/{imdb_id}", "disabled": not imdb_id},
+        {
+            "label": "IMDb",
+            "url": f"https://www.imdb.com/title/{imdb_id}",
+            "disabled": not imdb_id,
+            "style": 5,
+        },
         {
             "label": Language(language).commands["movie"]["reply"]["buttons"]["cast"],
             "custom_id": "cast",
             "disabled": not result.credits.cast,
+            "style": 2,
         },
         {
             "label": Language(language).commands["movie"]["reply"]["buttons"]["crew"],
             "custom_id": "crew",
             "disabled": not result.credits.crew,
+            "style": 2,
         },
         {
             "label": Language(language).commands["movie"]["reply"]["buttons"]["similar"],
             "custom_id": "similar",
             "disabled": not result.recommendations.results,
+            "style": 2,
         },
     ]
     return buttons

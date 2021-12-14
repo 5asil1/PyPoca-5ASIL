@@ -2,6 +2,7 @@
 from aiotmdb import AsObj
 
 from pypoca import utils
+from pypoca.embeds import Color
 from pypoca.languages import Language
 
 __all__ = ("embed", "option", "buttons")
@@ -30,10 +31,23 @@ def embed(result: AsObj, language: str, region: str) -> dict:
     embed = {
         "title": result.name,
         "description": result.get("biography"),
+        "color": Color.bot,
         "fields": [
-            {"name": Language(language).commands["person"]["reply"]["fields"]["birthday"], "value": birthday or "-"},
-            {"name": Language(language).commands["person"]["reply"]["fields"]["deathday"], "value": deathday or "-"},
-            {"name": Language(language).commands["person"]["reply"]["fields"]["born"], "value": place_of_birth or "-"},
+            {
+                "name": Language(language).commands["person"]["reply"]["fields"]["birthday"],
+                "value": birthday or "-",
+                "inline": True,
+            },
+            {
+                "name": Language(language).commands["person"]["reply"]["fields"]["deathday"],
+                "value": deathday or "-",
+                "inline": True,
+            },
+            {
+                "name": Language(language).commands["person"]["reply"]["fields"]["born"],
+                "value": place_of_birth or "-",
+                "inline": True,
+            },
             {
                 "name": Language(language).commands["person"]["reply"]["fields"]["know_for"],
                 "value": ", ".join(jobs[:5]) if jobs else "-",
@@ -72,18 +86,35 @@ def buttons(result: AsObj, language: str) -> list:
     instagram_id = result.external_ids.get("instagram_id")
     twitter_id = result.external_ids.get("twitter_id")
     buttons = [
-        {"label": "IMDb", "url": f"https://www.imdb.com/name/{imdb_id}", "disabled": imdb_id is None},
-        {"label": "Instagram", "url": f"https://www.instagram.com/{instagram_id}", "disabled": instagram_id is None},
-        {"label": "Twitter", "url": f"https://www.twitter.com/{twitter_id}", "disabled": twitter_id is None},
+        {
+            "label": "IMDb",
+            "url": f"https://www.imdb.com/name/{imdb_id}",
+            "disabled": imdb_id is None,
+            "style": 5,
+        },
+        {
+            "label": "Instagram",
+            "url": f"https://www.instagram.com/{instagram_id}",
+            "disabled": instagram_id is None,
+            "style": 5,
+        },
+        {
+            "label": "Twitter",
+            "url": f"https://www.twitter.com/{twitter_id}",
+            "disabled": twitter_id is None,
+            "style": 5,
+        },
         {
             "label": Language(language).commands["person"]["reply"]["buttons"]["acting"],
             "custom_id": "acting",
             "disabled": not result.movie_credits.cast and not result.tv_credits.cast,
+            "style": 2,
         },
         {
             "label": Language(language).commands["person"]["reply"]["buttons"]["jobs"],
             "custom_id": "jobs",
             "disabled": not result.movie_credits.crew and not result.tv_credits.crew,
+            "style": 2,
         },
     ]
     return buttons

@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from aiotmdb import TMDB
+from discord import Embed
 from discord.ext.commands import Bot, Cog
-from dislash import ResponseType, SlashInteraction, slash_command
+from dislash import ActionRow, Button, ResponseType, SelectMenu, SlashInteraction, slash_command
 
 from pypoca import utils
 from pypoca.adapters import Adapter
-from pypoca.embeds import Buttons, Menu, Option, Poster
+from pypoca.embeds import Color, Option
 from pypoca.exceptions import NotFound
 from pypoca.languages import DEFAULT_LANGUAGE, Language
 
@@ -28,13 +29,16 @@ class Movie(Cog):
         language: str,
         region: str,
     ) -> None:
+        quotes = Language(language)
         adapter = Adapter("movie")
         if len(results) > 1:
-            embed = Poster(title=Language(language).commands["movie"]["reply"]["title"])
-            select_menu = Menu(
-                placeholder=Language(language).placeholder,
-                options=[adapter.option(result, language) for result in results],
-            )
+            title = quotes.commands["movie"]["reply"]["title"]
+            embed = Embed(title=title, color=Color.bot)
+            options = [
+                {"value": i, **adapter.option(result, language)}
+                for i, result in enumerate(results)
+            ]
+            select_menu = SelectMenu.from_dict({"placeholder": quotes.placeholder, "options": options})
             msg = await inter.reply(
                 embed=embed,
                 components=[select_menu],
@@ -59,12 +63,13 @@ class Movie(Cog):
             result["external_ids"]["trakt"] = await utils.get_trakt_id(movie_id, type="movie")
         except Exception:
             result["external_ids"]["trakt"] = None
-        embed = Poster(**adapter.embed(result, language, region))
-        buttons = Buttons(buttons=adapter.buttons(result, language))
+        embed = Embed.from_dict(adapter.embed(result, language, region))
+        buttons = adapter.buttons(result, language)
+        action_row = ActionRow(*[Button.from_dict(button) for button in buttons])
         if len(results) > 1:
-            msg = await ctx.reply(embed=embed, components=[buttons], type=ResponseType.UpdateMessage)
+            msg = await ctx.reply(embed=embed, components=[action_row], type=ResponseType.UpdateMessage)
         else:
-            msg = await inter.reply(embed=embed, components=[buttons])
+            msg = await inter.reply(embed=embed, components=[action_row])
         on_click = msg.create_click_listener(timeout=120)
 
         @on_click.not_from_user(inter.author, cancel_others=True, reset_timeout=False)
