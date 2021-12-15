@@ -17,13 +17,8 @@ class General(Cog):
         self.bot = bot
 
     @cooldown(rate=1, per=5, type=BucketType.member)
-    @slash_command(
-        name="ping",
-        description=DEFAULT_LANGUAGE.commands["ping"]["description"],
-        options=[Option.hide],
-        connectors={Option.hide.name: "hide"},
-    )
-    async def ping(self, inter: SlashInteraction, hide: bool = False):
+    @slash_command(description=DEFAULT_LANGUAGE.commands["ping"]["description"])
+    async def ping(self, inter: SlashInteraction, hide: bool = Option.hide):
         """Measures latency between the bot service and the Discord client."""
         latency = int(self.bot.latency * 1000)
         language = self.bot.servers[inter.guild_id]["language"]
@@ -34,13 +29,8 @@ class General(Cog):
         await inter.reply(embed=embed, ephemeral=hide)
 
     @cooldown(rate=1, per=5, type=BucketType.member)
-    @slash_command(
-        name="help",
-        description=DEFAULT_LANGUAGE.commands["help"]["description"],
-        options=[Option.hide],
-        connectors={Option.hide.name: "hide"},
-    )
-    async def help(self, inter: SlashInteraction, hide: bool = False):
+    @slash_command(description=DEFAULT_LANGUAGE.commands["help"]["description"])
+    async def help(self, inter: SlashInteraction, hide: bool = Option.hide):
         """The implementation of the help command."""
         language = self.bot.servers[inter.guild_id]["language"]
         quotes = Language(language)

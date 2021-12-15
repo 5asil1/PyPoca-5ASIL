@@ -6,7 +6,7 @@ from dislash import ActionRow, Button, ResponseType, SelectMenu, SlashInteractio
 
 from pypoca import utils
 from pypoca.adapters import Adapter
-from pypoca.embeds import Color, Option
+from pypoca.embeds import Choices, Color, Option
 from pypoca.exceptions import NotFound
 from pypoca.languages import DEFAULT_LANGUAGE, Language
 
@@ -120,66 +120,28 @@ class Movie(Cog):
             """Waiting for listener timeout."""
             await msg.edit(components=[])
 
-    @slash_command(name="movie", description=DEFAULT_LANGUAGE.commands["movie"]["description"])
+    @slash_command(description=DEFAULT_LANGUAGE.commands["movie"]["description"])
     async def movie(self, inter: SlashInteraction):
         """Command that groups movie-related subcommands."""
 
-    @movie.sub_command(
-        name="discover",
-        description=DEFAULT_LANGUAGE.commands["discover_movie"]["description"],
-        options=[
-            Option.movie_sort_by,
-            Option.movie_service,
-            Option.movie_genre,
-            Option.nsfw,
-            Option.year,
-            Option.min_year,
-            Option.max_year,
-            Option.min_votes,
-            Option.max_votes,
-            Option.min_rating,
-            Option.max_rating,
-            Option.min_runtime,
-            Option.max_runtime,
-            Option.page,
-            Option.region,
-        ],
-        connectors={
-            Option.movie_sort_by.name: "sort_by",
-            Option.movie_service.name: "service",
-            Option.movie_genre.name: "genre",
-            Option.nsfw.name: "nsfw",
-            Option.year.name: "year",
-            Option.min_year.name: "min_year",
-            Option.max_year.name: "max_year",
-            Option.min_votes.name: "min_votes",
-            Option.max_votes.name: "max_votes",
-            Option.min_rating.name: "min_rating",
-            Option.max_rating.name: "max_rating",
-            Option.min_runtime.name: "min_runtime",
-            Option.max_runtime.name: "max_runtime",
-            Option.page.name: "page",
-            Option.region.name: "region",
-        },
-    )
-    async def discover_movie(
+    @movie.sub_command(description=DEFAULT_LANGUAGE.commands["discover_movie"]["description"])
+    async def discover(
         self,
         inter: SlashInteraction,
-        sort_by: str = "popularity.desc",
-        service: str = None,
-        genre: str = None,
-        nsfw: bool = False,
-        year: int = None,
-        min_year: int = None,
-        max_year: int = None,
-        min_votes: int = None,
-        max_votes: int = None,
-        min_rating: float = None,
-        max_rating: float = None,
-        min_runtime: int = None,
-        max_runtime: int = None,
-        page: int = 1,
-        region: str = None,
+        sort_by: Choices.movie_sort_by = Option.movie_sort_by,
+        service: Choices.movie_service = Option.movie_service,
+        genre: Choices.movie_genre = Option.movie_genre,
+        nsfw: Choices.boolean = Option.nsfw,
+        year: int = Option.year,
+        min_year: int = Option.min_year,
+        max_year: int = Option.max_year,
+        min_votes: int = Option.min_votes,
+        max_votes: int = Option.max_votes,
+        min_rating: float = Option.min_rating,
+        max_rating: float = Option.max_rating,
+        min_runtime: int = Option.min_runtime,
+        max_runtime: int = Option.max_runtime,
+        page: int = Option.page,
     ) -> None:
         """Subcommand to discover movies by different types of data."""
         language = self.bot.servers[inter.guild_id]["language"]
@@ -191,15 +153,15 @@ class Movie(Cog):
             sort_by=sort_by,
             with_watch_providers=service,
             with_genres=genre,
-            year=year,
-            primary_release_date__gte=f"{min_year}-01-01" if min_year else None,
-            primary_release_date__lte=f"{max_year}-12-31" if max_year else None,
-            vote_count__gte=min_votes,
-            vote_count__lte=max_votes,
-            vote_average__gte=min_rating,
-            vote_average__lte=max_rating,
-            with_runtime__gte=min_runtime,
-            with_runtime__lte=max_runtime,
+            year=year if year != -1 else None,
+            primary_release_date__gte=f"{min_year}-01-01" if min_year != -1 else None,
+            primary_release_date__lte=f"{max_year}-12-31" if max_year != -1 else None,
+            vote_count__gte=min_votes if min_votes != -1 else None,
+            vote_count__lte=max_votes if max_votes != -1 else None,
+            vote_average__gte=min_rating if min_rating != -1 else None,
+            vote_average__lte=max_rating if max_rating != -1 else None,
+            with_runtime__gte=min_runtime if min_runtime != -1 else None,
+            with_runtime__lte=max_runtime if max_runtime != -1 else None,
         )
         await self._reply(
             inter,
@@ -210,18 +172,8 @@ class Movie(Cog):
             region=region,
         )
 
-    @movie.sub_command(
-        name="popular",
-        description=DEFAULT_LANGUAGE.commands["popular_movie"]["description"],
-        options=[Option.page, Option.region],
-        connectors={Option.page.name: "page", Option.region.name: "region"},
-    )
-    async def popular_movie(
-        self,
-        inter: SlashInteraction,
-        page: int = 1,
-        region: str = None,
-    ) -> None:
+    @movie.sub_command(description=DEFAULT_LANGUAGE.commands["popular_movie"]["description"])
+    async def popular(self, inter: SlashInteraction, page: int = Option.page) -> None:
         """Subcommand to get the current popular movies."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -236,32 +188,14 @@ class Movie(Cog):
             region=region,
         )
 
-    @movie.sub_command(
-        name="search",
-        description=DEFAULT_LANGUAGE.commands["search_movie"]["description"],
-        options=[
-            Option.query,
-            Option.year,
-            Option.nsfw,
-            Option.page,
-            Option.region,
-        ],
-        connectors={
-            Option.query.name: "query",
-            Option.year.name: "year",
-            Option.nsfw.name: "nsfw",
-            Option.page.name: "page",
-            Option.region.name: "region",
-        },
-    )
-    async def search_movie(
+    @movie.sub_command(description=DEFAULT_LANGUAGE.commands["search_movie"]["description"])
+    async def search(
         self,
         inter: SlashInteraction,
-        query: str,
-        year: int = None,
-        nsfw: bool = False,
-        page: int = 1,
-        region: str = None,
+        query: str = Option.query,
+        year: int = Option.year,
+        nsfw: Choices.boolean = Option.nsfw,
+        page: int = Option.page,
     ) -> None:
         """Subcommand to search for a movie."""
         language = self.bot.servers[inter.guild_id]["language"]
@@ -277,18 +211,8 @@ class Movie(Cog):
             region=region,
         )
 
-    @movie.sub_command(
-        name="top",
-        description=DEFAULT_LANGUAGE.commands["top_movie"]["description"],
-        options=[Option.page, Option.region],
-        connectors={Option.page.name: "page", Option.region.name: "region"},
-    )
-    async def top_movie(
-        self,
-        inter: SlashInteraction,
-        page: int = 1,
-        region: str = None,
-    ) -> None:
+    @movie.sub_command(description=DEFAULT_LANGUAGE.commands["top_movie"]["description"])
+    async def top(self, inter: SlashInteraction, page: int = Option.page) -> None:
         """Subcommand get the top rated movies."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -303,18 +227,8 @@ class Movie(Cog):
             region=region,
         )
 
-    @movie.sub_command(
-        name="trending",
-        description=DEFAULT_LANGUAGE.commands["trending_movie"]["description"],
-        options=[Option.interval, Option.region],
-        connectors={Option.interval.name: "interval", Option.region.name: "region"},
-    )
-    async def trending_movie(
-        self,
-        inter: SlashInteraction,
-        interval: str = "day",
-        region: str = None,
-    ) -> None:
+    @movie.sub_command(description=DEFAULT_LANGUAGE.commands["trending_movie"]["description"])
+    async def trending(self, inter: SlashInteraction, interval: Choices.interval = Option.interval) -> None:
         """Subcommand get the trending movies."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -332,18 +246,8 @@ class Movie(Cog):
             region=region,
         )
 
-    @movie.sub_command(
-        name="upcoming",
-        description=DEFAULT_LANGUAGE.commands["upcoming_movie"]["description"],
-        options=[Option.page, Option.region],
-        connectors={Option.page.name: "page", Option.region.name: "region"},
-    )
-    async def upcoming_movie(
-        self,
-        inter: SlashInteraction,
-        page: int = 1,
-        region: str = None,
-    ) -> None:
+    @movie.sub_command(description=DEFAULT_LANGUAGE.commands["upcoming_movie"]["description"])
+    async def upcoming(self, inter: SlashInteraction, page: int = Option.page) -> None:
         """Subcommand get the upcoming movies in theatres."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]

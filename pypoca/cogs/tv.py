@@ -6,7 +6,7 @@ from dislash import ActionRow, Button, ResponseType, SelectMenu, SlashInteractio
 
 from pypoca import utils
 from pypoca.adapters import Adapter
-from pypoca.embeds import Color, Option
+from pypoca.embeds import Choices, Color, Option
 from pypoca.exceptions import NotFound
 from pypoca.languages import DEFAULT_LANGUAGE, Language
 
@@ -124,53 +124,21 @@ class TV(Cog):
     async def tv(self, inter: SlashInteraction):
         """Command that groups tv-related subcommands."""
 
-    @tv.sub_command(
-        name="discover",
-        description=DEFAULT_LANGUAGE.commands["discover_tv"]["description"],
-        options=[
-            Option.tv_sort_by,
-            Option.tv_service,
-            Option.tv_genre,
-            Option.year,
-            Option.min_year,
-            Option.max_year,
-            Option.min_votes,
-            Option.min_rating,
-            Option.min_runtime,
-            Option.max_runtime,
-            Option.page,
-            Option.region,
-        ],
-        connectors={
-            Option.tv_sort_by.name: "sort_by",
-            Option.tv_service.name: "service",
-            Option.tv_genre.name: "genre",
-            Option.year.name: "year",
-            Option.min_year.name: "min_year",
-            Option.max_year.name: "max_year",
-            Option.min_votes.name: "min_votes",
-            Option.min_rating.name: "min_rating",
-            Option.min_runtime.name: "min_runtime",
-            Option.max_runtime.name: "max_runtime",
-            Option.page.name: "page",
-            Option.region.name: "region",
-        },
-    )
-    async def discover_tv(
+    @tv.sub_command(description=DEFAULT_LANGUAGE.commands["discover_tv"]["description"])
+    async def discover(
         self,
         inter: SlashInteraction,
-        sort_by: str = "popularity.desc",
-        service: str = None,
-        genre: str = None,
-        year: int = None,
-        min_year: int = None,
-        max_year: int = None,
-        min_votes: int = None,
-        min_rating: float = None,
-        min_runtime: int = None,
-        max_runtime: int = None,
-        page: int = 1,
-        region: str = None,
+        sort_by: Choices.tv_sort_by = Option.tv_sort_by,
+        service: Choices.tv_service = Option.tv_service,
+        genre: Choices.tv_genre = Option.tv_genre,
+        year: int = Option.year,
+        min_year: int = Option.min_year,
+        max_year: int = Option.max_year,
+        min_votes: int = Option.min_votes,
+        min_rating: float = Option.min_rating,
+        min_runtime: int = Option.min_runtime,
+        max_runtime: int = Option.max_runtime,
+        page: int = Option.page,
     ) -> None:
         """Subcommand to discover TV shows by different types of data."""
         language = self.bot.servers[inter.guild_id]["language"]
@@ -181,13 +149,13 @@ class TV(Cog):
             sort_by=sort_by,
             with_watch_providers=service,
             with_genres=genre,
-            first_air_date_year=year,
-            first_air_date__gte=f"{min_year}-01-01" if min_year else None,
-            first_air_date__lte=f"{max_year}-12-31" if max_year else None,
-            vote_count__gte=min_votes,
-            vote_average__gte=min_rating,
-            with_runtime__gte=min_runtime,
-            with_runtime__lte=max_runtime,
+            first_air_date_year=year if year != -1 else None,
+            first_air_date__gte=f"{min_year}-01-01" if min_year != -1 else None,
+            first_air_date__lte=f"{max_year}-12-31" if max_year != -1 else None,
+            vote_count__gte=min_votes if min_votes != -1 else None,
+            vote_average__gte=min_rating if min_rating != -1 else None,
+            with_runtime__gte=min_runtime if min_runtime != -1 else None,
+            with_runtime__lte=max_runtime if max_runtime != -1 else None,
         )
         await self._reply(
             inter,
@@ -198,18 +166,8 @@ class TV(Cog):
             region=region,
         )
 
-    @tv.sub_command(
-        name="popular",
-        description=DEFAULT_LANGUAGE.commands["popular_tv"]["description"],
-        options=[Option.page, Option.region],
-        connectors={Option.page.name: "page", Option.region.name: "region"},
-    )
-    async def popular_tv(
-        self,
-        inter: SlashInteraction,
-        page: int = 1,
-        region: str = None,
-    ) -> None:
+    @tv.sub_command(description=DEFAULT_LANGUAGE.commands["popular_tv"]["description"])
+    async def popular(self, inter: SlashInteraction, page: int = Option.page) -> None:
         """Subcommand to get the current popular TV shows."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -224,32 +182,14 @@ class TV(Cog):
             region=region,
         )
 
-    @tv.sub_command(
-        name="search",
-        description=DEFAULT_LANGUAGE.commands["search_tv"]["description"],
-        options=[
-            Option.query,
-            Option.year,
-            Option.nsfw,
-            Option.page,
-            Option.region,
-        ],
-        connectors={
-            Option.query.name: "query",
-            Option.year.name: "year",
-            Option.nsfw.name: "nsfw",
-            Option.page.name: "page",
-            Option.region.name: "region",
-        },
-    )
-    async def search_tv(
+    @tv.sub_command(description=DEFAULT_LANGUAGE.commands["search_tv"]["description"])
+    async def search(
         self,
         inter: SlashInteraction,
-        query: str,
-        year: int = None,
-        nsfw: bool = False,
-        page: int = 1,
-        region: str = None,
+        query: str = Option.query,
+        year: int = Option.year,
+        nsfw: Choices.boolean = Option.nsfw,
+        page: int = Option.page,
     ) -> None:
         """Subcommand to search for a TV show."""
         language = self.bot.servers[inter.guild_id]["language"]
@@ -265,18 +205,8 @@ class TV(Cog):
             region=region,
         )
 
-    @tv.sub_command(
-        name="top",
-        description=DEFAULT_LANGUAGE.commands["top_tv"]["description"],
-        options=[Option.page, Option.region],
-        connectors={Option.page.name: "page", Option.region.name: "region"},
-    )
-    async def top_tv(
-        self,
-        inter: SlashInteraction,
-        page: int = 1,
-        region: str = None,
-    ) -> None:
+    @tv.sub_command(description=DEFAULT_LANGUAGE.commands["top_tv"]["description"])
+    async def top(self, inter: SlashInteraction, page: int = Option.page) -> None:
         """Subcommand get the top rated TV shows."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -291,18 +221,8 @@ class TV(Cog):
             region=region,
         )
 
-    @tv.sub_command(
-        name="trending",
-        description=DEFAULT_LANGUAGE.commands["trending_tv"]["description"],
-        options=[Option.interval, Option.region],
-        connectors={Option.interval.name: "interval", Option.region.name: "region"},
-    )
-    async def trending_tv(
-        self,
-        inter: SlashInteraction,
-        interval: str = "day",
-        region: str = None,
-    ) -> None:
+    @tv.sub_command(description=DEFAULT_LANGUAGE.commands["trending_tv"]["description"])
+    async def trending(self, inter: SlashInteraction, interval: Choices.interval = Option.interval) -> None:
         """Subcommand get the trending TV shows."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -320,18 +240,8 @@ class TV(Cog):
             region=region,
         )
 
-    @tv.sub_command(
-        name="upcoming",
-        description=DEFAULT_LANGUAGE.commands["upcoming_tv"]["description"],
-        options=[Option.page, Option.region],
-        connectors={Option.page.name: "page", Option.region.name: "region"},
-    )
-    async def upcoming_tv(
-        self,
-        inter: SlashInteraction,
-        page: int = 1,
-        region: str = None,
-    ) -> None:
+    @tv.sub_command(description=DEFAULT_LANGUAGE.commands["upcoming_tv"]["description"])
+    async def upcoming(self, inter: SlashInteraction, page: int = Option.page) -> None:
         """Subcommand get the upcoming TV shows in theatres."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]

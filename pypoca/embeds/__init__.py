@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-from pypoca.embeds.choices import Choice, Choices
 from pypoca.embeds.colors import Color
-from pypoca.embeds.options import Option
+from pypoca.embeds.options import Choice, Choices, Option
 
 BLANK_EMOJI = "<:blank:914183315056111627>"
 

@@ -5,7 +5,7 @@ from discord.ext.commands import Bot, Cog
 from dislash import ActionRow, Button, ResponseType, SelectMenu, SlashInteraction, slash_command
 
 from pypoca.adapters import Adapter
-from pypoca.embeds import Color, Option
+from pypoca.embeds import Choices, Color, Option
 from pypoca.exceptions import NotFound
 from pypoca.languages import DEFAULT_LANGUAGE, Language
 
@@ -117,18 +117,8 @@ class Person(Cog):
     async def person(self, inter: SlashInteraction):
         """Command that groups person-related subcommands."""
 
-    @person.sub_command(
-        name="popular",
-        description=DEFAULT_LANGUAGE.commands["popular_person"]["description"],
-        options=[Option.page, Option.region],
-        connectors={Option.page.name: "page", Option.region.name: "region"},
-    )
-    async def popular_person(
-        self,
-        inter: SlashInteraction,
-        page: int = 1,
-        region: str = None,
-    ) -> None:
+    @person.sub_command(description=DEFAULT_LANGUAGE.commands["popular_person"]["description"])
+    async def popular(self, inter: SlashInteraction, page: int = Option.page) -> None:
         """Subcommand to get the current popular person."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -143,29 +133,13 @@ class Person(Cog):
             region=region,
         )
 
-    @person.sub_command(
-        name="search",
-        description=DEFAULT_LANGUAGE.commands["search_person"]["description"],
-        options=[
-            Option.query,
-            Option.nsfw,
-            Option.page,
-            Option.region,
-        ],
-        connectors={
-            Option.query.name: "query",
-            Option.nsfw.name: "nsfw",
-            Option.page.name: "page",
-            Option.region.name: "region",
-        },
-    )
-    async def search_person(
+    @person.sub_command(description=DEFAULT_LANGUAGE.commands["search_person"]["description"])
+    async def search(
         self,
         inter: SlashInteraction,
-        query: str,
-        nsfw: bool = False,
-        page: int = 1,
-        region: str = None,
+        query: str = Option.query,
+        nsfw: Choices.boolean = Option.nsfw,
+        page: int = Option.page,
     ) -> None:
         """Subcommand to search for a person."""
         language = self.bot.servers[inter.guild_id]["language"]
@@ -181,18 +155,8 @@ class Person(Cog):
             region=region,
         )
 
-    @person.sub_command(
-        name="trending",
-        description=DEFAULT_LANGUAGE.commands["trending_person"]["description"],
-        options=[Option.interval, Option.region],
-        connectors={Option.interval.name: "interval", Option.region.name: "region"},
-    )
-    async def trending_person(
-        self,
-        inter: SlashInteraction,
-        interval: str = "day",
-        region: str = None,
-    ) -> None:
+    @person.sub_command(description=DEFAULT_LANGUAGE.commands["trending_person"]["description"])
+    async def trending(self, inter: SlashInteraction, interval: Choices.interval = Option.interval) -> None:
         """Subcommand get the trending persons."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]

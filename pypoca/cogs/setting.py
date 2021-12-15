@@ -3,7 +3,7 @@ from discord import Embed
 from discord.ext.commands import Bot, BucketType, Cog
 from dislash import SlashInteraction, cooldown, has_permissions, slash_command
 
-from pypoca.embeds import Color, Option
+from pypoca.embeds import Choices, Color, Option
 from pypoca.languages import DEFAULT_LANGUAGE, Language
 
 __all__ = ("Setting", "setup")
@@ -15,19 +15,14 @@ class Setting(Cog):
     def __init__(self, bot: Bot):
         self.bot = bot
 
-    @slash_command(name="setting", description=DEFAULT_LANGUAGE.commands["setting"]["description"])
+    @slash_command(description=DEFAULT_LANGUAGE.commands["setting"]["description"])
     async def setting(self, inter: SlashInteraction):
         """Command that groups setting-related subcommands."""
 
     @cooldown(rate=1, per=5, type=BucketType.member)
     @has_permissions(administrator=True)
-    @setting.sub_command(
-        name="language",
-        description=DEFAULT_LANGUAGE.commands["language"]["description"],
-        options=[Option.language],
-        connectors={Option.language.name: "language"},
-    )
-    async def language(self, inter: SlashInteraction, language: str) -> None:
+    @setting.sub_command(description=DEFAULT_LANGUAGE.commands["language"]["description"])
+    async def language(self, inter: SlashInteraction, language: Choices.language = Option.language) -> None:
         """Subcommand to change bot language in server."""
         self.bot.servers[inter.guild_id] = {"language": language, "region": language[3:]}
         quotes = Language(language)
