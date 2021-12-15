@@ -34,10 +34,7 @@ class TV(Cog):
         if len(results) > 1:
             title = quotes.commands["tv"]["reply"]["title"]
             embed = Embed(title=title, color=Color.bot)
-            options = [
-                {"value": i, **adapter.option(result, language)}
-                for i, result in enumerate(results)
-            ]
+            options = [{"value": i, **adapter.option(result, language)} for i, result in enumerate(results)]
             select_menu = SelectMenu.from_dict({"placeholder": quotes.placeholder, "options": options})
             msg = await inter.reply(
                 embed=embed,
