@@ -10,7 +10,7 @@ on:
       - "**.py"
       - ".dockerignore"
       - "Dockerfile"
-      - "requirements.txt"
+      - "requirements/*.txt"
       - "setup.cfg"
 
 jobs:
@@ -30,7 +30,7 @@ jobs:
         uses: actions/cache@v2
         with:
           path: ${{ env.pythonLocation }}
-          key: ${{ env.pythonLocation }}-${{ hashFiles('requirements.txt') }}
+          key: ${{ env.pythonLocation }}-${{ hashFiles('requirements/prod.txt') }}
 
       - name: Install
         run: make install

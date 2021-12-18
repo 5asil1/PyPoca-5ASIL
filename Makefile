@@ -5,10 +5,10 @@ NAME = pypoca
 .PHONY = help setup test run clean
 .DEFAULT_GOAL = help
 
-$(VENV)/bin/activate: requirements.txt requirements-dev.txt
+$(VENV)/bin/activate: requirements/prod.txt requirements/test.txt requirements/dev.txt
 	@python3 -m venv $(VENV)
 	@$(PIP) install -U pip
-	@$(PIP) install -r requirements-dev.txt
+	@$(PIP) install -r requirements/dev.txt
 
 .PHONY: help
 help:  ## ❓ Show the help.
@@ -21,6 +21,7 @@ install: $(VENV)/bin/activate  ## ⬇️  Install the virtual env project in dev
 version: $(VENV)/bin/activate  ## 🔢 Show the current environment.
 	@$(PYTHON) --version
 	@$(PIP) --version
+	@$(PIP) freeze
 
 .PHONY: format
 format: $(VENV)/bin/activate  ## ✍  Format code.
@@ -33,6 +34,7 @@ lint: $(VENV)/bin/activate  ## 🔎 Lint code.
 	@$(VENV)/bin/flake8 ${NAME}/ --config=setup.cfg --count --show-source --statistics --benchmark
 	@$(VENV)/bin/interrogate ${NAME}/ --config=setup.cfg
 	@$(VENV)/bin/vulture ${NAME}/ --ignore-names on_* --min-confidence 80
+	@$(VENV)/bin/mypy ${NAME}/ --ignore-missing-imports
 
 .PHONY: run
 run: $(VENV)/bin/activate  ## 🏃 Run the project.
