@@ -59,22 +59,22 @@ class General(Cog):
         buttons = [
             {
                 "label": quotes.commands["help"]["reply"]["buttons"]["invite"],
-                "url": Config.bot.invite_url,
+                "url": Config.bot.urls["invite"],
                 "style": 5,
             },
             {
                 "label": quotes.commands["help"]["reply"]["buttons"]["vote"],
-                "url": Config.bot.vote_url,
+                "url": Config.bot.urls["vote"],
                 "style": 5,
             },
             {
                 "label": quotes.commands["help"]["reply"]["buttons"]["server"],
-                "url": Config.bot.server_url,
+                "url": Config.bot.urls["server"],
                 "style": 5,
             },
             {
                 "label": quotes.commands["help"]["reply"]["buttons"]["site"],
-                "url": Config.bot.site_url,
+                "url": Config.bot.urls["site"],
                 "style": 5,
             },
         ]

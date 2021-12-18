@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import os
 from discord.ext import commands
 from dislash import InteractionClient
 
@@ -34,10 +35,17 @@ def run() -> None:
     check server. And finally, run a loop event initialization blocking call.
     """
     bot = commands.Bot(command_prefix=commands.when_mentioned_or(Config.bot.prefix))
-    client = InteractionClient(bot, test_guilds=Config.bot.guilds_ids)
+    try:
+        guilds_ids = list(map(int, Config.bot.guilds_ids.split(",")))
+    except Exception:
+        guilds_ids = None
+    client = InteractionClient(bot, test_guilds=guilds_ids)
     bot.servers = Servers(bot)
 
-    for cog in Config.bot.cogs:
+    for filename in os.listdir("pypoca/cogs"):
+        if filename.startswith("_") or not filename.endswith(".py"):
+            continue
+        cog = os.path.join("pypoca/cogs", filename)
         bot.load_extension(cog[:-3].replace("/", "."))
 
     init_db(provider=Config.database.provider, credentials=Config.database.credentials)

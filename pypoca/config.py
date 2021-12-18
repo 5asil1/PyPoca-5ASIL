@@ -5,23 +5,17 @@ import os
 class BotConfig:
     """Bot configuration variables"""
 
-    cogs = [
-        os.path.join("pypoca/cogs", filename)
-        for filename in os.listdir("pypoca/cogs")
-        if not filename.startswith("_") and filename.endswith(".py")
-    ]
     token = os.environ["DISCORD_TOKEN"]
     prefix = os.environ.get("BOT_PREFIX", "/")
-    try:
-        guilds_ids = list(map(int, os.environ.get("TEST_GUILDS_ID").split(",")))
-    except Exception:
-        guilds_ids = None
+    guilds_ids = os.environ.get("TEST_GUILDS_ID")
     language = os.environ.get("BOT_LANGUAGE", "en-US")
     region = os.environ.get("BOT_REGION", "US")
-    invite_url = os.environ.get("BOT_INVITE_URL")
-    vote_url = os.environ.get("BOT_VOTE_URL")
-    server_url = os.environ.get("BOT_SERVER_URL")
-    site_url = os.environ.get("BOT_SITE_URL")
+    urls = {
+        "invite": os.environ.get("BOT_INVITE_URL"),
+        "vote": os.environ.get("BOT_VOTE_URL"),
+        "server": os.environ.get("BOT_SERVER_URL"),
+        "site": os.environ.get("BOT_SITE_URL"),
+    }
 
 
 class DatabaseConfig:
@@ -34,7 +28,6 @@ class DatabaseConfig:
         "password": os.environ.get("DB_PASSWORD"),
         "host": os.environ.get("DB_HOST"),
         "database": os.environ.get("DB_NAME"),
-        "dns": os.environ.get("DB_DNS"),
     }
 
 
@@ -50,7 +43,6 @@ class BugsnagConfig:
     """Bugsnag configuration variables"""
 
     key = os.environ.get("BUGSNAG_KEY")
-    level = os.environ.get("BUGSNAG_LEVEL")
 
 
 class DashbotConfig:
