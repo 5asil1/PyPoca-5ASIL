@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from pypoca import logger
+from pypoca.log import Log
 from pypoca.config import Config
 
-log = logger.get_logger(
-    file_config=Config.logger.filename,
-    bugsnag_config={"api_key": Config.bugsnag.key},
+log = Log(
+    filename=Config.logger.filename,
+    bugsnag_key=Config.bugsnag.key,
 )
 
 __all__ = "log"
