@@ -34,7 +34,6 @@ lint: $(VENV)/bin/activate  ## 🔎 Lint code.
 	@$(VENV)/bin/flake8 ${NAME}/ --config=setup.cfg --count --show-source --statistics --benchmark
 	@$(VENV)/bin/interrogate ${NAME}/ --config=setup.cfg
 	@$(VENV)/bin/vulture ${NAME}/ --ignore-names on_* --min-confidence 80
-	@$(VENV)/bin/mypy ${NAME}/ --ignore-missing-imports
 
 .PHONY: run
 run: $(VENV)/bin/activate  ## 🏃 Run the project.
