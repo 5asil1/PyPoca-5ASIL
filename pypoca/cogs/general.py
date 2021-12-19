@@ -4,7 +4,7 @@ from discord.ext.commands import Bot, BucketType, Cog
 from dislash import ActionRow, Button, SlashInteraction, cooldown, slash_command
 
 from pypoca.config import Config
-from pypoca.embeds import BLANK_EMOJI, Color, Option
+from pypoca.embeds import BLANK_EMOJI, Choices, Color, Option
 from pypoca.languages import DEFAULT_LANGUAGE, Language
 
 __all__ = ("General", "setup")
@@ -18,7 +18,7 @@ class General(Cog):
 
     @cooldown(rate=1, per=5, type=BucketType.member)
     @slash_command(description=DEFAULT_LANGUAGE.commands["ping"]["description"])
-    async def ping(self, inter: SlashInteraction, hide: bool = Option.hide):
+    async def ping(self, inter: SlashInteraction, hide: Choices.boolean = Option.hide):
         """Measures latency between the bot service and the Discord client."""
         latency = int(self.bot.latency * 1000)
         language = self.bot.servers[inter.guild_id]["language"]
@@ -30,7 +30,7 @@ class General(Cog):
 
     @cooldown(rate=1, per=5, type=BucketType.member)
     @slash_command(description=DEFAULT_LANGUAGE.commands["help"]["description"])
-    async def help(self, inter: SlashInteraction, hide: bool = Option.hide):
+    async def help(self, inter: SlashInteraction, hide: Choices.boolean = Option.hide):
         """The implementation of the help command."""
         language = self.bot.servers[inter.guild_id]["language"]
         quotes = Language(language)

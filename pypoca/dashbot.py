@@ -1,7 +1,8 @@
 # -*- coding: utf-8 -*-
-import aiohttp
 import asyncio
 from dataclasses import dataclass
+
+import aiohttp
 
 __all__ = "Dashbot"
 
