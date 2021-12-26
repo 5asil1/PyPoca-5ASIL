@@ -10,8 +10,9 @@ __all__ = "Log"
 
 
 class Log(Logger):
+    """Initialize the Logger with configuration from a file, a dictionary or kwargs."""
+
     def __new__(cls, filename: str = None, dictionary: dict = {}, bugsnag_key: str = None, **kwargs) -> Logger:
-        """Initialize the Logger with configuration from a file, a dictionary or kwargs."""
         if filename:
             cls.config_from_file(filename)
         elif dictionary:

@@ -8,7 +8,6 @@ class Color:
 
     primary = 0xF1CF68
     secondary = 0x6577C6
-
     red = 0xE0242C
 
     bot = primary

@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from dislash import OptionParam, option_enum
+from disnake.ext.commands import Param, option_enum
 
 from pypoca.languages import DEFAULT_LANGUAGE
 
@@ -198,109 +198,121 @@ class Choices:
 class Option:
     """All valid options for slash commands."""
 
-    language = OptionParam(
+    language = Param(
         name=DEFAULT_LANGUAGE.options["language"]["title"],
         description=DEFAULT_LANGUAGE.options["language"]["description"],
     )
-    region = OptionParam(
+    region = Param(
         name=DEFAULT_LANGUAGE.options["region"]["title"],
         description=DEFAULT_LANGUAGE.options["region"]["description"],
     )
-    hide = OptionParam(
+    hide = Param(
         default=0,
         name=DEFAULT_LANGUAGE.options["hide"]["title"],
         description=DEFAULT_LANGUAGE.options["hide"]["description"],
     )
-    query = OptionParam(
+    query = Param(
         name=DEFAULT_LANGUAGE.options["query"]["title"],
         description=DEFAULT_LANGUAGE.options["query"]["description"],
     )
-    page = OptionParam(
+    page = Param(
         default=1,
         name=DEFAULT_LANGUAGE.options["page"]["title"],
         description=DEFAULT_LANGUAGE.options["page"]["description"],
+        min_value=1,
+        max_value=50,
     )
-    nsfw = OptionParam(
+    nsfw = Param(
         default=0,
         name=DEFAULT_LANGUAGE.options["nsfw"]["title"],
         description=DEFAULT_LANGUAGE.options["nsfw"]["description"],
     )
-    year = OptionParam(
+    year = Param(
         default=-1,
         name=DEFAULT_LANGUAGE.options["year"]["title"],
         description=DEFAULT_LANGUAGE.options["year"]["description"],
+        min_value=1800,
+        max_value=2200,
     )
-    min_year = OptionParam(
+    min_year = Param(
         default=-1,
         name=DEFAULT_LANGUAGE.options["min_year"]["title"],
         description=DEFAULT_LANGUAGE.options["min_year"]["description"],
+        min_value=1800,
+        max_value=2200,
     )
-    max_year = OptionParam(
+    max_year = Param(
         default=-1,
         name=DEFAULT_LANGUAGE.options["max_year"]["title"],
         description=DEFAULT_LANGUAGE.options["max_year"]["description"],
+        min_value=1800,
+        max_value=2200,
     )
-    min_votes = OptionParam(
+    min_votes = Param(
         default=-1,
         name=DEFAULT_LANGUAGE.options["min_votes"]["title"],
         description=DEFAULT_LANGUAGE.options["min_votes"]["description"],
     )
-    max_votes = OptionParam(
+    max_votes = Param(
         default=-1,
         name=DEFAULT_LANGUAGE.options["max_votes"]["title"],
         description=DEFAULT_LANGUAGE.options["max_votes"]["description"],
     )
-    min_rating = OptionParam(
+    min_rating = Param(
         default=-1.0,
         name=DEFAULT_LANGUAGE.options["min_rating"]["title"],
         description=DEFAULT_LANGUAGE.options["min_rating"]["description"],
+        min_value=0,
+        max_value=10,
     )
-    max_rating = OptionParam(
+    max_rating = Param(
         default=-1.0,
         name=DEFAULT_LANGUAGE.options["max_rating"]["title"],
         description=DEFAULT_LANGUAGE.options["max_rating"]["description"],
+        min_value=0,
+        max_value=10,
     )
-    min_runtime = OptionParam(
+    min_runtime = Param(
         default=-1,
         name=DEFAULT_LANGUAGE.options["min_runtime"]["title"],
         description=DEFAULT_LANGUAGE.options["min_runtime"]["description"],
     )
-    max_runtime = OptionParam(
+    max_runtime = Param(
         default=-1,
         name=DEFAULT_LANGUAGE.options["max_runtime"]["title"],
         description=DEFAULT_LANGUAGE.options["max_runtime"]["description"],
     )
-    movie_sort_by = OptionParam(
+    movie_sort_by = Param(
         default="popularity.desc",
         name=DEFAULT_LANGUAGE.options["sort_by"]["title"],
         description=DEFAULT_LANGUAGE.options["sort_by"]["description"],
     )
-    tv_sort_by = OptionParam(
+    tv_sort_by = Param(
         default="popularity.desc",
         name=DEFAULT_LANGUAGE.options["sort_by"]["title"],
         description=DEFAULT_LANGUAGE.options["sort_by"]["description"],
     )
-    movie_service = OptionParam(
+    movie_service = Param(
         default=None,
         name=DEFAULT_LANGUAGE.options["service"]["title"],
         description=DEFAULT_LANGUAGE.options["service"]["description"],
     )
-    tv_service = OptionParam(
+    tv_service = Param(
         default=None,
         name=DEFAULT_LANGUAGE.options["service"]["title"],
         description=DEFAULT_LANGUAGE.options["service"]["description"],
     )
-    movie_genre = OptionParam(
+    movie_genre = Param(
         default=None,
         name=DEFAULT_LANGUAGE.options["genre"]["title"],
         description=DEFAULT_LANGUAGE.options["genre"]["description"],
     )
-    tv_genre = OptionParam(
+    tv_genre = Param(
         default=None,
         name=DEFAULT_LANGUAGE.options["genre"]["title"],
         description=DEFAULT_LANGUAGE.options["genre"]["description"],
     )
-    interval = OptionParam(
+    interval = Param(
         default=None,
         name=DEFAULT_LANGUAGE.options["interval"]["title"],
         description=DEFAULT_LANGUAGE.options["interval"]["description"],

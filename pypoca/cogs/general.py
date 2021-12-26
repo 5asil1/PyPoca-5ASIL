@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
-from discord import Embed
-from discord.ext.commands import Bot, BucketType, Cog
-from dislash import ActionRow, Button, SlashInteraction, cooldown, slash_command
+from disnake import ApplicationCommandInteraction, Embed
+from disnake.ext.commands import Bot, BucketType, Cog, cooldown, slash_command
+from disnake.ui import Button, View
 
-from pypoca.config import Config
-from pypoca.embeds import BLANK_EMOJI, Choices, Color, Option
+from pypoca.embeds import BLANK_EMOJI, Choices, Option
+from pypoca.entities import Color
 from pypoca.languages import DEFAULT_LANGUAGE, Language
 
 __all__ = ("General", "setup")
@@ -18,7 +18,7 @@ class General(Cog):
 
     @cooldown(rate=1, per=5, type=BucketType.member)
     @slash_command(description=DEFAULT_LANGUAGE.commands["ping"]["description"])
-    async def ping(self, inter: SlashInteraction, hide: Choices.boolean = Option.hide):
+    async def ping(self, inter: ApplicationCommandInteraction, hide: Choices.boolean = Option.hide):
         """Measures latency between the bot service and the Discord client."""
         latency = int(self.bot.latency * 1000)
         language = self.bot.servers[inter.guild_id]["language"]
@@ -30,7 +30,7 @@ class General(Cog):
 
     @cooldown(rate=1, per=5, type=BucketType.member)
     @slash_command(description=DEFAULT_LANGUAGE.commands["help"]["description"])
-    async def help(self, inter: SlashInteraction, hide: Choices.boolean = Option.hide):
+    async def help(self, inter: ApplicationCommandInteraction, hide: Choices.boolean = Option.hide):
         """The implementation of the help command."""
         language = self.bot.servers[inter.guild_id]["language"]
         quotes = Language(language)
@@ -58,29 +58,30 @@ class General(Cog):
         """
         buttons = [
             {
+                "style": 5,
                 "label": quotes.commands["help"]["reply"]["buttons"]["invite"],
-                "url": Config.bot.urls["invite"],
-                "style": 5,
+                "url": self.bot.config.urls["invite"],
             },
             {
+                "style": 5,
                 "label": quotes.commands["help"]["reply"]["buttons"]["vote"],
-                "url": Config.bot.urls["vote"],
-                "style": 5,
+                "url": self.bot.config.urls["vote"],
             },
             {
+                "style": 5,
                 "label": quotes.commands["help"]["reply"]["buttons"]["server"],
-                "url": Config.bot.urls["server"],
-                "style": 5,
+                "url": self.bot.config.urls["server"],
             },
             {
-                "label": quotes.commands["help"]["reply"]["buttons"]["site"],
-                "url": Config.bot.urls["site"],
                 "style": 5,
+                "label": quotes.commands["help"]["reply"]["buttons"]["site"],
+                "url": self.bot.config.urls["site"],
             },
         ]
         embed = Embed(description=description, color=Color.bot)
-        action_row = ActionRow(*[Button.from_dict(button) for button in buttons])
-        await inter.reply(embed=embed, components=[action_row], ephemeral=hide)
+        view = View()
+        [view.add_item(Button(**button)) for button in buttons]
+        await inter.send(embed=embed, view=view, ephemeral=hide)
 
 
 def setup(bot: Bot) -> None:

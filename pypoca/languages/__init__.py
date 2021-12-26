@@ -3,13 +3,13 @@ import os
 
 import yaml
 
-from pypoca.config import Config
+from pypoca.config import Config  # TODO: remove this
 
 __all__ = ("DEFAULT_LANGUAGE", "LANGUAGES", "Language")
 
 
 class Language:
-    def __init__(self, language: str = Config.bot.language) -> None:
+    def __init__(self, language: str) -> None:
         path = os.path.join("pypoca/languages", language.replace("-", "_") + ".yaml")
         with open(path, "r") as stream:
             self.language = yaml.safe_load(stream)
@@ -50,10 +50,11 @@ class Language:
         return self.language["command"]
 
 
+# TODO: refactor this
 LANGUAGES = {}
 for filename in os.listdir("pypoca/languages"):
     if not filename.endswith(".yaml"):
         continue
     language = filename[:-5].replace("_", "-")
     LANGUAGES[language] = Language(language)
-DEFAULT_LANGUAGE = LANGUAGES[Config.bot.language.replace("_", "-")]
+DEFAULT_LANGUAGE = LANGUAGES[Config.language.replace("_", "-")]

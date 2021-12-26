@@ -65,11 +65,10 @@ class TraktTVConfig:
     client_secret = os.environ.get("TRAKT_TV_CLIENT_ID")
 
 
-class Config:
+class Config(BotConfig):
     """All configuration variables"""
 
     debug = bool(os.environ.get("DEBUG", False))
-    bot = BotConfig
     database = DatabaseConfig
     logger = LoggerConfig
     bugsnag = BugsnagConfig

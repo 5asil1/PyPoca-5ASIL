@@ -34,6 +34,7 @@ command:
     rating: Rating
     released: Released
     runtime: Runtime
+    status: Status
     studios: Studios
     watch: Watch on
    buttons:
@@ -65,6 +66,7 @@ command:
     rating: Rating
     runtime: Runtime
     seasons: Seasons
+    status: Status
     studios: Studios
     watch: Watch on
    buttons:

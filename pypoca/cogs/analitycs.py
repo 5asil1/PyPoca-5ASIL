@@ -1,10 +1,8 @@
 # -*- coding: utf-8 -*-
-from discord import Message
-from discord.ext.commands import Bot, Cog
-from dislash import SlashInteraction
+from disnake import ApplicationCommandInteraction, Message, MessageInteraction
+from disnake.ext.commands import Bot, Cog
 
-from pypoca import log, utils
-from pypoca.config import Config
+from pypoca import log
 from pypoca.dashbot import Dashbot
 
 __all__ = ("Analytics", "setup")
@@ -13,9 +11,9 @@ __all__ = ("Analytics", "setup")
 class Analytics(Cog):
     """`Analytics` cog track incoming and outgoing messages."""
 
-    def __init__(self, bot: Bot, api_key: str) -> None:
+    def __init__(self, bot: Bot) -> None:
         self.bot = bot
-        self.dashbot = Dashbot(api_key=api_key)
+        self.dashbot = Dashbot(api_key=bot.config.dashbot.key)
 
     @Cog.listener()
     async def on_message(self, message: Message) -> None:
@@ -44,34 +42,40 @@ class Analytics(Cog):
             )
 
     @Cog.listener()
-    async def on_slash_command(self, inter: SlashInteraction) -> None:
+    async def on_slash_command(self, inter: ApplicationCommandInteraction) -> None:
         """Called when a slash command is invoked."""
-        options = utils.slash_data_option_to_str(inter.data.options)
-        text = f"/{inter.data.name} {options}"
+        options = []
+        for option in inter.data.options.values():
+            if option.name and option.value:
+                options.append(f"{option.name}={option.value}")
+            elif option.name:
+                options.append(option.name)
+            if option.options:
+                for opt in option.options.values():
+                    options.append(f"{opt.name}={opt.value}")
+        options = " ".join(options)
         self.dashbot.received(
-            message=text,
+            message=f"/{inter.data.name} {options}",
             guild_id=inter.guild.id,
             author_id=inter.author.id,
             author_name=str(inter.author),
         )
 
     @Cog.listener()
-    async def on_button_click(self, inter: SlashInteraction) -> None:
+    async def on_button_click(self, inter: MessageInteraction) -> None:
         """Called when any button is clicked."""
-        text = inter.clicked_button.label
         self.dashbot.received(
-            message=text,
+            message=inter.clicked_button.label,
             guild_id=inter.guild.id,
             author_id=inter.author.id,
             author_name=str(inter.author),
         )
 
     @Cog.listener()
-    async def on_dropdown(self, inter: SlashInteraction) -> None:
+    async def on_dropdown(self, inter: MessageInteraction) -> None:
         """Called when any menu is clicked."""
-        text = " ".join([option.label for option in inter.select_menu.selected_options])
         self.dashbot.received(
-            message=text,
+            message=" ".join([option.label for option in inter.select_menu.selected_options]),
             guild_id=inter.guild.id,
             author_id=inter.author.id,
             author_name=str(inter.author),
@@ -80,8 +84,7 @@ class Analytics(Cog):
 
 def setup(bot: Bot) -> None:
     """Setup `Analytics` cog."""
-    api_key = Config.dashbot.key
-    if api_key is None:
+    if bot.config.dashbot.key is None:
         log.warning("No Dashbot API key configured, couldn't track")
     else:
-        bot.add_cog(Analytics(bot, api_key))
+        bot.add_cog(Analytics(bot))

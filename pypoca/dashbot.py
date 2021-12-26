@@ -39,7 +39,7 @@ class Dashbot:
 
     def sent(self, message: str, guild_id: int, author_id: int, author_name: str, embed: dict) -> None:
         """When the bot sends a message."""
-        embed = {k: v for k, v in embed.items() if v}  # remove `discord.Embed.Empty` values
+        embed = {k: v for k, v in embed.items() if v}  # remove `disnake.Embed.Empty` values
         params = self.params(type="outgoing")
         json = self.json(text=message, id=author_id, name=author_name, locale=guild_id, extra_json=embed)
         asyncio.create_task(self._request(self.url, params=params, json=json))

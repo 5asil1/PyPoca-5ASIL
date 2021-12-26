@@ -1,130 +1,64 @@
 # -*- coding: utf-8 -*-
+from typing import List
+
 from aiotmdb import TMDB
-from discord import Embed
-from discord.ext.commands import Bot, Cog
-from dislash import ActionRow, Button, ResponseType, SelectMenu, SlashInteraction, slash_command
+from disnake import ApplicationCommandInteraction, Embed
+from disnake.ext.commands import Bot, Cog, slash_command
 
 from pypoca import utils
-from pypoca.adapters import Adapter
-from pypoca.embeds import Choices, Color, Option
+from pypoca.embeds import Choices, Menu, Option
+from pypoca.entities import TV, Color
 from pypoca.exceptions import NotFound
 from pypoca.languages import DEFAULT_LANGUAGE, Language
 
-__all__ = ("TV", "setup")
+__all__ = ("TVs", "setup")
 
 
-class TV(Cog):
-    """`TV` cog has all TV show related commands."""
+class TVs(Cog):
+    """`TVs` cog has all TV show related commands."""
 
     def __init__(self, bot: Bot):
         self.bot = bot
 
     @staticmethod
-    async def _reply(
-        inter: SlashInteraction,
-        *,
-        results: list,
-        page: int,
-        total_pages: int,
-        language: str,
-        region: str,
-    ) -> None:
-        quotes = Language(language)
-        adapter = Adapter("tv")
-        if len(results) > 1:
-            title = quotes.commands["tv"]["reply"]["title"]
-            embed = Embed(title=title, color=Color.bot)
-            options = [{"value": i, **adapter.option(result, language)} for i, result in enumerate(results)]
-            select_menu = SelectMenu.from_dict({"placeholder": quotes.placeholder, "options": options})
-            msg = await inter.reply(
-                embed=embed,
-                components=[select_menu],
-                type=ResponseType.ChannelMessageWithSource,
-            )
-
-            def check(ctx: SlashInteraction):
-                return ctx.author == inter.author
-
-            ctx = await msg.wait_for_dropdown(check, timeout=120)
-            index = int(ctx.select_menu.selected_options[0].value)
-        elif len(results) == 1:
-            index = 0
-        else:
-            raise NotFound()
-        tv_id = results[index].id
+    async def get_tv_by_id(tv_id: int, language: str, region: str) -> TV:
         result = await TMDB.tv(language=language, region=region).details(
             tv_id,
             append_to_response="credits,external_ids,recommendations,videos,watch/providers",
         )
         try:
-            result["external_ids"]["trakt"] = await utils.get_trakt_id(tv_id, type="show")
+            result["external_ids"]["trakt_id"] = await utils.get_trakt_id(tv_id, type="show")
         except Exception:
-            result["external_ids"]["trakt"] = None
-        embed = Embed.from_dict(adapter.embed(result, language, region))
-        buttons = adapter.buttons(result, language)
-        action_row = ActionRow(*[Button.from_dict(button) for button in buttons])
-        if len(results) > 1:
-            msg = await ctx.reply(embed=embed, components=[action_row], type=ResponseType.UpdateMessage)
-        else:
-            msg = await inter.reply(embed=embed, components=[action_row])
-        on_click = msg.create_click_listener(timeout=120)
+            result["external_ids"]["trakt_id"] = None
+        result["id"] = tv_id
+        return TV.from_tmdb(result)
 
-        @on_click.not_from_user(inter.author, cancel_others=True, reset_timeout=False)
-        async def on_wrong_user(inter: SlashInteraction):
-            """Called in case a button was clicked not by the author."""
-            pass
-
-        @on_click.matching_id("cast")
-        async def on_cast_button(inter: SlashInteraction):
-            """Called in case the cast button was clicked."""
-            person = inter.bot.get_cog("Person")
-            await person._reply(
-                inter,
-                results=result.credits.cast[:20],
-                page=1,
-                total_pages=len(result.credits.cast) // 20,
-                language=language,
-                region=region,
-            )
-
-        @on_click.matching_id("crew")
-        async def on_crew_button(inter: SlashInteraction):
-            """Called in case the crew button was clicked."""
-            person = inter.bot.get_cog("Person")
-            await person._reply(
-                inter,
-                results=result.credits.crew[:20],
-                page=1,
-                total_pages=len(result.credits.crew) // 20,
-                language=language,
-                region=region,
-            )
-
-        @on_click.matching_id("similar")
-        async def on_similar_button(inter: SlashInteraction):
-            """Called in case the similar button was clicked."""
-            await TV._reply(
-                inter,
-                results=result.recommendations.results[:20],
-                page=1,
-                total_pages=len(result.recommendations.results) // 20,
-                language=language,
-                region=region,
-            )
-
-        @on_click.timeout
-        async def on_timeout():
-            """Waiting for listener timeout."""
-            await msg.edit(components=[])
+    @staticmethod
+    async def _reply(
+        inter: ApplicationCommandInteraction,
+        *,
+        results: List[dict],
+        page: int,
+        total_pages: int,
+        language: str,
+        region: str,
+    ) -> None:
+        if len(results) == 0:
+            raise NotFound()
+        quotes = Language(language)
+        tv_shows = [TV.from_tmdb(result) for result in results]
+        embed = Embed(title=quotes.commands["tv"]["reply"]["title"], color=Color.bot)
+        menu = Menu(inter.bot, tv_shows, callback=TVs.get_tv_by_id, language=language, region=region)
+        await inter.send(embed=embed, view=menu)
 
     @slash_command(name="tv", description=DEFAULT_LANGUAGE.commands["tv"]["description"])
-    async def tv(self, inter: SlashInteraction):
+    async def tv(self, inter: ApplicationCommandInteraction):
         """Command that groups tv-related subcommands."""
 
     @tv.sub_command(description=DEFAULT_LANGUAGE.commands["discover_tv"]["description"])
     async def discover(
         self,
-        inter: SlashInteraction,
+        inter: ApplicationCommandInteraction,
         sort_by: Choices.tv_sort_by = Option.tv_sort_by,
         service: Choices.tv_service = Option.tv_service,
         genre: Choices.tv_genre = Option.tv_genre,
@@ -164,7 +98,7 @@ class TV(Cog):
         )
 
     @tv.sub_command(description=DEFAULT_LANGUAGE.commands["popular_tv"]["description"])
-    async def popular(self, inter: SlashInteraction, page: int = Option.page) -> None:
+    async def popular(self, inter: ApplicationCommandInteraction, page: int = Option.page) -> None:
         """Subcommand to get the current popular TV shows."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -182,7 +116,7 @@ class TV(Cog):
     @tv.sub_command(description=DEFAULT_LANGUAGE.commands["search_tv"]["description"])
     async def search(
         self,
-        inter: SlashInteraction,
+        inter: ApplicationCommandInteraction,
         query: str = Option.query,
         year: int = Option.year,
         nsfw: Choices.boolean = Option.nsfw,
@@ -203,7 +137,7 @@ class TV(Cog):
         )
 
     @tv.sub_command(description=DEFAULT_LANGUAGE.commands["top_tv"]["description"])
-    async def top(self, inter: SlashInteraction, page: int = Option.page) -> None:
+    async def top(self, inter: ApplicationCommandInteraction, page: int = Option.page) -> None:
         """Subcommand get the top rated TV shows."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -219,7 +153,9 @@ class TV(Cog):
         )
 
     @tv.sub_command(description=DEFAULT_LANGUAGE.commands["trending_tv"]["description"])
-    async def trending(self, inter: SlashInteraction, interval: Choices.interval = Option.interval) -> None:
+    async def trending(
+        self, inter: ApplicationCommandInteraction, interval: Choices.interval = Option.interval
+    ) -> None:
         """Subcommand get the trending TV shows."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -238,7 +174,7 @@ class TV(Cog):
         )
 
     @tv.sub_command(description=DEFAULT_LANGUAGE.commands["upcoming_tv"]["description"])
-    async def upcoming(self, inter: SlashInteraction, page: int = Option.page) -> None:
+    async def upcoming(self, inter: ApplicationCommandInteraction, page: int = Option.page) -> None:
         """Subcommand get the upcoming TV shows in theatres."""
         language = self.bot.servers[inter.guild_id]["language"]
         region = self.bot.servers[inter.guild_id]["region"]
@@ -255,5 +191,5 @@ class TV(Cog):
 
 
 def setup(bot: Bot) -> None:
-    """Setup `TV` cog."""
-    bot.add_cog(TV(bot))
+    """Setup `TVs` cog."""
+    bot.add_cog(TVs(bot))

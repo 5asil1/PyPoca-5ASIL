@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-from discord import Activity, ActivityType, Embed
-from discord.ext.commands import Bot, Cog
-from dislash import CommandOnCooldown, MissingPermissions, SlashInteraction
+from disnake import Activity, ActivityType, ApplicationCommandInteraction, Embed
+from disnake.ext.commands import Bot, Cog, CommandOnCooldown, MissingPermissions
 
 from pypoca import log
-from pypoca.config import Config
-from pypoca.embeds import Color
+from pypoca.entities import Color
 from pypoca.exceptions import NotFound
 from pypoca.languages import Language
 
@@ -24,14 +22,14 @@ class Events(Cog):
         activity = Activity(type=ActivityType.watching, name="/help")
         await self.bot.change_presence(activity=activity)
 
-        if Config.debug is True:
+        if self.bot.config.debug is True:
             from pypoca.overwatch import Watcher
 
             watcher = Watcher(self.bot, path="pypoca/cogs", loop=self.bot.loop)
             await watcher.start()
 
     @Cog.listener()
-    async def on_slash_command_error(self, inter: SlashInteraction, e: Exception) -> None:
+    async def on_slash_command_error(self, inter: ApplicationCommandInteraction, e: Exception) -> None:
         """Called when a slash command fails due to some error."""
         language = self.bot.servers[inter.guild_id]["language"]
         if isinstance(e, CommandOnCooldown):
@@ -52,7 +50,7 @@ class Events(Cog):
                 exc_info=e,
             )
         embed = Embed(title=title, description=description, color=Color.error)
-        await inter.reply(embed=embed, ephemeral=True)
+        await inter.send(embed=embed, ephemeral=True)
 
 
 def setup(bot: Bot) -> None:
