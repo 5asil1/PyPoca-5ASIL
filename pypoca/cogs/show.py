@@ -6,80 +6,91 @@ from pypoca.config import COLOR
 from pypoca.database import Server
 from pypoca.exceptions import NoResults
 from pypoca.services import tmdb, trakt
-from pypoca.ext import ALL, DEFAULT, DEFAULT_LANGUAGE, DEFAULT_REGION, Choice, Movie, Option
+from pypoca.ext import ALL, DEFAULT, DEFAULT_LANGUAGE, DEFAULT_REGION, Choice, Option, Show
 
 
-class MovieButtons(disnake.ui.View):
-    def __init__(self, inter: disnake.MessageInteraction, *, movie: Movie):
-        self.movie = movie
+class ShowButtons(disnake.ui.View):
+    def __init__(self, inter: disnake.MessageInteraction, *, show: Show):
+        self.show = show
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         locale = ALL[language]
         super().__init__(timeout=120)
-        self.add_item(disnake.ui.Button(label=locale["COMMAND_MOVIE_BUTTON_TRAILER"], url=movie.youtube, disabled=(not movie.youtube_id)))
-        self.add_item(disnake.ui.Button(label="IMDb", url=movie.imdb, disabled=(not movie.imdb_id)))
-        self.add_item(disnake.ui.Button(label=locale["COMMAND_MOVIE_BUTTON_CAST"], disabled=(not movie.cast)))
-        self.add_item(disnake.ui.Button(label=locale["COMMAND_MOVIE_BUTTON_CREW"], disabled=(not movie.crew)))
-        self.add_item(disnake.ui.Button(label=locale["COMMAND_MOVIE_BUTTON_SIMILAR"], disabled=(not movie.similar)))
+        self.add_item(disnake.ui.Button(label=locale["COMMAND_MOVIE_BUTTON_TRAILER"], url=show.youtube, disabled=(not show.youtube_id)))
+        self.add_item(disnake.ui.Button(label="IMDb", url=show.imdb, disabled=(not show.imdb_id)))
+        self.add_item(disnake.ui.Button(label=locale["COMMAND_MOVIE_BUTTON_CAST"], disabled=(not show.cast)))
+        self.add_item(disnake.ui.Button(label=locale["COMMAND_MOVIE_BUTTON_CREW"], disabled=(not show.crew)))
+        self.add_item(disnake.ui.Button(label=locale["COMMAND_MOVIE_BUTTON_SIMILAR"], disabled=(not show.similar)))
         self.children[2].callback = self.cast
         self.children[3].callback = self.crew
         self.children[4].callback = self.similar
 
     async def cast(self, inter: disnake.MessageInteraction) -> None:
-        await inter.bot.get_cog("People")._reply(inter, results=self.movie.cast)
+        await inter.bot.get_cog("People")._reply(inter, results=self.show.cast)
 
     async def crew(self, inter: disnake.MessageInteraction) -> None:
-        await inter.bot.get_cog("People")._reply(inter, results=self.movie.crew)
+        await inter.bot.get_cog("People")._reply(inter, results=self.show.crew)
 
     async def similar(self, inter: disnake.MessageInteraction) -> None:
-        await inter.bot.get_cog("Movies")._reply(inter, results=self.movie.similar)
+        await inter.bot.get_cog("Shows")._reply(inter, results=self.show.similar)
 
 
-class MovieEmbed(disnake.Embed):
-    def __init__(self, inter: disnake.MessageInteraction, *, movie: Movie):
+class ShowEmbed(disnake.Embed):
+    def __init__(self, inter: disnake.MessageInteraction, *, show: Show):
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         locale = ALL[language]
-        super().__init__(title=movie.title, description=movie.overview, color=COLOR)
-        if movie.homepage:
-            self.url = movie.homepage
-        if movie.image:
-            self.set_image(url=movie.image)
-        if movie.directors:
-            self.set_author(name=", ".join(movie.directors))
+        super().__init__(title=show.title, description=show.overview, color=COLOR)
+        if show.homepage:
+            self.url = show.homepage
+        if show.image:
+            self.set_image(url=show.image)
+        if show.directors:
+            self.set_author(name=", ".join(show.directors))
         self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_RATING"], value=movie.rating_and_votes or "-", inline=True
+            name=locale["COMMAND_TV_FIELD_RATING"], value=show.rating_and_votes or "-", inline=True
         )
         self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_RELEASED"], value=movie.release_date.strftime(locale["DATETIME_FORMAT"]) if movie.release_date else "-", inline=True
+            name=locale["COMMAND_TV_FIELD_PREMIERED"], value=show.first_date.strftime(locale["DATETIME_FORMAT"]) if show.first_date else "-", inline=True
         )
         self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_RUNTIME"], value=movie.duration or "-", inline=True
+            name=locale["COMMAND_TV_FIELD_STATUS"],
+            value=f"{show.status} ({show.last_date.year})" if show.status == "Ended" else show.status if show.status else "-",
+            inline=True,
         )
         self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_GENRE"], value=", ".join(movie.genres) or "-", inline=True
+            name=locale["COMMAND_TV_FIELD_EPISODES"], value=str(show.number_of_episodes) or "-", inline=True
         )
         self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_STUDIOS"], value=", ".join(movie.studios) or "-", inline=True
+            name=locale["COMMAND_TV_FIELD_SEASONS"], value=str(show.number_of_seasons) or "-", inline=True
         )
         self.add_field(
-            name=locale["COMMAND_TV_FIELD_WATCH"], value=", ".join(movie.watch_on(region)) or "-", inline=True
+            name=locale["COMMAND_TV_FIELD_RUNTIME"], value=show.duration or "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_TV_FIELD_GENRE"], value=", ".join(show.genres) or "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_TV_FIELD_NETWORK"], value=", ".join(show.studios) or "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_TV_FIELD_WATCH"], value=", ".join(show.watch_on(region)) or "-", inline=True
         )
 
 
-class MovieDropdown(disnake.ui.Select):
-    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, movies: list[Movie]) -> None:
+class ShowDropdown(disnake.ui.Select):
+    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, shows: list[Show]) -> None:
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         locale = ALL[language]
         options = [
             disnake.SelectOption(
-                label=movie.title_and_year[:100],
-                value=movie.id,
-                description=movie.rating_and_votes or "",
+                label=show.title_and_year[:100],
+                value=show.id,
+                description=show.rating_and_votes or "",
             )
-            for movie in movies
+            for show in shows
         ]
         super().__init__(placeholder=locale["PLACEHOLDER"], options=options[:25])
 
@@ -87,54 +98,51 @@ class MovieDropdown(disnake.ui.Select):
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
-        movie_id = int(self.values[0])
-        result = await tmdb.Movie(id=movie_id, language=language, region=region).details(
+        show_id = int(self.values[0])
+        result = await tmdb.Show(id=show_id, language=language, region=region).details(
             append="credits,external_ids,recommendations,similar,videos,watch/providers"
         )
         try:
-            result["external_ids"]["trakt_id"] = await trakt.Movie().trakt_id_by_tmdb_id(movie_id)
+            result["external_ids"]["trakt_id"] = await trakt.Show().trakt_id_by_tmdb_id(show_id)
         except Exception as e:
             result["external_ids"]["trakt_id"] = None
-        movie = Movie(result)
+        show = Show(result)
         await inter.response.send_message(
-            embed=MovieEmbed(inter, movie=movie), view=MovieButtons(inter, movie=movie)
+            embed=ShowEmbed(inter, show=show), view=ShowButtons(inter, show=show)
         )
 
 
-class MovieSelect(disnake.ui.View):
-    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, movies: list[Movie]) -> None:
+class ShowSelect(disnake.ui.View):
+    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, shows: list[Show]) -> None:
         super().__init__()
-        self.add_item(MovieDropdown(inter, movies=movies))
+        self.add_item(ShowDropdown(inter, shows=shows))
 
 
-class Movies(commands.Cog):
+class Shows(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
     async def _reply(self, inter: disnake.ApplicationCommandInteraction, *, results: list[dict]) -> None:
         if len(results) == 0:
             raise NoResults()
-        await inter.send(view=MovieSelect(inter, movies=[Movie(result) for result in results]))
+        await inter.send(view=ShowSelect(inter, shows=[Show(result) for result in results]))
 
-    @commands.slash_command(name="movie", description=DEFAULT["COMMAND_MOVIE_DESC"])
-    async def movie(self, inter: disnake.ApplicationCommandInteraction):
+    @commands.slash_command(name="tv", description=DEFAULT["COMMAND_TV_DESC"])
+    async def tv(self, inter: disnake.ApplicationCommandInteraction):
         pass
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_DISCOVER_DESC"])
+    @tv.sub_command(description=DEFAULT["COMMAND_TV_DISCOVER_DESC"])
     async def discover(
         self,
         inter: disnake.ApplicationCommandInteraction,
-        sort_by: Choice.movie_sort_by = Option.movie_sort_by,
-        service: Choice.movie_service = Option.movie_service,
-        genre: Choice.movie_genre = Option.movie_genre,
-        nsfw: Choice.boolean = Option.nsfw,
+        sort_by: Choice.tv_sort_by = Option.tv_sort_by,
+        service: Choice.tv_service = Option.tv_service,
+        genre: Choice.tv_genre = Option.tv_genre,
         year: int = Option.year,
         min_year: int = Option.min_year,
         max_year: int = Option.max_year,
         min_votes: int = Option.min_votes,
-        max_votes: int = Option.max_votes,
         min_rating: float = Option.min_rating,
-        max_rating: float = Option.max_rating,
         min_runtime: int = Option.min_runtime,
         max_runtime: int = Option.max_runtime,
         page: int = Option.page,
@@ -142,33 +150,30 @@ class Movies(commands.Cog):
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
-        response = await tmdb.Movies(language=language, region=region).discover(
+        response = await tmdb.Shows(language=language, region=region).discover(
             page=page,
-            include_adult=nsfw,
             sort_by=sort_by,
             with_watch_providers=service,
             with_genres=genre,
-            year=year if year != -1 else None,
-            primary_release_date__gte=f"{min_year}-01-01" if min_year != -1 else None,
-            primary_release_date__lte=f"{max_year}-12-31" if max_year != -1 else None,
+            first_air_date_year=year if year != -1 else None,
+            first_air_date__gte=f"{min_year}-01-01" if min_year != -1 else None,
+            first_air_date__lte=f"{max_year}-12-31" if max_year != -1 else None,
             vote_count__gte=min_votes if min_votes != -1 else None,
-            vote_count__lte=max_votes if max_votes != -1 else None,
             vote_average__gte=min_rating if min_rating != -1 else None,
-            vote_average__lte=max_rating if max_rating != -1 else None,
             with_runtime__gte=min_runtime if min_runtime != -1 else None,
             with_runtime__lte=max_runtime if max_runtime != -1 else None,
         )
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_POPULAR_DESC"])
+    @tv.sub_command(description=DEFAULT["COMMAND_TV_POPULAR_DESC"])
     async def popular(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
-        response = await tmdb.Movies(language=language, region=region).popular(page=page)
+        response = await tmdb.Shows(language=language, region=region).popular(page=page)
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_SEARCH_DESC"])
+    @tv.sub_command(description=DEFAULT["COMMAND_TV_SEARCH_DESC"])
     async def search(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -180,35 +185,35 @@ class Movies(commands.Cog):
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
-        response = await tmdb.Movies(language=language, region=region).search(query, page=page, include_adult=nsfw, year=year)
+        response = await tmdb.Shows(language=language, region=region).search(query, page=page, include_adult=nsfw, first_air_date_year=year)
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_TOP_DESC"])
+    @tv.sub_command(description=DEFAULT["COMMAND_TV_TOP_DESC"])
     async def top(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
-        response = await tmdb.Movies(language=language, region=region).top_rated(page=page)
+        response = await tmdb.Shows(language=language, region=region).top_rated(page=page)
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_TRENDING_DESC"])
+    @tv.sub_command(description=DEFAULT["COMMAND_TV_TRENDING_DESC"])
     async def trending(
         self, inter: disnake.ApplicationCommandInteraction, interval: Choice.interval = Option.interval
     ) -> None:
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
-        response = await tmdb.Movies(language=language, region=region).trending(interval=interval)
+        response = await tmdb.Shows(language=language, region=region).trending(interval=interval)
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_UPCOMING_DESC"])
+    @tv.sub_command(description=DEFAULT["COMMAND_TV_UPCOMING_DESC"])
     async def upcoming(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
-        response = await tmdb.Movies(language=language, region=region).upcoming(page=page)
+        response = await tmdb.Shows(language=language, region=region).on_the_air(page=page)
         await self._reply(inter, results=response["results"])
 
 
 def setup(bot: commands.Bot) -> None:
-    bot.add_cog(Movies(bot))
+    bot.add_cog(Shows(bot))

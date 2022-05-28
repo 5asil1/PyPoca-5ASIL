@@ -1,0 +1,4 @@
+-r requirements.txt
+brunette
+flake8
+isort

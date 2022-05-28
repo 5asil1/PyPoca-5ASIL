@@ -1,0 +1,180 @@
+{
+    "ERROR_NO_PERMISSION_REPLY": "Você precisa ser administrador para executar esse comando",
+    "ERROR_NO_RESULTS": "Não foi possível encontrar nenhuma correspondência para essas especificações",
+
+    "DATETIME_FORMAT": "%d/%m/%Y",
+
+    "OPTION_TRUE": "sim",
+    "OPTION_FALSE": "não",
+
+    "OPTION_QUERY_NAME": "nome",
+    "OPTION_QUERY_DESC": "Uma consulta de texto para pesquisar",
+
+    "OPTION_PAGE_NAME": "página",
+    "OPTION_PAGE_DESC": "Especifique qual página consultar",
+
+    "OPTION_LANGUAGE_NAME": "idioma",
+    "OPTION_LANGUAGE_DESC": "Um idioma para exibir os dados traduzidos",
+    "OPTION_LANGUAGE_CHOICE_AR": "Árabe",
+    "OPTION_LANGUAGE_CHOICE_EN_US": "Inglês",
+    "OPTION_LANGUAGE_CHOICE_PT_BR": "Português",
+
+    "OPTION_REGION_NAME": "região",
+    "OPTION_REGION_DESC": "Uma região para filtrar as datas de lançamento e onde assistir",
+    "OPTION_REGION_CHOICE_BR": "Brasil",
+    "OPTION_REGION_CHOICE_US": "Estados Unidos",
+    "OPTION_REGION_CHOICE_SA": "Arábia Saudita",
+
+    "OPTION_NSFW_NAME": "adulto",
+    "OPTION_NSFW_DESC": "Escolha se deseja incluir conteúdo adulto (pornografia) nos resultados",
+
+    "OPTION_SORT_BY_NAME": "ordenar",
+    "OPTION_SORT_BY_DESC": "Escolha uma das muitas opções de classificação disponíveis",
+    "OPTION_SORT_BY_CHOICE_POPULARITY": "popularidade",
+    "OPTION_SORT_BY_CHOICE_YEAR": "lançamento",
+    "OPTION_SORT_BY_CHOICE_RATING": "nota",
+    "OPTION_SORT_BY_CHOICE_NAME": "alfabética",
+    "OPTION_SORT_BY_CHOICE_VOTES": "votos",
+
+    "OPTION_YEAR_NAME": "ano",
+    "OPTION_YEAR_DESC": "Incluir apenas resultados com uma data de lançamento igual ao valor especificado",
+
+    "OPTION_MIN_YEAR_NAME": "ano-mínimo",
+    "OPTION_MIN_YEAR_DESC": "Incluir apenas resultados com uma data de lançamento maior ou igual ao valor especificado",
+
+    "OPTION_MAX_YEAR_NAME": "ano-máximo",
+    "OPTION_MAX_YEAR_DESC": "Incluir apenas resultados com uma data de lançamento menor ou igual ao valor especificado",
+
+    "OPTION_MIN_VOTES_NAME": "votos-mínimos",
+    "OPTION_MIN_VOTES_DESC": "Incluir apenas resultados com contagem de votos maior ou igual ao valor especificado",
+
+    "OPTION_MAX_VOTES_NAME": "votos-máximos",
+    "OPTION_MAX_VOTES_DESC": "Incluir apenas resultados com contagem de votos menor ou igual ao valor especificado",
+
+    "OPTION_MIN_RATING_NAME": "nota-mínima",
+    "OPTION_MIN_RATING_DESC": "Incluir apenas resultados com classificação maior ou igual ao valor especificado",
+
+    "OPTION_MAX_RATING_NAME": "nota-máxima",
+    "OPTION_MAX_RATING_DESC": "Incluir apenas resultados com classificação menor ou igual ao valor especificado",
+
+    "OPTION_MIN_RUNTIME_NAME": "duração-mínima",
+    "OPTION_MIN_RUNTIME_DESC": "Incluir apenas resultados com uma duração maior ou igual a um valor",
+
+    "OPTION_MAX_RUNTIME_NAME": "duração-máxima",
+    "OPTION_MAX_RUNTIME_DESC": "Incluir apenas resultados com uma duração menor ou igual a um valor",
+
+    "OPTION_INTERVAL_NAME": "intervalo",
+    "OPTION_INTERVAL_DESC": "Escolha entre as tendências do dia ou semana",
+    "OPTION_INTERVAL_CHOICE_DAY": "dia",
+    "OPTION_INTERVAL_CHOICE_WEEK": "semana",
+
+    "OPTION_HIDE_NAME": "esconder",
+    "OPTION_HIDE_DESC": "A resposta do comando será visível apenas para você",
+
+    "OPTION_SERVICE_NAME": "serviço",
+    "OPTION_SERVICE_DESC": "Filtrar os resultados por serviço de streaming ou canal específico",
+
+    "OPTION_GENRE_NAME": "gênero",
+    "OPTION_GENRE_DESC": "Filtrar os resultados por um gênero específico",
+    "OPTION_GENRE_CHOICE_ACTION": "ação",
+    "OPTION_GENRE_CHOICE_ACTION_AND_ADVENTURE": "ação & aventura",
+    "OPTION_GENRE_CHOICE_ADVENTURE": "aventura",
+    "OPTION_GENRE_CHOICE_ANIMATION": "animação",
+    "OPTION_GENRE_CHOICE_COMEDY": "comédia",
+    "OPTION_GENRE_CHOICE_CRIME": "crime",
+    "OPTION_GENRE_CHOICE_DOCUMENTARY": "documentário",
+    "OPTION_GENRE_CHOICE_DRAMA": "drama",
+    "OPTION_GENRE_CHOICE_FAMILY": "família",
+    "OPTION_GENRE_CHOICE_FANTASY": "fantasia",
+    "OPTION_GENRE_CHOICE_HISTORY": "história",
+    "OPTION_GENRE_CHOICE_HORROR": "terror",
+    "OPTION_GENRE_CHOICE_KIDS": "infantil",
+    "OPTION_GENRE_CHOICE_MUSIC": "musical",
+    "OPTION_GENRE_CHOICE_MYSTERY": "mistério",
+    "OPTION_GENRE_CHOICE_NEWS": "notícia",
+    "OPTION_GENRE_CHOICE_REALITY": "reality show",
+    "OPTION_GENRE_CHOICE_ROMANCE": "romance",
+    "OPTION_GENRE_CHOICE_SOAP": "soap",
+    "OPTION_GENRE_CHOICE_SYFY": "ficção científica",
+    "OPTION_GENRE_CHOICE_SYFY_AND_FANTASY": "ficção científica & fantasia",
+    "OPTION_GENRE_CHOICE_TALK": "talk show",
+    "OPTION_GENRE_CHOICE_THRILLER": "thriller",
+    "OPTION_GENRE_CHOICE_TV": "TV",
+    "OPTION_GENRE_CHOICE_WAR": "guerra",
+    "OPTION_GENRE_CHOICE_WAR_AND_POLITICS": "guerra & política",
+    "OPTION_GENRE_CHOICE_WESTERN": "faroeste",
+
+    "PLACEHOLDER": "Selecione uma das opções...",
+
+    "COMMAND_PING_DESC": "Obtenha a latência da PyPoca",
+    "COMMAND_PING_REPLY": "Latência",
+
+    "COMMAND_HELP_DESC": "Veja o menu de ajuda da PyPoca",
+    "COMMAND_HELP_BUTTON_INVITE": "Adicione",
+    "COMMAND_HELP_BUTTON_VOTE": "Vote",
+    "COMMAND_HELP_BUTTON_SERVER": "Servidor",
+    "COMMAND_HELP_BUTTON_SITE": "Site",
+
+    "COMMAND_SETTING_DESC": "Opções de configuração do servidor",
+
+    "COMMAND_LANGUAGE_DESC": "Altere o idioma do bot no seu servidor",
+    "COMMAND_LANGUAGE_REPLY": "As respostas serão mostradas em português (`pt-BR`) 🇧🇷",
+
+    "COMMAND_MOVIE_DESC": "Tudo sobre filmes: encontre, descubra e obtenha informações",
+    "COMMAND_MOVIE_REPLY": "Filmes encontrados",
+    "COMMAND_MOVIE_FIELD_GENRE": "Gêneros",
+    "COMMAND_MOVIE_FIELD_RATING": "Nota",
+    "COMMAND_MOVIE_FIELD_RELEASED": "Lançamento",
+    "COMMAND_MOVIE_FIELD_RUNTIME": "Duração",
+    "COMMAND_MOVIE_FIELD_STATUS": "Situação",
+    "COMMAND_MOVIE_FIELD_STUDIOS": "Estúdios",
+    "COMMAND_MOVIE_FIELD_WATCH": "Assista em",
+    "COMMAND_MOVIE_BUTTON_CAST": "Elenco",
+    "COMMAND_MOVIE_BUTTON_CREW": "Equipe",
+    "COMMAND_MOVIE_BUTTON_SIMILAR": "Similares",
+    "COMMAND_MOVIE_BUTTON_TRAILER": "Trailer", 
+
+    "COMMAND_MOVIE_DISCOVER_DESC": "Descubra filmes por diferentes tipos de filtros",
+    "COMMAND_MOVIE_POPULAR_DESC": "Veja os filmes mais populares",
+    "COMMAND_MOVIE_SEARCH_DESC": "Pesquise por um filme",
+    "COMMAND_MOVIE_TOP_DESC": "Veja os filmes com melhor nota",
+    "COMMAND_MOVIE_TRENDING_DESC": "Veja os filmes da tendência",
+    "COMMAND_MOVIE_UPCOMING_DESC": "Veja os próximos filmes nos cinemas",
+
+    "COMMAND_PERSON_DESC": "Tudo sobre artistas: encontre, descubra e obtenha informações",
+    "COMMAND_PERSON_REPLY": "Artistas encontrados",
+    "COMMAND_PERSON_FIELD_BIRTHDAY": "Aniversário",
+    "COMMAND_PERSON_FIELD_BORN": "Naturalidade",
+    "COMMAND_PERSON_FIELD_DEATHDAY": "Falecimento",
+    "COMMAND_PERSON_FIELD_KNOW_FOR": "Trabalhou em",
+    "COMMAND_PERSON_BUTTON_ACTING": "Atuações",
+    "COMMAND_PERSON_BUTTON_JOBS": "Trabalhos",
+
+    "COMMAND_PERSON_POPULAR_DESC": "Veja os artistas mais populares",
+    "COMMAND_PERSON_SEARCH_DESC": "Pesquise por um artista",
+    "COMMAND_PERSON_TRENDING_DESC": "Veja os artistas da tendência",
+
+    "COMMAND_TV_DESC": "Tudo sobre séries: encontre, descubra e obtenha informações",
+    "COMMAND_TV_REPLY": "Séries encontrados",
+    "COMMAND_TV_FIELD_EPISODES": "Episódios",
+    "COMMAND_TV_FIELD_GENRE": "Gêneros",
+    "COMMAND_TV_FIELD_NETWORK": "Rede",
+    "COMMAND_TV_FIELD_PREMIERED": "Estreia",
+    "COMMAND_TV_FIELD_RATING": "Nota",
+    "COMMAND_TV_FIELD_RUNTIME": "Duração",
+    "COMMAND_TV_FIELD_SEASONS": "Temporadas",
+    "COMMAND_TV_FIELD_STATUS": "Situação",
+    "COMMAND_TV_FIELD_STUDIOS": "Estúdios",
+    "COMMAND_TV_FIELD_WATCH": "Assista em",
+    "COMMAND_TV_BUTTON_CAST": "Elenco",
+    "COMMAND_TV_BUTTON_CREW": "Equipe",
+    "COMMAND_TV_BUTTON_SIMILAR": "Similares",
+    "COMMAND_TV_BUTTON_TRAILER": "Trailer",
+
+    "COMMAND_TV_DISCOVER_DESC": "Descubra séries por diferentes tipos de filtros",
+    "COMMAND_TV_POPULAR_DESC": "Veja os séries mais populares",
+    "COMMAND_TV_SEARCH_DESC": "Pesquise por um seriado",
+    "COMMAND_TV_TOP_DESC": "Veja os séries com melhor nota",
+    "COMMAND_TV_TRENDING_DESC": "Veja os séries da tendência",
+    "COMMAND_TV_UPCOMING_DESC": "Veja os próximos seriado a serem lançados"
+}

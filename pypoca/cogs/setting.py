@@ -1,41 +1,30 @@
 # -*- coding: utf-8 -*-
-from disnake import ApplicationCommandInteraction, Embed
-from disnake.ext.commands import Bot, BucketType, Cog, cooldown, has_permissions, slash_command
+import disnake
+from disnake.ext import commands
 
-from pypoca.embeds import Choices, Option
-from pypoca.entities import Color
-from pypoca.languages import DEFAULT_LANGUAGE, Language
-
-__all__ = ("Setting", "setup")
+from pypoca.config import COLOR
+from pypoca.database import Server
+from pypoca.ext import ALL, DEFAULT, Choice, Option
 
 
-class Setting(Cog):
-    """`Setting` cog has the basic commands."""
-
-    def __init__(self, bot: Bot):
+class Setting(commands.Cog):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @slash_command(description=DEFAULT_LANGUAGE.commands["setting"]["description"])
-    async def setting(self, inter: ApplicationCommandInteraction):
-        """Command that groups setting-related subcommands."""
+    @commands.slash_command(description=DEFAULT["COMMAND_SETTING_DESC"])
+    async def setting(self, inter: disnake.ApplicationCommandInteraction):
+        pass
 
-    @cooldown(rate=1, per=5, type=BucketType.member)
-    @has_permissions(administrator=True)
-    @setting.sub_command(description=DEFAULT_LANGUAGE.commands["language"]["description"])
-    async def language(
-        self,
-        inter: ApplicationCommandInteraction,
-        language: Choices.language = Option.language,
-    ) -> None:
-        """Subcommand to change bot language in server."""
-        self.bot.servers[inter.guild_id] = {"language": language, "region": language[3:]}
-        quotes = Language(language)
-        title = quotes.commands["language"]["reply"]["title"]
-        description = quotes.commands["language"]["reply"]["description"]
-        embed = Embed(title=title, description=description, color=Color.bot)
+    @commands.has_permissions(administrator=True)
+    @setting.sub_command(description=DEFAULT["COMMAND_LANGUAGE_DESC"])
+    async def language(self, inter: disnake.ApplicationCommandInteraction, language: Choice.language = Option.language) -> None:
+        Server.set_by_id(inter.guild_id, data={"language": language, "region": language[3:]})
+        server = Server.get_by_id(inter.guild_id)
+        locale = ALL[server.language] if server else DEFAULT
+        description = locale["COMMAND_LANGUAGE_REPLY"]
+        embed = disnake.Embed(description=description, color=COLOR)
         await inter.send(embed=embed)
 
 
-def setup(bot: Bot) -> None:
-    """Setup `Setting` cog."""
+def setup(bot: commands.Bot) -> None:
     bot.add_cog(Setting(bot))

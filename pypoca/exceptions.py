@@ -1,13 +1,20 @@
 # -*- coding: utf-8 -*-
 
-
-class PyPocaException(Exception):
-    """Base exception class for PyPoca."""
-
-
-class RequestFailed(PyPocaException):
-    """An HTTP exception occurred."""
+class PypocaException(BaseException):
+    pass
 
 
-class NotFound(PyPocaException):
-    """Command request returns no results."""
+class RequestException(PypocaException):
+    pass
+
+
+class TmdbException(RequestException):
+    pass
+
+
+class NoResults(TmdbException):
+    pass
+
+
+class TraktException(RequestException):
+    pass

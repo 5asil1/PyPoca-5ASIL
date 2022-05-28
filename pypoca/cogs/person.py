@@ -1,117 +1,145 @@
 # -*- coding: utf-8 -*-
-from typing import List
+import disnake
+from disnake.ext import commands
 
-from aiotmdb import TMDB
-from disnake import ApplicationCommandInteraction, Embed
-from disnake.ext.commands import Bot, Cog, slash_command
-
-from pypoca.embeds import Choices, Menu, Option
-from pypoca.entities import Color, Person
-from pypoca.exceptions import NotFound
-from pypoca.languages import DEFAULT_LANGUAGE, Language
-
-__all__ = ("People", "setup")
+from pypoca.config import COLOR
+from pypoca.database import Server
+from pypoca.exceptions import NoResults
+from pypoca.services import tmdb, trakt
+from pypoca.ext import ALL, DEFAULT, DEFAULT_LANGUAGE, DEFAULT_REGION, Choice, Option, Person
 
 
-class People(Cog):
-    """`People` cog has all person related commands."""
+class PersonButtons(disnake.ui.View):
+    def __init__(self, inter: disnake.MessageInteraction, *, person: Person):
+        self.person = person
+        server = Server.get_by_id(inter.guild_id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        locale = ALL[language]
+        super().__init__(timeout=120)
+        self.add_item(disnake.ui.Button(label="IMDb", url=person.imdb, disabled=(not person.imdb_id)))
+        self.add_item(disnake.ui.Button(label="Instagram", url=person.instagram, disabled=(not person.instagram_id)))
+        self.add_item(disnake.ui.Button(label="Twitter", url=person.twitter, disabled=(not person.twitter_id)))
+        self.add_item(disnake.ui.Button(label=locale["COMMAND_PERSON_BUTTON_ACTING"], disabled=(not person.cast)))
+        self.add_item(disnake.ui.Button(label=locale["COMMAND_PERSON_BUTTON_JOBS"], disabled=(not person.crew)))
+        self.children[3].callback = self.cast
+        self.children[4].callback = self.crew
 
-    def __init__(self, bot: Bot):
+    async def cast(self, inter: disnake.MessageInteraction) -> None:
+        if len(self.person.cast_movies) >= len(self.person.cast_shows):
+            await inter.bot.get_cog("Movies")._reply(inter, results=self.person.cast_movies)
+        else:
+            await inter.bot.get_cog("Shows")._reply(inter, results=self.person.cast_shows)
+
+    async def crew(self, inter: disnake.MessageInteraction) -> None:
+        if len(self.person.crew_movies) >= len(self.person.crew_shows):
+            await inter.bot.get_cog("Movies")._reply(inter, results=self.person.crew_movies)
+        else:
+            await inter.bot.get_cog("Shows")._reply(inter, results=self.person.cast_shows)
+
+
+class PersonEmbed(disnake.Embed):
+    def __init__(self, inter: disnake.MessageInteraction, *, person: Person):
+        server = Server.get_by_id(inter.guild_id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        locale = ALL[language]
+        super().__init__(title=person.name, description=person.biography, color=COLOR)
+        if person.homepage:
+            self.url = person.homepage
+        if person.image:
+            self.set_thumbnail(url=person.image)
+        self.add_field(
+            name=locale["COMMAND_PERSON_FIELD_BIRTHDAY"], value=person.birthday.strftime(locale["DATETIME_FORMAT"]) if person.birthday else "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_PERSON_FIELD_DEATHDAY"], value=person.deathday.strftime(locale["DATETIME_FORMAT"]) if person.deathday else "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_PERSON_FIELD_BORN"], value=person.place_of_birth or "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_PERSON_FIELD_KNOW_FOR"], value=", ".join(person.jobs[:6]) or "-", inline=False
+        )
+
+
+class PersonDropdown(disnake.ui.Select):
+    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, people: list[Person]) -> None:
+        server = Server.get_by_id(inter.guild_id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        locale = ALL[language]
+        options = [
+            disnake.SelectOption(
+                label=person.name[:100],
+                value=person.id,
+                description=", ".join(person.jobs[:5])[:100],
+            )
+            for person in people
+        ]
+        super().__init__(placeholder=locale["PLACEHOLDER"], options=options[:25])
+
+    async def callback(self, inter: disnake.MessageInteraction) -> None:
+        server = Server.get_by_id(inter.guild_id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        person_id = int(self.values[0])
+        result = await tmdb.Person(id=person_id, language=language, region=region).details(
+            append="combined_credits,external_ids",
+        )
+        person = Person(result)
+        await inter.response.send_message(
+            embed=PersonEmbed(inter, person=person), view=PersonButtons(inter, person=person)
+        )
+
+
+class PersonSelect(disnake.ui.View):
+    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, people: list[Person]) -> None:
+        super().__init__()
+        self.add_item(PersonDropdown(inter, people=people))
+
+
+class People(commands.Cog):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @staticmethod
-    async def get_person_by_id(person_id: int, language: str, region: str) -> Person:
-        result = await TMDB.person(language=language, region=region).details(
-            person_id,
-            append_to_response="combined_credits,movie_credits,tv_credits,external_ids",
-        )
-        result["id"] = person_id
-        return Person.from_tmdb(result)
-
-    @staticmethod
-    async def _reply(
-        inter: ApplicationCommandInteraction,
-        *,
-        results: List[dict],
-        page: int,
-        total_pages: int,
-        language: str,
-        region: str,
-    ) -> None:
+    async def _reply(self, inter: disnake.ApplicationCommandInteraction, *, results: list[dict]) -> None:
         if len(results) == 0:
-            raise NotFound()
-        quotes = Language(language)
-        people = [Person.from_tmdb(result) for result in results]
-        embed = Embed(title=quotes.commands["person"]["reply"]["title"], color=Color.bot)
-        menu = Menu(inter.bot, people, callback=People.get_person_by_id, language=language, region=region)
-        await inter.send(embed=embed, view=menu)
+            raise NoResults()
+        print(results)
+        await inter.send(view=PersonSelect(inter, people=[Person(result) for result in results]))
 
-    @slash_command(name="people", description=DEFAULT_LANGUAGE.commands["person"]["description"])
-    async def person(self, inter: ApplicationCommandInteraction):
-        """Command that groups person-related subcommands."""
+    @commands.slash_command(name="people", description=DEFAULT["COMMAND_PERSON_DESC"])
+    async def person(self, inter: disnake.ApplicationCommandInteraction):
+        pass
 
-    @person.sub_command(description=DEFAULT_LANGUAGE.commands["popular_person"]["description"])
-    async def popular(self, inter: ApplicationCommandInteraction, page: int = Option.page) -> None:
-        """Subcommand to get the current popular person."""
-        language = self.bot.servers[inter.guild_id]["language"]
-        region = self.bot.servers[inter.guild_id]["region"]
-        person = TMDB.person(language=language, region=region)
-        results = await person.popular(page=page)
-        await self._reply(
-            inter,
-            results=results,
-            page=person.page,
-            total_pages=person.total_pages,
-            language=language,
-            region=region,
-        )
+    @person.sub_command(description=DEFAULT["COMMAND_PERSON_POPULAR_DESC"])
+    async def popular(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
+        server = Server.get_by_id(inter.guild_id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.People(language=language, region=region).popular(page=page)
+        await self._reply(inter, results=response["results"])
 
-    @person.sub_command(description=DEFAULT_LANGUAGE.commands["search_person"]["description"])
+    @person.sub_command(description=DEFAULT["COMMAND_PERSON_SEARCH_DESC"])
     async def search(
         self,
-        inter: ApplicationCommandInteraction,
+        inter: disnake.ApplicationCommandInteraction,
         query: str = Option.query,
-        nsfw: Choices.boolean = Option.nsfw,
+        nsfw: Choice.boolean = Option.nsfw,
         page: int = Option.page,
     ) -> None:
-        """Subcommand to search for a person."""
-        language = self.bot.servers[inter.guild_id]["language"]
-        region = self.bot.servers[inter.guild_id]["region"]
-        search = TMDB.search(language=language, region=region)
-        results = await search.person(query, page=page, include_adult=nsfw)
-        await self._reply(
-            inter,
-            results=results,
-            page=search.page,
-            total_pages=search.total_pages,
-            language=language,
-            region=region,
-        )
+        server = Server.get_by_id(inter.guild_id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.People(language=language, region=region).search(query, page=page, include_adult=nsfw)
+        await self._reply(inter, results=response["results"])
 
-    @person.sub_command(description=DEFAULT_LANGUAGE.commands["trending_person"]["description"])
-    async def trending(
-        self,
-        inter: ApplicationCommandInteraction,
-        interval: Choices.interval = Option.interval,
-    ) -> None:
-        """Subcommand get the trending persons."""
-        language = self.bot.servers[inter.guild_id]["language"]
-        region = self.bot.servers[inter.guild_id]["region"]
-        trending = TMDB.trending(language=language, region=region)
-        if interval == "day":
-            results = await trending.person_day()
-        else:
-            results = await trending.person_week()
-        await self._reply(
-            inter,
-            results=results,
-            page=trending.page,
-            total_pages=trending.total_pages,
-            language=language,
-            region=region,
-        )
+    @person.sub_command(description=DEFAULT["COMMAND_PERSON_TRENDING_DESC"])
+    async def trending(self, inter: disnake.ApplicationCommandInteraction, interval: Choice.interval = Option.interval) -> None:
+        server = Server.get_by_id(inter.guild_id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.People(language=language, region=region).trending(interval=interval)
+        await self._reply(inter, results=response["results"])
 
 
-def setup(bot: Bot) -> None:
-    """Setup `People` cog."""
+def setup(bot: commands.Bot) -> None:
     bot.add_cog(People(bot))

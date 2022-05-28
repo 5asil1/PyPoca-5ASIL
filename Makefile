@@ -1,54 +1,30 @@
 VENV = venv
-PYTHON = $(VENV)/bin/python3
+PYTHON = $(VENV)/bin/python3.9
 PIP = $(VENV)/bin/pip
 NAME = pypoca
 .PHONY = help setup test run clean
 .DEFAULT_GOAL = help
 
-$(VENV)/bin/activate: requirements/prod.txt requirements/test.txt requirements/dev.txt
-	@python3 -m venv $(VENV)
+$(VENV)/bin/activate: requirements.txt requirements-dev.txt
+	@python3.9 -m venv $(VENV)
 	@$(PIP) install -U pip
-	@$(PIP) install -r requirements/dev.txt
-
-.PHONY: help
-help:  ## ❓ Show the help.
-	@awk 'BEGIN {FS = ":.*##"; printf "Usage:\n  make \033[36m<command>\033[36m\033[0m\nCommands:\n"} /^[$$()% a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-10s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+	@$(PIP) install -r requirements-dev.txt
 
 .PHONY: install
-install: $(VENV)/bin/activate  ## ⬇️  Install the virtual env project in dev mode.
+install: $(VENV)/bin/activate
 
 .PHONY: version
-version: $(VENV)/bin/activate  ## 🔢 Show the current environment.
+version: $(VENV)/bin/activate
 	@$(PYTHON) --version
 	@$(PIP) --version
 	@$(PIP) freeze
 
-.PHONY: format
-format: $(VENV)/bin/activate  ## ✍  Format code.
-	@$(VENV)/bin/isort ${NAME}/
-	@$(VENV)/bin/brunette ${NAME}/ --config=setup.cfg
-
-.PHONY: lint
-lint: $(VENV)/bin/activate  ## 🔎 Lint code.
-	@$(VENV)/bin/brunette ${NAME}/ --config=setup.cfg --check
-	@$(VENV)/bin/flake8 ${NAME}/ --config=setup.cfg --count --show-source --statistics --benchmark
-	@$(VENV)/bin/interrogate ${NAME}/ --config=setup.cfg
-	@$(VENV)/bin/vulture ${NAME}/ --ignore-names on_* --min-confidence 80
-
 .PHONY: run
-run: $(VENV)/bin/activate  ## 🏃 Run the project.
+run: $(VENV)/bin/activate
 	@$(PYTHON) -m ${NAME}
 
-.PHONY: test
-test: $(VENV)/bin/activate  ## 🧪 Run tests and generate coverage report.
-	@$(VENV)/bin/pytest -v --cov=${NAME}/ --cov-report=xml -l --tb=short --maxfail=1
-
-.PHONY: watch
-watch: $(VENV)/bin/activate  ## 👁️  Run tests on every change.
-	ls **/**.py | entr pytest -s -vvv -l --tb=long --maxfail=1 tests/
-
 .PHONY: clean
-clean:  ## 🧹 Clean unused files.
+clean:
 	@$(PYTHON) -Bc "for p in __import__('pathlib').Path('.').rglob('*.py[co]'): p.unlink()"
 	@$(PYTHON) -Bc "for p in __import__('pathlib').Path('.').rglob('__pycache__'): p.rmdir()"
 	@rm -rf .cache
@@ -62,5 +38,5 @@ clean:  ## 🧹 Clean unused files.
 	@rm -rf docs/_build
 
 .PHONY: uninstall
-uninstall:  ## 🗑️  Uninstall the virtual env project.
+uninstall:
 	@rm -rf $(VENV)

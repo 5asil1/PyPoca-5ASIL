@@ -1,59 +1,63 @@
 # -*- coding: utf-8 -*-
 import os
 
-from disnake.ext.commands import Bot, when_mentioned_or
+import disnake
+from disnake.ext import commands
 
-from pypoca import Config
-from pypoca.entities import Server, init_db
+from pypoca.config import DB_CREDENTIALS, GUILDS_ID, TOKEN
 
-
-class Servers(dict):
-    # TODO: remove this from here
-
-    def __init__(self, bot: Bot) -> None:
-        super().__init__()
-        self.bot = bot
-
-    def __getitem__(self, server_id: int) -> dict:
-        if not hasattr(self, str(server_id)):
-            server = Server.fetch(id=server_id)
-            data = {
-                "language": server.language if server else Config.language,
-                "region": server.region if server else Config.region,
-            }
-            setattr(self, str(server_id), data)
-        return getattr(self, str(server_id))
-
-    def __setitem__(self, server_id: int, data: dict) -> dict:
-        Server.update_or_create(id=server_id, **data)
-        setattr(self, str(server_id), data)
-        return getattr(self, str(server_id))
+from pypoca.database import db
 
 
-def run() -> None:
-    """Instantiate, configure and run the bot and the database.
+class PypocaBot(commands.InteractionBot):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
-    Connect to Discord client (WebSocket and API). Load all cogs. Start the health
-    check server. And finally, run a loop event initialization blocking call.
-    """
-    # TODO: refactor this
-    try:
-        guilds_ids = list(map(int, Config.guilds_ids.split(",")))
-    except Exception:
-        guilds_ids = None
-    bot = Bot(command_prefix=when_mentioned_or(Config.prefix), test_guilds=guilds_ids)
-    bot.servers = Servers(bot)
-    bot.config = Config
+    def load_extensions(self, folder: str) -> None:
+        for filename in os.listdir(folder):
+            if filename.endswith(".py") and not filename.startswith("_"):
+                self.load_extension(f"{folder}/{filename[:-3]}".replace("/", "."))
 
-    for filename in os.listdir("pypoca/cogs"):
-        if filename.startswith("_") or not filename.endswith(".py"):
-            continue
-        cog = os.path.join("pypoca/cogs", filename)
-        bot.load_extension(cog[:-3].replace("/", "."))
+    async def on_ready(self):
+        activity = disnake.Activity(type=disnake.ActivityType.watching, name="/help")
+        await self.change_presence(activity=activity)
 
-    init_db(provider=bot.config.database.provider, credentials=bot.config.database.credentials)
-    bot.run(bot.config.token)
+    async def on_slash_command_error(self, inter: disnake.AppCmdInter, error: commands.CommandError) -> None:
+        server = Server.get_by_id(inter.guild_id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        locale = ALL[language]
+        if isinstance(e, MissingPermissions):
+            description = locale["ERROR_NO_PERMISSION_REPLY"]
+        elif isinstance(e, NotFound):
+            description = locale["ERROR_NO_RESULTS"]
+        else:
+            log.error(
+                f"{inter}. {e}",
+                extra={"locals": locals(), "ctx": vars(inter)},
+                exc_info=e,
+            )
+            return None
+        await inter.send(embed=disnake.Embed(title=title, description=description, color=Color.error), ephemeral=True)
+
+
+def main() -> None:
+    db_credentials = {k: v for k, v in DB_CREDENTIALS.items() if v is not None}
+    test_guilds = [int(guild_id) for guild_id in GUILDS_ID.split(",")]
+
+    db.bind(**db_credentials)
+    db.generate_mapping(create_tables=True)
+
+    bot = PypocaBot(
+        help_command=None,
+        sync_commands_debug=True,
+        sync_permissions=True,
+        test_guilds=test_guilds,
+        strict_localization=True,
+    )
+    # bot.i18n.load("pypoca/locale")
+    bot.load_extensions("pypoca/cogs")
+    bot.run(TOKEN)
 
 
 if __name__ == "__main__":
-    run()
+    main()

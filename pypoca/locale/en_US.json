@@ -1,0 +1,180 @@
+{
+    "ERROR_NO_PERMISSION_REPLY": "يجب أن تكون مسؤولاً لتنفيذ هذا الأمر",
+    "ERROR_NO_RESULTS": "تعذر العثور على أي تطابق لهذه المواصفات",
+
+    "DATETIME_FORMAT": "%Y/%m/%d",
+
+    "OPTION_TRUE": "yes",
+    "OPTION_FALSE": "no",
+
+    "OPTION_QUERY_NAME": "name",
+    "OPTION_QUERY_DESC": "A text query to search",
+
+    "OPTION_PAGE_NAME": "page",
+    "OPTION_PAGE_DESC": "Specify which page to query",
+
+    "OPTION_LANGUAGE_NAME": "language",
+    "OPTION_LANGUAGE_DESC": "A language to display translated data",
+    "OPTION_LANGUAGE_CHOICE_AR": "Arabic",
+    "OPTION_LANGUAGE_CHOICE_EN_US": "English",
+    "OPTION_LANGUAGE_CHOICE_PT_BR": "Portuguese",
+
+    "OPTION_REGION_NAME": "region",
+    "OPTION_REGION_DESC": "A region to filter release dates and where to watch",
+    "OPTION_REGION_CHOICE_BR": "Brazil",
+    "OPTION_REGION_CHOICE_US": "United States",
+    "OPTION_REGION_CHOICE_SA": "Saudi Arabia",
+
+    "OPTION_NSFW_NAME": "adult",
+    "OPTION_NSFW_DESC": "Choose whether to inlcude adult (pornography) content in the results",
+
+    "OPTION_SORT_BY_NAME": "sort-by",
+    "OPTION_SORT_BY_DESC": "Choose from one of the many available sort options",
+    "OPTION_SORT_BY_CHOICE_POPULARITY": "popularity",
+    "OPTION_SORT_BY_CHOICE_YEAR": "year",
+    "OPTION_SORT_BY_CHOICE_RATING": "rating",
+    "OPTION_SORT_BY_CHOICE_NAME": "title",
+    "OPTION_SORT_BY_CHOICE_VOTES": "votes",
+
+    "OPTION_YEAR_NAME": "year",
+    "OPTION_YEAR_DESC": "Only include results that have a release date that is equal to the specified value",
+
+    "OPTION_MIN_YEAR_NAME": "min-year",
+    "OPTION_MIN_YEAR_DESC": "Only include results that have a release date that is greater or equal to the specified value",
+
+    "OPTION_MAX_YEAR_NAME": "max-year",
+    "OPTION_MAX_YEAR_DESC": "Only include results that have a release date that is less than or equal to the specified value",
+
+    "OPTION_MIN_VOTES_NAME": "min-votes",
+    "OPTION_MIN_VOTES_DESC": "Only include results that have a vote count that is greater or equal to the specified value",
+
+    "OPTION_MAX_VOTES_NAME": "max-votes",
+    "OPTION_MAX_VOTES_DESC": "Only include results that have a vote count that is less than or equal to the specified value",
+
+    "OPTION_MIN_RATING_NAME": "min-rating",
+    "OPTION_MIN_RATING_DESC": "Only include results that have a rating that is greater or equal to the specified value",
+
+    "OPTION_MAX_RATING_NAME": "max-rating",
+    "OPTION_MAX_RATING_DESC": "Only include results that have a rating that is less than or equal to the specified value",
+
+    "OPTION_MIN_RUNTIME_NAME": "min-runtime",
+    "OPTION_MIN_RUNTIME_DESC": "Only include results that have a runtime that is greater or equal to a value",
+
+    "OPTION_MAX_RUNTIME_NAME": "max-runtime",
+    "OPTION_MAX_RUNTIME_DESC": "Only include results that have a runtime that is less than or equal to a value",
+
+    "OPTION_INTERVAL_NAME": "interval",
+    "OPTION_INTERVAL_DESC": "Choose between the trends of the day or the week",
+    "OPTION_INTERVAL_CHOICE_DAY": "day",
+    "OPTION_INTERVAL_CHOICE_WEEK": "week",
+
+    "OPTION_HIDE_NAME": "hide",
+    "OPTION_HIDE_DESC": "A resposta do comando será visível apenas para você",
+
+    "OPTION_SERVICE_NAME": "service",
+    "OPTION_SERVICE_DESC": "Filter the results by specific streaming service or channel",
+
+    "OPTION_GENRE_NAME": "genre",
+    "OPTION_GENRE_DESC": "Filter the results by specific genre",
+    "OPTION_GENRE_CHOICE_ACTION": "action",
+    "OPTION_GENRE_CHOICE_ACTION_AND_ADVENTURE": "action & adventure",
+    "OPTION_GENRE_CHOICE_ADVENTURE": "adventure",
+    "OPTION_GENRE_CHOICE_ANIMATION": "animation",
+    "OPTION_GENRE_CHOICE_COMEDY": "comedy",
+    "OPTION_GENRE_CHOICE_CRIME": "crime",
+    "OPTION_GENRE_CHOICE_DOCUMENTARY": "documentary",
+    "OPTION_GENRE_CHOICE_DRAMA": "drama",
+    "OPTION_GENRE_CHOICE_FAMILY": "family",
+    "OPTION_GENRE_CHOICE_FANTASY": "fantasy",
+    "OPTION_GENRE_CHOICE_HISTORY": "history",
+    "OPTION_GENRE_CHOICE_HORROR": "horror",
+    "OPTION_GENRE_CHOICE_KIDS": "kids",
+    "OPTION_GENRE_CHOICE_MUSIC": "music",
+    "OPTION_GENRE_CHOICE_MYSTERY": "mystery",
+    "OPTION_GENRE_CHOICE_NEWS": "news",
+    "OPTION_GENRE_CHOICE_REALITY": "reality",
+    "OPTION_GENRE_CHOICE_ROMANCE": "romance",
+    "OPTION_GENRE_CHOICE_SOAP": "soap",
+    "OPTION_GENRE_CHOICE_SYFY": "science fiction",
+    "OPTION_GENRE_CHOICE_SYFY_AND_FANTASY": "sci-fi & fantasy",
+    "OPTION_GENRE_CHOICE_TALK": "talk",
+    "OPTION_GENRE_CHOICE_THRILLER": "thriller",
+    "OPTION_GENRE_CHOICE_TV": "TV movie",
+    "OPTION_GENRE_CHOICE_WAR": "war",
+    "OPTION_GENRE_CHOICE_WAR_AND_POLITICS": "war & politics",
+    "OPTION_GENRE_CHOICE_WESTERN": "western",
+
+    "PLACEHOLDER": "Select one of the options...",
+
+    "COMMAND_PING_DESC": "Get PyPoca's latency",
+    "COMMAND_PING_REPLY": "Latency",
+
+    "COMMAND_HELP_DESC": "Shows PyPoca's help menu",
+    "COMMAND_HELP_BUTTON_INVITE": "Invite",
+    "COMMAND_HELP_BUTTON_VOTE": "Vote",
+    "COMMAND_HELP_BUTTON_SERVER": "Server",
+    "COMMAND_HELP_BUTTON_SITE": "Site",
+
+    "COMMAND_SETTING_DESC": "Server setting options",
+
+    "COMMAND_LANGUAGE_DESC": "Change the bot language on your server",
+    "COMMAND_LANGUAGE_REPLY": "Answers will be displayed in English (`en-US`) 🇺🇸",
+
+    "COMMAND_MOVIE_DESC": "All about movies: find, discover and get information",
+    "COMMAND_MOVIE_REPLY": "Movie results",
+    "COMMAND_MOVIE_FIELD_GENRE": "Genre",
+    "COMMAND_MOVIE_FIELD_RATING": "Rating",
+    "COMMAND_MOVIE_FIELD_RELEASED": "Released",
+    "COMMAND_MOVIE_FIELD_RUNTIME": "Runtime",
+    "COMMAND_MOVIE_FIELD_STATUS": "Status",
+    "COMMAND_MOVIE_FIELD_STUDIOS": "Studios",
+    "COMMAND_MOVIE_FIELD_WATCH": "Watch on",
+    "COMMAND_MOVIE_BUTTON_CAST": "Cast",
+    "COMMAND_MOVIE_BUTTON_CREW": "Crew",
+    "COMMAND_MOVIE_BUTTON_SIMILAR": "Similar",
+    "COMMAND_MOVIE_BUTTON_TRAILER": "Trailer", 
+
+    "COMMAND_MOVIE_DISCOVER_DESC": "Discover movies by different types of data",
+    "COMMAND_MOVIE_POPULAR_DESC": "Get the current popular movies",
+    "COMMAND_MOVIE_SEARCH_DESC": "Search for a movie",
+    "COMMAND_MOVIE_TOP_DESC": "Get the top rated movies",
+    "COMMAND_MOVIE_TRENDING_DESC": "Get the trending movies",
+    "COMMAND_MOVIE_UPCOMING_DESC": "Get the upcoming movies in theatres",
+
+    "COMMAND_PERSON_DESC": "All about people: find, discover and get information",
+    "COMMAND_PERSON_REPLY": "People results",
+    "COMMAND_PERSON_FIELD_BIRTHDAY": "Birthday",
+    "COMMAND_PERSON_FIELD_BORN": "Place of birth",
+    "COMMAND_PERSON_FIELD_DEATHDAY": "Day of death",
+    "COMMAND_PERSON_FIELD_KNOW_FOR": "Know for",
+    "COMMAND_PERSON_BUTTON_ACTING": "Acting",
+    "COMMAND_PERSON_BUTTON_JOBS": "Jobs",
+
+    "COMMAND_PERSON_POPULAR_DESC": "Get the current popular people",
+    "COMMAND_PERSON_SEARCH_DESC": "Search for people",
+    "COMMAND_PERSON_TRENDING_DESC": "Get the trending people",
+
+    "COMMAND_TV_DESC": "All about TV shows: find, discover and get information",
+    "COMMAND_TV_REPLY": "TV show results",
+    "COMMAND_TV_FIELD_EPISODES": "Episodes",
+    "COMMAND_TV_FIELD_GENRE": "Genre",
+    "COMMAND_TV_FIELD_NETWORK": "Network",
+    "COMMAND_TV_FIELD_PREMIERED": "Premiered",
+    "COMMAND_TV_FIELD_RATING": "Rating",
+    "COMMAND_TV_FIELD_RUNTIME": "Runtime",
+    "COMMAND_TV_FIELD_SEASONS": "Seasons",
+    "COMMAND_TV_FIELD_STATUS": "Status",
+    "COMMAND_TV_FIELD_STUDIOS": "Studios",
+    "COMMAND_TV_FIELD_WATCH": "Watch on",
+    "COMMAND_TV_BUTTON_CAST": "Cast",
+    "COMMAND_TV_BUTTON_CREW": "Crew",
+    "COMMAND_TV_BUTTON_SIMILAR": "Similar",
+    "COMMAND_TV_BUTTON_TRAILER": "Trailer",
+
+    "COMMAND_TV_DISCOVER_DESC": "Discover TV shows by different types of data",
+    "COMMAND_TV_POPULAR_DESC": "Get the current popular TV shows",
+    "COMMAND_TV_SEARCH_DESC": "Search for TV show",
+    "COMMAND_TV_TOP_DESC": "Get the top rated TV shows",
+    "COMMAND_TV_TRENDING_DESC": "Get the trending TV shows",
+    "COMMAND_TV_UPCOMING_DESC": "Get the upcoming TV shows"
+}

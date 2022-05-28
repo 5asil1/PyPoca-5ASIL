@@ -1,89 +1,67 @@
 # -*- coding: utf-8 -*-
-from disnake import ApplicationCommandInteraction, Embed
-from disnake.ext.commands import Bot, BucketType, Cog, cooldown, slash_command
-from disnake.ui import Button, View
+import disnake
+from disnake.ext import commands
 
-from pypoca.embeds import BLANK_EMOJI, Choices, Option
-from pypoca.entities import Color
-from pypoca.languages import DEFAULT_LANGUAGE, Language
-
-__all__ = ("General", "setup")
+from pypoca.config import COLOR, URLS
+from pypoca.database import Server
+from pypoca.ext import ALL, DEFAULT, Choice, Option
 
 
-class General(Cog):
-    """`General` cog has the basic commands."""
-
-    def __init__(self, bot: Bot):
+class General(commands.Cog):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @cooldown(rate=1, per=5, type=BucketType.member)
-    @slash_command(description=DEFAULT_LANGUAGE.commands["ping"]["description"])
-    async def ping(self, inter: ApplicationCommandInteraction, hide: Choices.boolean = Option.hide):
-        """Measures latency between the bot service and the Discord client."""
+    @commands.slash_command(description=DEFAULT["COMMAND_PING_DESC"])
+    async def ping(self, inter: disnake.ApplicationCommandInteraction, hide: Choice.boolean = Option.hide):
+        server = Server.get_by_id(inter.guild_id)
+        locale = ALL[server.language] if server else DEFAULT
+        
         latency = int(self.bot.latency * 1000)
-        language = self.bot.servers[inter.guild_id]["language"]
-        quotes = Language(language)
-        title = quotes.commands["ping"]["reply"]["title"]
-        description = quotes.commands["ping"]["reply"]["description"].format(latency=latency)
-        embed = Embed(title=title, description=description, color=Color.bot)
-        await inter.reply(embed=embed, ephemeral=hide)
+        description = locale["COMMAND_PING_REPLY"] + f": {latency}ms"
 
-    @cooldown(rate=1, per=5, type=BucketType.member)
-    @slash_command(description=DEFAULT_LANGUAGE.commands["help"]["description"])
-    async def help(self, inter: ApplicationCommandInteraction, hide: Choices.boolean = Option.hide):
-        """The implementation of the help command."""
-        language = self.bot.servers[inter.guild_id]["language"]
-        quotes = Language(language)
+        embed = disnake.Embed(description=description, color=COLOR)
+        await inter.send(embed=embed, ephemeral=hide)
+
+    @commands.slash_command(description=DEFAULT["COMMAND_HELP_DESC"])
+    async def help(self, inter: disnake.ApplicationCommandInteraction, hide: Choice.boolean = Option.hide):
+        server = Server.get_by_id(inter.guild_id)
+        locale = ALL[server.language] if server else DEFAULT
+
+        BLANK = "<:blank:914183315056111627>"
         description = f"""
             **/movie**
-            {BLANK_EMOJI} **discover** {quotes.commands["discover_movie"]["description"]}
-            {BLANK_EMOJI} **popular** {quotes.commands["popular_movie"]["description"]}
-            {BLANK_EMOJI} **search** {quotes.commands["search_movie"]["description"]}
-            {BLANK_EMOJI} **top** {quotes.commands["top_movie"]["description"]}
-            {BLANK_EMOJI} **trending** {quotes.commands["trending_movie"]["description"]}
-            {BLANK_EMOJI} **upcoming** {quotes.commands["upcoming_movie"]["description"]}
+            {BLANK} **discover** {locale["COMMAND_MOVIE_DISCOVER_DESC"]}
+            {BLANK} **popular** {locale["COMMAND_MOVIE_POPULAR_DESC"]}
+            {BLANK} **search** {locale["COMMAND_MOVIE_SEARCH_DESC"]}
+            {BLANK} **top** {locale["COMMAND_MOVIE_TOP_DESC"]}
+            {BLANK} **trending** {locale["COMMAND_MOVIE_TRENDING_DESC"]}
+            {BLANK} **upcoming** {locale["COMMAND_MOVIE_UPCOMING_DESC"]}
             **/tv**
-            {BLANK_EMOJI} **discover** {quotes.commands["discover_tv"]["description"]}
-            {BLANK_EMOJI} **popular** {quotes.commands["popular_tv"]["description"]}
-            {BLANK_EMOJI} **search** {quotes.commands["search_tv"]["description"]}
-            {BLANK_EMOJI} **top** {quotes.commands["top_tv"]["description"]}
-            {BLANK_EMOJI} **trending** {quotes.commands["trending_tv"]["description"]}
-            {BLANK_EMOJI} **upcoming** {quotes.commands["upcoming_tv"]["description"]}
+            {BLANK} **discover** {locale["COMMAND_TV_DISCOVER_DESC"]}
+            {BLANK} **popular** {locale["COMMAND_TV_POPULAR_DESC"]}
+            {BLANK} **search** {locale["COMMAND_TV_SEARCH_DESC"]}
+            {BLANK} **top** {locale["COMMAND_TV_TOP_DESC"]}
+            {BLANK} **trending** {locale["COMMAND_TV_TRENDING_DESC"]}
+            {BLANK} **upcoming** {locale["COMMAND_TV_UPCOMING_DESC"]}
             **/people**
-            {BLANK_EMOJI} **popular** {quotes.commands["popular_person"]["description"]}
-            {BLANK_EMOJI} **search** {quotes.commands["search_person"]["description"]}
-            {BLANK_EMOJI} **trending** {quotes.commands["trending_person"]["description"]}
+            {BLANK} **popular** {locale["COMMAND_PERSON_POPULAR_DESC"]}
+            {BLANK} **search** {locale["COMMAND_PERSON_SEARCH_DESC"]}
+            {BLANK} **trending** {locale["COMMAND_PERSON_TRENDING_DESC"]}
             **/setting**
-            {BLANK_EMOJI} **language** {quotes.commands["language"]["description"]}
+            {BLANK} **language** {locale["COMMAND_LANGUAGE_DESC"]}
         """
         buttons = [
-            {
-                "style": 5,
-                "label": quotes.commands["help"]["reply"]["buttons"]["invite"],
-                "url": self.bot.config.urls["invite"],
-            },
-            {
-                "style": 5,
-                "label": quotes.commands["help"]["reply"]["buttons"]["vote"],
-                "url": self.bot.config.urls["vote"],
-            },
-            {
-                "style": 5,
-                "label": quotes.commands["help"]["reply"]["buttons"]["server"],
-                "url": self.bot.config.urls["server"],
-            },
-            {
-                "style": 5,
-                "label": quotes.commands["help"]["reply"]["buttons"]["site"],
-                "url": self.bot.config.urls["site"],
-            },
+            {"style": 5, "label": locale["COMMAND_HELP_BUTTON_INVITE"], "url": URLS["invite"]},
+            {"style": 5, "label": locale["COMMAND_HELP_BUTTON_VOTE"], "url": URLS["vote"]},
+            {"style": 5, "label": locale["COMMAND_HELP_BUTTON_SERVER"], "url": URLS["server"]},
+            {"style": 5, "label": locale["COMMAND_HELP_BUTTON_SITE"], "url": URLS["site"]},
         ]
-        embed = Embed(description=description, color=Color.bot)
-        view = View()
-        [view.add_item(Button(**button)) for button in buttons]
+
+        embed = disnake.Embed(description=description, color=COLOR)
+        view = disnake.ui.View()
+        [view.add_item(disnake.ui.Button(**button)) for button in buttons]
         await inter.send(embed=embed, view=view, ephemeral=hide)
 
 
-def setup(bot: Bot) -> None:
-    """Setup `General` cog."""
+def setup(bot: commands.Bot) -> None:
     bot.add_cog(General(bot))
