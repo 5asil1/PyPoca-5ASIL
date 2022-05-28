@@ -5,8 +5,9 @@ import disnake
 from disnake.ext import commands
 
 from pypoca.config import DB_CREDENTIALS, GUILDS_ID, TOKEN
-
 from pypoca.database import db
+from pypoca.exceptions import NoResults
+from pypoca.log import log
 
 
 class PypocaBot(commands.InteractionBot):
@@ -26,9 +27,9 @@ class PypocaBot(commands.InteractionBot):
         server = Server.get_by_id(inter.guild_id)
         language = server.language if server else DEFAULT_LANGUAGE
         locale = ALL[language]
-        if isinstance(e, MissingPermissions):
+        if isinstance(e, commands.MissingPermissions):
             description = locale["ERROR_NO_PERMISSION_REPLY"]
-        elif isinstance(e, NotFound):
+        elif isinstance(e, NoResults):
             description = locale["ERROR_NO_RESULTS"]
         else:
             log.error(
