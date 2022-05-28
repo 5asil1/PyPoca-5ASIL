@@ -103,7 +103,6 @@ class People(commands.Cog):
     async def _reply(self, inter: disnake.ApplicationCommandInteraction, *, results: list[dict]) -> None:
         if len(results) == 0:
             raise NoResults()
-        print(results)
         await inter.send(view=PersonSelect(inter, people=[Person(result) for result in results]))
 
     @commands.slash_command(name="people", description=DEFAULT["COMMAND_PERSON_DESC"])

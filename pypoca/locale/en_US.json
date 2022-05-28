@@ -1,6 +1,6 @@
 {
-    "ERROR_NO_PERMISSION_REPLY": "يجب أن تكون مسؤولاً لتنفيذ هذا الأمر",
-    "ERROR_NO_RESULTS": "تعذر العثور على أي تطابق لهذه المواصفات",
+    "ERROR_NO_PERMISSION_REPLY": "You must be administrator to execute this command",
+    "ERROR_NO_RESULTS": "Could not find any match for these specifications",
 
     "DATETIME_FORMAT": "%Y/%m/%d",
 
