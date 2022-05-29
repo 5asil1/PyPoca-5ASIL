@@ -37,8 +37,10 @@ class Show(dict):
         self.vote_average = data.get("vote_average")
         self.vote_count = data.get("vote_count")
 
-        self.external_ids = data.get("external_ids") or {}
+        self.alternative_titles = data.get("alternative_titles") or {}
         self.credits = data.get("credits") or {}
+        self.external_ids = data.get("external_ids") or {}
+        self.images = data.get("images") or {}
         self.recommendations = data["recommendations"]["results"] if data.get("recommendations") else []
         self.similar = data["similar"]["results"] if data.get("similar") else []
         self.videos = data.get("videos")
