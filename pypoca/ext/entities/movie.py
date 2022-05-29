@@ -81,6 +81,12 @@ class Movie(dict):
         return f"https://www.youtube.com/watch?v={self.youtube_id}"
 
     @property
+    def backdrops(self) -> list[str]:
+        return [
+            f"https://image.tmdb.org/t/p/w1280/" + backdrop["file_path"] for backdrop in self.images.get("backdrops") or []
+        ]
+
+    @property
     def cast(self) -> dict:
         return self.credits.get("cast") or []
 

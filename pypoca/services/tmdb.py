@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import random
 from aiohttp import ClientSession
 
 from pypoca.config import TMDB_KEY
@@ -151,13 +152,20 @@ class Movies(TMDb):
         """https://developers.themoviedb.org/3/movies/get-top-rated-movies"""
         return await self.request("movie/top_rated", page=page)
 
-    async def trending(self, *, interval: str = "day") -> dict:
+    async def trending(self, *, interval: str = "day", page: int = 1) -> dict:
         """https://developers.themoviedb.org/3/trending/get-trending"""
-        return await self.request(f"trending/movie/{interval}")
+        return await self.request(f"trending/movie/{interval}", page=page)
 
     async def upcoming(self, *, page: int = 1) -> dict:
         """https://developers.themoviedb.org/3/movies/get-upcoming"""
         return await self.request("movie/upcoming", page=page)
+
+    async def randoms(self) -> dict:
+        return await self.request(random.choice(["movie/popular", "movie/top_rated", "trending/movie/week"]), page=random.randint(1, 5))
+
+    async def random(self, *, append: str = None, image_language: str = "null") -> dict:
+        response = await self.randoms()
+        return await Movie(id=random.choice(response["results"])["id"]).details(append=append, image_language=image_language)
 
 
 class Movie(TMDb):
@@ -227,9 +235,9 @@ class People(TMDb):
         """https://developers.themoviedb.org/3/search/search-people"""
         return await self.request("search/person", query=query, page=page, include_adult=include_adult)
 
-    async def trending(self, *, interval: str = "day") -> dict:
+    async def trending(self, *, interval: str = "day", page: int = 1) -> dict:
         """https://developers.themoviedb.org/3/trending/get-trending"""
-        return await self.request(f"trending/person/{interval}")
+        return await self.request(f"trending/person/{interval}", page=page)
 
 
 class Person(TMDb):
@@ -348,9 +356,16 @@ class Shows(TMDb):
         """https://developers.themoviedb.org/3/tv/get-top-rated-tv"""
         return await self.request("tv/top_rated", page=page)
 
-    async def trending(self, *, interval: str = "day") -> dict:
+    async def trending(self, *, interval: str = "day", page: int = 1) -> dict:
         """https://developers.themoviedb.org/3/trending/get-trending"""
-        return await self.request(f"trending/tv/{interval}")
+        return await self.request(f"trending/tv/{interval}", page=page)
+
+    async def randoms(self) -> dict:
+        return await self.request(random.choice(["tv/popular", "tv/top_rated", "trending/tv/week"]), page=random.randint(1, 5))
+
+    async def random(self, *, append: str = None, image_language: str = "null") -> dict:
+        response = await self.randoms()
+        return await Show(id=random.choice(response["results"])["id"]).details(append=append, image_language=image_language)
 
 
 class Show(TMDb):

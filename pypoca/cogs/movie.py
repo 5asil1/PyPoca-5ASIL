@@ -262,12 +262,12 @@ class Movies(commands.Cog):
 
     @slash_movie.sub_command(name="trending", description=DEFAULT["COMMAND_MOVIE_TRENDING_DESC"])
     async def slash_trending(
-        self, inter: disnake.ApplicationCommandInteraction, interval: Choice.interval = Option.interval
+        self, inter: disnake.ApplicationCommandInteraction, interval: Choice.interval = Option.interval, page: int = Option.page
     ) -> None:
         server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
-        response = await tmdb.Movies(language=language, region=region).trending(interval=interval)
+        response = await tmdb.Movies(language=language, region=region).trending(interval=interval, page=page)
         await self._reply(inter, results=response["results"])
 
     @slash_movie.sub_command(name="upcoming", description=DEFAULT["COMMAND_MOVIE_UPCOMING_DESC"])

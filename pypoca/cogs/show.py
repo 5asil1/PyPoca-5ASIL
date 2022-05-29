@@ -267,12 +267,12 @@ class Shows(commands.Cog):
 
     @slash_tv.sub_command(name="trending", description=DEFAULT["COMMAND_TV_TRENDING_DESC"])
     async def slash_trending(
-        self, inter: disnake.ApplicationCommandInteraction, interval: Choice.interval = Option.interval
+        self, inter: disnake.ApplicationCommandInteraction, interval: Choice.interval = Option.interval, page: int = Option.page
     ) -> None:
         server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
-        response = await tmdb.Shows(language=language, region=region).trending(interval=interval)
+        response = await tmdb.Shows(language=language, region=region).trending(interval=interval, page=page)
         await self._reply(inter, results=response["results"])
 
     @slash_tv.sub_command(name="upcoming", description=DEFAULT["COMMAND_TV_UPCOMING_DESC"])
