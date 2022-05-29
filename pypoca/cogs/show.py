@@ -12,7 +12,7 @@ from pypoca.ext import ALL, DEFAULT, DEFAULT_LANGUAGE, DEFAULT_REGION, Choice, O
 class ShowButtons(disnake.ui.View):
     def __init__(self, inter: disnake.MessageInteraction, *, show: Show):
         self.show = show
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         locale = ALL[language]
         super().__init__(timeout=120)
@@ -37,7 +37,7 @@ class ShowButtons(disnake.ui.View):
 
 class ShowEmbed(disnake.Embed):
     def __init__(self, inter: disnake.MessageInteraction, *, show: Show):
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         locale = ALL[language]
@@ -81,7 +81,7 @@ class ShowEmbed(disnake.Embed):
 
 class ShowDropdown(disnake.ui.Select):
     def __init__(self, inter: disnake.ApplicationCommandInteraction, *, shows: list[Show]) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         locale = ALL[language]
         options = [
@@ -95,7 +95,7 @@ class ShowDropdown(disnake.ui.Select):
         super().__init__(placeholder=locale["PLACEHOLDER"], options=options[:25])
 
     async def callback(self, inter: disnake.MessageInteraction) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         show_id = int(self.values[0])
@@ -125,14 +125,83 @@ class Shows(commands.Cog):
     async def _reply(self, inter: disnake.ApplicationCommandInteraction, *, results: list[dict]) -> None:
         if len(results) == 0:
             raise NoResults()
-        await inter.send(view=ShowSelect(inter, shows=[Show(result) for result in results]))
+        elif len(results) == 1:
+            server = Server.get_by_id(inter.guild.id)
+            language = server.language if server else DEFAULT_LANGUAGE
+            region = server.region if server else DEFAULT_REGION
+            show_id = Show(results[0]).id
+            result = await tmdb.Show(id=show_id, language=language, region=region).details(
+                append="credits,external_ids,recommendations,similar,videos,watch/providers"
+            )
+            try:
+                result["external_ids"]["trakt_id"] = await trakt.Show().trakt_id_by_tmdb_id(show_id)
+            except Exception as e:
+                result["external_ids"]["trakt_id"] = None
+            show = Show(result)
+            await inter.send(
+                embed=ShowEmbed(inter, show=show), view=ShowButtons(inter, show=show)
+            )
+        else:
+            await inter.send(view=ShowSelect(inter, shows=[Show(result) for result in results]))
 
-    @commands.slash_command(name="tv", description=DEFAULT["COMMAND_TV_DESC"])
-    async def tv(self, inter: disnake.ApplicationCommandInteraction):
+    @commands.group(name="tv", description=DEFAULT["COMMAND_TV_DESC"])
+    async def tv(self, ctx: commands.Context):
         pass
 
-    @tv.sub_command(description=DEFAULT["COMMAND_TV_DISCOVER_DESC"])
-    async def discover(
+    @tv.command(name="discover", description=DEFAULT["COMMAND_TV_DISCOVER_DESC"])
+    async def discover(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Shows(language=language, region=region).discover()
+        await self._reply(ctx, results=response["results"][:1])
+
+    @tv.command(name="popular", description=DEFAULT["COMMAND_TV_POPULAR_DESC"])
+    async def popular(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Shows(language=language, region=region).popular()
+        await self._reply(ctx, results=response["results"][:1])
+
+    @tv.command(name="search", description=DEFAULT["COMMAND_TV_SEARCH_DESC"])
+    async def search(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Shows(language=language, region=region).search(query)
+        await self._reply(ctx, results=response["results"][:1])
+
+    @tv.command(name="top", description=DEFAULT["COMMAND_TV_TOP_DESC"])
+    async def top(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Shows(language=language, region=region).top_rated()
+        await self._reply(ctx, results=response["results"][:1])
+
+    @tv.command(name="trending", description=DEFAULT["COMMAND_TV_TRENDING_DESC"])
+    async def trending(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Shows(language=language, region=region).trending()
+        await self._reply(ctx, results=response["results"][:1])
+
+    @tv.command(name="upcoming", description=DEFAULT["COMMAND_TV_UPCOMING_DESC"])
+    async def upcoming(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Shows(language=language, region=region).on_the_air()
+        await self._reply(ctx, results=response["results"][:1])
+
+    @commands.slash_command(name="tv", description=DEFAULT["COMMAND_TV_DESC"])
+    async def slash_tv(self, inter: disnake.ApplicationCommandInteraction):
+        pass
+
+    @slash_tv.sub_command(name="discover", description=DEFAULT["COMMAND_TV_DISCOVER_DESC"])
+    async def slash_discover(
         self,
         inter: disnake.ApplicationCommandInteraction,
         sort_by: Choice.tv_sort_by = Option.tv_sort_by,
@@ -147,7 +216,7 @@ class Shows(commands.Cog):
         max_runtime: int = Option.max_runtime,
         page: int = Option.page,
     ) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).discover(
@@ -165,16 +234,16 @@ class Shows(commands.Cog):
         )
         await self._reply(inter, results=response["results"])
 
-    @tv.sub_command(description=DEFAULT["COMMAND_TV_POPULAR_DESC"])
-    async def popular(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
-        server = Server.get_by_id(inter.guild_id)
+    @slash_tv.sub_command(name="popular", description=DEFAULT["COMMAND_TV_POPULAR_DESC"])
+    async def slash_popular(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).popular(page=page)
         await self._reply(inter, results=response["results"])
 
-    @tv.sub_command(description=DEFAULT["COMMAND_TV_SEARCH_DESC"])
-    async def search(
+    @slash_tv.sub_command(name="search", description=DEFAULT["COMMAND_TV_SEARCH_DESC"])
+    async def slash_search(
         self,
         inter: disnake.ApplicationCommandInteraction,
         query: str = Option.query,
@@ -182,33 +251,33 @@ class Shows(commands.Cog):
         nsfw: Choice.boolean = Option.nsfw,
         page: int = Option.page,
     ) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).search(query, page=page, include_adult=nsfw, first_air_date_year=year)
         await self._reply(inter, results=response["results"])
 
-    @tv.sub_command(description=DEFAULT["COMMAND_TV_TOP_DESC"])
-    async def top(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
-        server = Server.get_by_id(inter.guild_id)
+    @slash_tv.sub_command(name="top", description=DEFAULT["COMMAND_TV_TOP_DESC"])
+    async def slash_top(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).top_rated(page=page)
         await self._reply(inter, results=response["results"])
 
-    @tv.sub_command(description=DEFAULT["COMMAND_TV_TRENDING_DESC"])
-    async def trending(
+    @slash_tv.sub_command(name="trending", description=DEFAULT["COMMAND_TV_TRENDING_DESC"])
+    async def slash_trending(
         self, inter: disnake.ApplicationCommandInteraction, interval: Choice.interval = Option.interval
     ) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).trending(interval=interval)
         await self._reply(inter, results=response["results"])
 
-    @tv.sub_command(description=DEFAULT["COMMAND_TV_UPCOMING_DESC"])
-    async def upcoming(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
-        server = Server.get_by_id(inter.guild_id)
+    @slash_tv.sub_command(name="upcoming", description=DEFAULT["COMMAND_TV_UPCOMING_DESC"])
+    async def slash_upcoming(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).on_the_air(page=page)

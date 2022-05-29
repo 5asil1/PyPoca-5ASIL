@@ -13,7 +13,7 @@ class General(commands.Cog):
 
     @commands.slash_command(description=DEFAULT["COMMAND_PING_DESC"])
     async def ping(self, inter: disnake.ApplicationCommandInteraction, hide: Choice.boolean = Option.hide):
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         locale = ALL[server.language] if server else DEFAULT
         
         latency = int(self.bot.latency * 1000)
@@ -24,7 +24,7 @@ class General(commands.Cog):
 
     @commands.slash_command(description=DEFAULT["COMMAND_HELP_DESC"])
     async def help(self, inter: disnake.ApplicationCommandInteraction, hide: Choice.boolean = Option.hide):
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         locale = ALL[server.language] if server else DEFAULT
 
         BLANK = "<:blank:914183315056111627>"

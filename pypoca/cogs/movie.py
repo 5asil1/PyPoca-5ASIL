@@ -12,7 +12,7 @@ from pypoca.ext import ALL, DEFAULT, DEFAULT_LANGUAGE, DEFAULT_REGION, Choice, M
 class MovieButtons(disnake.ui.View):
     def __init__(self, inter: disnake.MessageInteraction, *, movie: Movie):
         self.movie = movie
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         locale = ALL[language]
         super().__init__(timeout=120)
@@ -37,7 +37,7 @@ class MovieButtons(disnake.ui.View):
 
 class MovieEmbed(disnake.Embed):
     def __init__(self, inter: disnake.MessageInteraction, *, movie: Movie):
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         locale = ALL[language]
@@ -70,7 +70,7 @@ class MovieEmbed(disnake.Embed):
 
 class MovieDropdown(disnake.ui.Select):
     def __init__(self, inter: disnake.ApplicationCommandInteraction, *, movies: list[Movie]) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         locale = ALL[language]
         options = [
@@ -84,7 +84,7 @@ class MovieDropdown(disnake.ui.Select):
         super().__init__(placeholder=locale["PLACEHOLDER"], options=options[:25])
 
     async def callback(self, inter: disnake.MessageInteraction) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         movie_id = int(self.values[0])
@@ -114,14 +114,83 @@ class Movies(commands.Cog):
     async def _reply(self, inter: disnake.ApplicationCommandInteraction, *, results: list[dict]) -> None:
         if len(results) == 0:
             raise NoResults()
-        await inter.send(view=MovieSelect(inter, movies=[Movie(result) for result in results]))
+        elif len(results) == 1:
+            server = Server.get_by_id(inter.guild.id)
+            language = server.language if server else DEFAULT_LANGUAGE
+            region = server.region if server else DEFAULT_REGION
+            movie_id = Movie(results[0]).id
+            result = await tmdb.Movie(id=movie_id, language=language, region=region).details(
+                append="credits,external_ids,recommendations,similar,videos,watch/providers"
+            )
+            try:
+                result["external_ids"]["trakt_id"] = await trakt.Movie().trakt_id_by_tmdb_id(movie_id)
+            except Exception as e:
+                result["external_ids"]["trakt_id"] = None
+            movie = Movie(result)
+            await inter.send(
+                embed=MovieEmbed(inter, movie=movie), view=MovieButtons(inter, movie=movie)
+            )
+        else:
+            await inter.send(view=MovieSelect(inter, movies=[Movie(result) for result in results]))
+
+    @commands.group(name="movie", description=DEFAULT["COMMAND_MOVIE_DESC"])
+    async def movie(self, ctx: commands.Context):
+        print(ctx)
+
+    @movie.command(name="discover", description=DEFAULT["COMMAND_MOVIE_DISCOVER_DESC"])
+    async def discover(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Movies(language=language, region=region).discover()
+        await self._reply(ctx, results=response["results"][:1])
+
+    @movie.command(name="popular", description=DEFAULT["COMMAND_MOVIE_POPULAR_DESC"])
+    async def popular(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Movies(language=language, region=region).popular()
+        await self._reply(ctx, results=response["results"][:1])
+
+    @movie.command(name="search", description=DEFAULT["COMMAND_MOVIE_SEARCH_DESC"])
+    async def search(self, ctx: commands.Context, query: str = Option.query) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Movies(language=language, region=region).search(query)
+        await self._reply(ctx, results=response["results"][:1])
+
+    @movie.command(name="top", description=DEFAULT["COMMAND_MOVIE_TOP_DESC"])
+    async def top(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Movies(language=language, region=region).top_rated()
+        await self._reply(ctx, results=response["results"][:1])
+
+    @movie.command(name="trending", description=DEFAULT["COMMAND_MOVIE_TRENDING_DESC"])
+    async def trending(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Movies(language=language, region=region).trending()
+        await self._reply(ctx, results=response["results"][:1])
+
+    @movie.command(name="upcoming", description=DEFAULT["COMMAND_MOVIE_UPCOMING_DESC"])
+    async def upcoming(self, ctx: commands.Context) -> None:
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Movies(language=language, region=region).upcoming()
+        await self._reply(ctx, results=response["results"][:1])
 
     @commands.slash_command(name="movie", description=DEFAULT["COMMAND_MOVIE_DESC"])
-    async def movie(self, inter: disnake.ApplicationCommandInteraction):
+    async def slash_movie(self, inter: disnake.ApplicationCommandInteraction):
         pass
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_DISCOVER_DESC"])
-    async def discover(
+    @slash_movie.sub_command(name="discover", description=DEFAULT["COMMAND_MOVIE_DISCOVER_DESC"])
+    async def slash_discover(
         self,
         inter: disnake.ApplicationCommandInteraction,
         sort_by: Choice.movie_sort_by = Option.movie_sort_by,
@@ -139,7 +208,7 @@ class Movies(commands.Cog):
         max_runtime: int = Option.max_runtime,
         page: int = Option.page,
     ) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).discover(
@@ -160,16 +229,16 @@ class Movies(commands.Cog):
         )
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_POPULAR_DESC"])
-    async def popular(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
-        server = Server.get_by_id(inter.guild_id)
+    @slash_movie.sub_command(name="popular", description=DEFAULT["COMMAND_MOVIE_POPULAR_DESC"])
+    async def slash_popular(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).popular(page=page)
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_SEARCH_DESC"])
-    async def search(
+    @slash_movie.sub_command(name="search", description=DEFAULT["COMMAND_MOVIE_SEARCH_DESC"])
+    async def slash_search(
         self,
         inter: disnake.ApplicationCommandInteraction,
         query: str = Option.query,
@@ -177,33 +246,33 @@ class Movies(commands.Cog):
         nsfw: Choice.boolean = Option.nsfw,
         page: int = Option.page,
     ) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).search(query, page=page, include_adult=nsfw, year=year)
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_TOP_DESC"])
-    async def top(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
-        server = Server.get_by_id(inter.guild_id)
+    @slash_movie.sub_command(name="top", description=DEFAULT["COMMAND_MOVIE_TOP_DESC"])
+    async def slash_top(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).top_rated(page=page)
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_TRENDING_DESC"])
-    async def trending(
+    @slash_movie.sub_command(name="trending", description=DEFAULT["COMMAND_MOVIE_TRENDING_DESC"])
+    async def slash_trending(
         self, inter: disnake.ApplicationCommandInteraction, interval: Choice.interval = Option.interval
     ) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).trending(interval=interval)
         await self._reply(inter, results=response["results"])
 
-    @movie.sub_command(description=DEFAULT["COMMAND_MOVIE_UPCOMING_DESC"])
-    async def upcoming(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
-        server = Server.get_by_id(inter.guild_id)
+    @slash_movie.sub_command(name="upcoming", description=DEFAULT["COMMAND_MOVIE_UPCOMING_DESC"])
+    async def slash_upcoming(self, inter: disnake.ApplicationCommandInteraction, page: int = Option.page) -> None:
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).upcoming(page=page)

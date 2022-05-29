@@ -18,8 +18,8 @@ class Setting(commands.Cog):
     @commands.has_permissions(administrator=True)
     @setting.sub_command(description=DEFAULT["COMMAND_LANGUAGE_DESC"])
     async def language(self, inter: disnake.ApplicationCommandInteraction, language: Choice.language = Option.language) -> None:
-        Server.set_by_id(inter.guild_id, data={"language": language, "region": language[3:]})
-        server = Server.get_by_id(inter.guild_id)
+        Server.set_by_id(inter.guild.id, data={"language": language, "region": language[3:]})
+        server = Server.get_by_id(inter.guild.id)
         locale = ALL[server.language] if server else DEFAULT
         description = locale["COMMAND_LANGUAGE_REPLY"]
         embed = disnake.Embed(description=description, color=COLOR)

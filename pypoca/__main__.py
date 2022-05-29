@@ -10,10 +10,7 @@ from pypoca.exceptions import NoResults
 from pypoca.log import log
 
 
-class PypocaBot(commands.InteractionBot):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-
+class PypocaBot(commands.Bot):
     def load_extensions(self, folder: str) -> None:
         for filename in os.listdir(folder):
             if filename.endswith(".py") and not filename.startswith("_"):
@@ -24,7 +21,7 @@ class PypocaBot(commands.InteractionBot):
         await self.change_presence(activity=activity)
 
     async def on_slash_command_error(self, inter: disnake.AppCmdInter, error: commands.CommandError) -> None:
-        server = Server.get_by_id(inter.guild_id)
+        server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         locale = ALL[language]
         if isinstance(e, commands.MissingPermissions):
@@ -48,10 +45,14 @@ def main() -> None:
     db.bind(**db_credentials)
     db.generate_mapping(create_tables=True)
 
+    # intents = disnake.Intents.default()
+    # intents.message_content = True
+
     bot = PypocaBot(
+        # command_prefix=commands.when_mentioned_or("/"),
+        # intents=intents,
         help_command=None,
         sync_commands_debug=True,
-        sync_permissions=True,
         test_guilds=test_guilds,
         strict_localization=True,
     )
