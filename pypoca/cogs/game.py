@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import asyncio
 import random
 
 import disnake
@@ -38,33 +39,6 @@ class FramedGame:
             return max(self.members, key=self.members.get)
         return None
 
-    async def start(self) -> None:
-        await self.update_frame()
-        await self.inter.send(embed=self.embed, view=self.view, ephemeral=self.ephemeral)
-
-    async def update(self, inter: disnake.MessageInteraction) -> None:
-        self.members[inter.author.mention] = self.members.get(inter.author.mention, 0) + 1
-        await self.update_frame()
-        await inter.response.edit_message(embed=self.embed, view=self.view)
-
-    async def stop(self, inter: disnake.MessageInteraction) -> None:
-        if self.score > self.record:
-            Server.update_by_id(inter.guild.id, data={"frame_record": self.score})
-        self.embed.stop()
-        await inter.response.edit_message(embed=self.embed, view=None)
-
-    async def update_frame(self) -> None:
-        self.movie = await self.get_random_movie()
-        self.movies = self.get_similar_movies(movie=self.movie)
-        self.embed.update()
-        self.view.children[0].options = [
-            disnake.SelectOption(
-                label=movie.title_and_year,
-                value=movie.id,
-            )
-            for movie in self.movies
-        ]
-
     async def get_random_movie(self) -> Movie:
         while True:
             response = await tmdb.Movies(language=self.language, region=self.region).random(
@@ -83,15 +57,36 @@ class FramedGame:
             random.shuffle(movies)
         return movies
 
+    async def start(self, inter: disnake.MessageInteraction = None) -> None:
+        self.movie = await self.get_random_movie()
+        self.movies = self.get_similar_movies(movie=self.movie)
+        self.embed.start()
+        self.view.start()
+        if inter:
+            await inter.edit_original_message(embed=self.embed, view=self.view)
+        else:
+            await self.inter.send(embed=self.embed, view=self.view, ephemeral=self.ephemeral)
+
+    async def stop(self, inter: disnake.MessageInteraction) -> None:
+        if self.score > self.record:
+            Server.update_by_id(inter.guild.id, data={"frame_record": self.score})
+        self.embed.stop()
+        await inter.edit_original_message(embed=self.embed, view=None)
+
 
 class FramedDropdown(disnake.ui.Select):
     def __init__(self, game: FramedGame) -> None:
         self.game = game
-        super().__init__(placeholder=self.game.locale["PLACEHOLDER"])
+        super().__init__()
 
     async def callback(self, inter: disnake.MessageInteraction) -> None:
-        if self.game.movie.id == int(self.values[0]):
-            await self.game.update(inter)
+        self.placeholder = self.values[0]
+        self.disabled = True
+        await inter.response.edit_message(embed=self.game.embed, view=self.game.view)
+        await asyncio.sleep(0.5)
+        if self.game.movie.title_and_year == self.values[0]:
+            self.game.members[inter.author.mention] = self.game.members.get(inter.author.mention, 0) + 1
+            await self.game.start(inter)
         else:
             await self.game.stop(inter)
 
@@ -102,13 +97,24 @@ class FramedSelect(disnake.ui.View):
         super().__init__(timeout=None)
         self.add_item(FramedDropdown(game))
 
+    def start(self) -> None:
+        self.children[0].placeholder = self.game.locale["PLACEHOLDER"]
+        self.children[0].disabled = False
+        self.children[0].options = [
+            disnake.SelectOption(label=movie.title_and_year)
+            for movie in self.game.movies
+        ]
+
+    def stop(self) -> None:
+        self.children = []
+
 
 class FramedEmbed(disnake.Embed):
     def __init__(self, game: FramedGame) -> None:
         self.game = game
         super().__init__(title=self.game.locale["COMMAND_GAME_FRAME_REPLY"], color=COLOR)
 
-    def update(self) -> None:
+    def start(self) -> None:
         self.clear_fields()
         self.set_image(url=random.choice(self.game.movie.backdrops))
         self.add_field(self.game.locale["COMMAND_GAME_FRAME_FIELD_SCORE"], self.game.score or 0, inline=True)
@@ -116,14 +122,12 @@ class FramedEmbed(disnake.Embed):
         self.add_field(self.game.locale["COMMAND_GAME_FRAME_FIELD_TOP_SCORER"], self.game.top_scorer or "-", inline=True)
 
     def stop(self) -> None:
-        self.set_image(url=disnake.embeds.EmptyEmbed)
         self.title = self.game.locale["COMMAND_GAME_END"]
-        members = sorted(self.game.members.items(), key=lambda x: x[1])
-        points = self.game.locale["COMMAND_GAME_POINTS"]
+        self.set_image(url=disnake.embeds.EmptyEmbed)
         self.description = "\n".join(
             [
-                f"{emoji} {member_score[0]} (**{member_score[1]}** {points})"
-                for member_score, emoji in zip(members[:5], "🏆🥈🥉🏅🏅")
+                f'{emoji} {member_score[0]} (**{member_score[1]}** {self.game.locale["COMMAND_GAME_POINTS"]})'
+                for member_score, emoji in zip(sorted(self.game.members.items(), key=lambda x: x[1], reverse=True)[:5], "🏆🥈🥉🏅🏅")
             ]
         )
 
