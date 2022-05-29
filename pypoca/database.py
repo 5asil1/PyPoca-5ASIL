@@ -10,6 +10,7 @@ class Server(db.Entity):
     id = PrimaryKey(int, size=64)
     language = Optional(str)
     region = Optional(str)
+    frame_record = Optional(int)
     created_on = Required(datetime, default=datetime.utcnow)
     updated_on = Optional(datetime)
 
@@ -20,16 +21,22 @@ class Server(db.Entity):
     def before_update(self) -> None:
         self.updated_on = datetime.utcnow()
 
-    @staticmethod
+    @classmethod
     @db_session
-    def get_by_id(server_id: int) -> dict:
-        if Server.exists(id=server_id):
-            return Server[server_id]
+    def get_by_id(cls, id: int) -> db.Entity:
+        return cls.get(id=id)
 
-    @staticmethod
+    @classmethod
     @db_session
-    def set_by_id(server_id: int, *, data: dict) -> None:
-        if Server.exists(id=server_id):
-            Server[server_id].set(**data)
-        else:
-            Server(id=server_id, **data)
+    def update_by_id(cls, id: int, *, data: dict) -> None:
+        cls[id].set(**data)
+
+    @classmethod
+    @db_session
+    def update_or_create(cls, *, id: int, data: dict) -> None:
+        cls.update_by_id(id, data=data) if cls.exists(id=id) else cls(id=id, **data)
+
+    @classmethod
+    @db_session
+    def get_or_create(cls, *, id: int, data: dict = {}) -> db.Entity:
+        return cls.get_by_id(id) or cls(id=id, **data)

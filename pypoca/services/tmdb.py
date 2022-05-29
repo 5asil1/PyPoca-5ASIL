@@ -165,7 +165,7 @@ class Movies(TMDb):
 
     async def random(self, *, append: str = None, image_language: str = "null") -> dict:
         response = await self.randoms()
-        return await Movie(id=random.choice(response["results"])["id"]).details(append=append, image_language=image_language)
+        return await Movie(id=random.choice(response["results"])["id"], language=self.language, region=self.region).details(append=append, image_language=image_language)
 
 
 class Movie(TMDb):
@@ -365,7 +365,7 @@ class Shows(TMDb):
 
     async def random(self, *, append: str = None, image_language: str = "null") -> dict:
         response = await self.randoms()
-        return await Show(id=random.choice(response["results"])["id"]).details(append=append, image_language=image_language)
+        return await Show(id=random.choice(response["results"])["id"], language=self.language, region=self.region).details(append=append, image_language=image_language)
 
 
 class Show(TMDb):

@@ -104,6 +104,12 @@
     "OPTION_GENRE_CHOICE_WAR_AND_POLITICS": "war & politics",
     "OPTION_GENRE_CHOICE_WESTERN": "western",
 
+    "OPTION_MEDIA_NAME": "media",
+    "OPTION_MEDIA_DESC": "Filter to only display a specific media type",
+    "OPTION_MEDIA_CHOICE_MOVIE": "movie",
+    "OPTION_MEDIA_CHOICE_TV": "tv",
+    "OPTION_MEDIA_CHOICE_ALL": "all",
+
     "PLACEHOLDER": "حدد أحد الخيارات ...",
 
     "COMMAND_PING_DESC": "الحصول على زمن انتقال PyPoca",
@@ -176,5 +182,14 @@
     "COMMAND_TV_SEARCH_DESC": "البحث عن برنامج تلفزيوني",
     "COMMAND_TV_TOP_DESC": "احصل على أفضل البرامج التلفزيونية تقييمًا",
     "COMMAND_TV_TRENDING_DESC": "احصل على العروض التلفزيونية الرائجة",
-    "COMMAND_TV_UPCOMING_DESC": "احصل على البرامج التلفزيونية القادمة"
+    "COMMAND_TV_UPCOMING_DESC": "احصل على البرامج التلفزيونية القادمة",
+
+    "COMMAND_GAME_DESC": "اعرض مدى معرفتك بالأفلام والمسلسلات مع الألعاب والاختبارات",
+    "COMMAND_GAME_POINTS": "النقاط",
+    "COMMAND_GAME_END": "انتهت اللعبة",
+    "COMMAND_GAME_FRAME_DESC": "اكتشف ما هو الفيلم من خلال صورة واحدة فقط",
+    "COMMAND_GAME_FRAME_REPLY": "من أي فيلم هذا؟",
+    "COMMAND_GAME_FRAME_FIELD_SCORE": "النتيجة",
+    "COMMAND_GAME_FRAME_FIELD_RECORD": "تسجيل",
+    "COMMAND_GAME_FRAME_FIELD_TOP_SCORER": "أعلى نقاط"
 }

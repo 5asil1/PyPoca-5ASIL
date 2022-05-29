@@ -47,6 +47,8 @@ class General(commands.Cog):
             {BLANK} **popular** {locale["COMMAND_PERSON_POPULAR_DESC"]}
             {BLANK} **search** {locale["COMMAND_PERSON_SEARCH_DESC"]}
             {BLANK} **trending** {locale["COMMAND_PERSON_TRENDING_DESC"]}
+            **/game**
+            {BLANK} **frame** {locale["COMMAND_GAME_FRAME_DESC"]}
             **/setting**
             {BLANK} **language** {locale["COMMAND_LANGUAGE_DESC"]}
         """

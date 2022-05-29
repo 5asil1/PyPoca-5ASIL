@@ -104,6 +104,12 @@
     "OPTION_GENRE_CHOICE_WAR_AND_POLITICS": "guerra & política",
     "OPTION_GENRE_CHOICE_WESTERN": "faroeste",
 
+    "OPTION_MEDIA_NAME": "mídia",
+    "OPTION_MEDIA_DESC": "Filtrar para só exibir um tipo de mídia específico",
+    "OPTION_MEDIA_CHOICE_MOVIE": "filme",
+    "OPTION_MEDIA_CHOICE_TV": "série",
+    "OPTION_MEDIA_CHOICE_ALL": "todos",
+
     "PLACEHOLDER": "Selecione uma das opções...",
 
     "COMMAND_PING_DESC": "Obtenha a latência da PyPoca",
@@ -176,5 +182,14 @@
     "COMMAND_TV_SEARCH_DESC": "Pesquise por um seriado",
     "COMMAND_TV_TOP_DESC": "Veja os séries com melhor nota",
     "COMMAND_TV_TRENDING_DESC": "Veja os séries da tendência",
-    "COMMAND_TV_UPCOMING_DESC": "Veja os próximos seriado a serem lançados"
+    "COMMAND_TV_UPCOMING_DESC": "Veja os próximos seriado a serem lançados",
+
+    "COMMAND_GAME_DESC": "Mostre o quanto você conhece de filmes e séries com jogos e quizzes",
+    "COMMAND_GAME_POINTS": "pontos",
+    "COMMAND_GAME_END": "Fim de jogo",
+    "COMMAND_GAME_FRAME_DESC": "Descubra qual é o filme com apenas uma imagem",
+    "COMMAND_GAME_FRAME_REPLY": "De qual filme é isso?",
+    "COMMAND_GAME_FRAME_FIELD_SCORE": "Pontuação",
+    "COMMAND_GAME_FRAME_FIELD_RECORD": "Recorde",
+    "COMMAND_GAME_FRAME_FIELD_TOP_SCORER": "Maior pontuador"
 }

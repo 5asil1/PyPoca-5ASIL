@@ -104,6 +104,12 @@
     "OPTION_GENRE_CHOICE_WAR_AND_POLITICS": "war & politics",
     "OPTION_GENRE_CHOICE_WESTERN": "western",
 
+    "OPTION_MEDIA_NAME": "media",
+    "OPTION_MEDIA_DESC": "Filter to only display a specific media type",
+    "OPTION_MEDIA_CHOICE_MOVIE": "movie",
+    "OPTION_MEDIA_CHOICE_TV": "tv",
+    "OPTION_MEDIA_CHOICE_ALL": "all",
+
     "PLACEHOLDER": "Select one of the options...",
 
     "COMMAND_PING_DESC": "Get PyPoca's latency",
@@ -176,5 +182,14 @@
     "COMMAND_TV_SEARCH_DESC": "Search for TV show",
     "COMMAND_TV_TOP_DESC": "Get the top rated TV shows",
     "COMMAND_TV_TRENDING_DESC": "Get the trending TV shows",
-    "COMMAND_TV_UPCOMING_DESC": "Get the upcoming TV shows"
+    "COMMAND_TV_UPCOMING_DESC": "Get the upcoming TV shows",
+
+    "COMMAND_GAME_DESC": "Show how much you know about movies and series with games and quizzes",
+    "COMMAND_GAME_POINTS": "points",
+    "COMMAND_GAME_END": "Game over",
+    "COMMAND_GAME_FRAME_DESC": "Find out what the movie is with only one image",
+    "COMMAND_GAME_FRAME_REPLY": "Which movie is this from?",
+    "COMMAND_GAME_FRAME_FIELD_SCORE": "Score",
+    "COMMAND_GAME_FRAME_FIELD_RECORD": "Record",
+    "COMMAND_GAME_FRAME_FIELD_TOP_SCORER": "Highest scorer"
 }
