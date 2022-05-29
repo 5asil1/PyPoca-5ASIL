@@ -75,7 +75,7 @@ class MovieDropdown(disnake.ui.Select):
         locale = ALL[language]
         options = [
             disnake.SelectOption(
-                label=movie.title_and_year[:100],
+                label=movie.title_and_year,
                 value=movie.id,
                 description=movie.rating_and_votes or "",
             )
@@ -135,7 +135,7 @@ class Movies(commands.Cog):
 
     @commands.group(name="movie", description=DEFAULT["COMMAND_MOVIE_DESC"])
     async def movie(self, ctx: commands.Context) -> None:
-        print(ctx)
+        pass
 
     @movie.command(name="discover", description=DEFAULT["COMMAND_MOVIE_DISCOVER_DESC"])
     async def discover(self, ctx: commands.Context) -> None:

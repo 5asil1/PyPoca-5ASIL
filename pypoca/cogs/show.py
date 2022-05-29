@@ -86,7 +86,7 @@ class ShowDropdown(disnake.ui.Select):
         locale = ALL[language]
         options = [
             disnake.SelectOption(
-                label=show.title_and_year[:100],
+                label=show.title_and_year,
                 value=show.id,
                 description=show.rating_and_votes or "",
             )
