@@ -8,8 +8,10 @@
     "RETURNING_SERIES": "Returning Series",
     "RUMORED": "Rumored",
 
-    "ERROR_NO_PERMISSION_REPLY": "You must be administrator to execute this command",
-    "ERROR_NO_RESULTS": "Could not find any match for these specifications",
+    "ERROR_NO_PERMISSION_NAME": "Permission denied",
+    "ERROR_NO_PERMISSION_DESC": "You must be administrator to execute this command",
+    "ERROR_NO_RESULTS_NAME": "Not found",
+    "ERROR_NO_RESULTS_DESC": "Could not find any match for these specifications",
 
     "DATETIME_FORMAT": "%Y/%m/%d",
 

@@ -8,8 +8,10 @@
     "RETURNING_SERIES": "سلسلة العودة",
     "RUMORED": "يشاع",
 
-    "ERROR_NO_PERMISSION_REPLY": "يجب أن تكون مسؤولاً لتنفيذ هذا الأمر",
-    "ERROR_NO_RESULTS": "تعذر العثور على أي تطابق لهذه المواصفات",
+    "ERROR_NO_PERMISSION_NAME": "تم رفض الإذن",
+    "ERROR_NO_PERMISSION_DESC": "يجب أن تكون مسؤولاً لتنفيذ هذا الأمر",
+    "ERROR_NO_RESULTS_NAME": "غير موجود",
+    "ERROR_NO_RESULTS_DESC": "تعذر العثور على أي تطابق لهذه المواصفات",
 
     "DATETIME_FORMAT": "%d/%m/%Y",
 

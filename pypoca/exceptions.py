@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-class PypocaException(BaseException):
+class PypocaException(Exception):
     pass
 
 

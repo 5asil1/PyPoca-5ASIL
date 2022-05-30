@@ -8,8 +8,10 @@
     "RETURNING_SERIES": "Renovado",
     "RUMORED": "Rumor",
 
-    "ERROR_NO_PERMISSION_REPLY": "Você precisa ser administrador para executar esse comando",
-    "ERROR_NO_RESULTS": "Não foi possível encontrar nenhuma correspondência para essas especificações",
+    "ERROR_NO_PERMISSION_NAME": "Permissão negada",
+    "ERROR_NO_PERMISSION_DESC": "Você precisa ser administrador para executar esse comando",
+    "ERROR_NO_RESULTS_NAME": "Nenhum resultado",
+    "ERROR_NO_RESULTS_DESC": "Não foi possível encontrar nenhuma correspondência para essas especificações",
 
     "DATETIME_FORMAT": "%d/%m/%Y",
 

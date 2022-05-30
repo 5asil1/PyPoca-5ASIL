@@ -7,6 +7,7 @@ from pypoca.database import Server
 from pypoca.exceptions import NoResults
 from pypoca.services import omdb, tmdb, trakt, translator, whatismymovie
 from pypoca.ext import ALL, DEFAULT, DEFAULT_LANGUAGE, DEFAULT_REGION, Choice, Movie, Option
+from pypoca.log import log
 
 
 class MovieButtons(disnake.ui.View):
@@ -113,6 +114,16 @@ class MovieEmbed(disnake.Embed):
 class Movies(commands.Cog):
     def __init__(self, bot: commands.Bot) -> None:
         self.bot = bot
+
+    async def cog_slash_command_error(self, inter: disnake.ApplicationCommandInteraction, error: commands.CommandError) -> None:
+        server = Server.get_by_id(inter.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        locale = ALL[language]
+        if "NoResults" in error.args[0]:
+            embed = disnake.Embed(title=locale["ERROR_NO_RESULTS_NAME"], description=locale["ERROR_NO_RESULTS_DESC"], color=disnake.Color.red())
+            await inter.send(embed=embed, ephemeral=True)
+        else:
+            log.error(f"{inter}. {error}", extra={"locals": locals(), "ctx": vars(inter)}, exc_info=error)
 
     async def _reply(self, inter: disnake.ApplicationCommandInteraction, *, results: list[dict]) -> None:
         if len(results) == 0:
@@ -242,8 +253,8 @@ class Movies(commands.Cog):
 
     @slash_movie.sub_command(name="find", description=DEFAULT["COMMAND_MOVIE_FIND_DESC"])
     async def slash_find(self, inter: disnake.ApplicationCommandInteraction, query: str = Option.query) -> None:
-        overview = translator.Translator().translate(query)
         await inter.response.defer()
+        overview = translator.Translator().translate(query)
         name = await whatismymovie.Movie().name_by_overview(overview)
         server = Server.get_by_id(inter.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
