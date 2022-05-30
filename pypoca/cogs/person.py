@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import random
+
 import disnake
 from disnake.ext import commands
 
@@ -139,7 +141,7 @@ class People(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.People(language=language, region=region).popular()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @person.command(name="search", description=DEFAULT["COMMAND_PERSON_SEARCH_DESC"])
     async def search(self, ctx: commands.Context, *, query: str = Option.query) -> None:
@@ -155,7 +157,7 @@ class People(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.People(language=language, region=region).trending()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @commands.slash_command(name="people", description=DEFAULT["COMMAND_PERSON_DESC"])
     async def slash_person(self, inter: disnake.ApplicationCommandInteraction) -> None:

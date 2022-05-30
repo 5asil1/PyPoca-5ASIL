@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import random
+
 import disnake
 from disnake.ext import commands
 
@@ -164,7 +166,7 @@ class Shows(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).discover()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @tv.command(name="popular", description=DEFAULT["COMMAND_TV_POPULAR_DESC"])
     async def popular(self, ctx: commands.Context) -> None:
@@ -172,7 +174,7 @@ class Shows(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).popular()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @tv.command(name="search", description=DEFAULT["COMMAND_TV_SEARCH_DESC"])
     async def search(self, ctx: commands.Context, *, query: str = Option.query) -> None:
@@ -188,7 +190,7 @@ class Shows(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).top_rated()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @tv.command(name="trending", description=DEFAULT["COMMAND_TV_TRENDING_DESC"])
     async def trending(self, ctx: commands.Context) -> None:
@@ -196,7 +198,7 @@ class Shows(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).trending()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @tv.command(name="upcoming", description=DEFAULT["COMMAND_TV_UPCOMING_DESC"])
     async def upcoming(self, ctx: commands.Context) -> None:
@@ -204,7 +206,7 @@ class Shows(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Shows(language=language, region=region).on_the_air()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @commands.slash_command(name="tv", description=DEFAULT["COMMAND_TV_DESC"])
     async def slash_tv(self, inter: disnake.ApplicationCommandInteraction) -> None:

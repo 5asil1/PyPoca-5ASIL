@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import random
+
 import disnake
 from disnake.ext import commands
 
@@ -155,7 +157,7 @@ class Movies(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).discover()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @movie.command(name="find", description=DEFAULT["COMMAND_MOVIE_FIND_DESC"])
     async def find(self, ctx: commands.Context, *, query: str = Option.query) -> None:
@@ -173,7 +175,7 @@ class Movies(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).popular()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @movie.command(name="search", description=DEFAULT["COMMAND_MOVIE_SEARCH_DESC"])
     async def search(self, ctx: commands.Context, *, query: str = Option.query) -> None:
@@ -189,7 +191,7 @@ class Movies(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).top_rated()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @movie.command(name="trending", description=DEFAULT["COMMAND_MOVIE_TRENDING_DESC"])
     async def trending(self, ctx: commands.Context) -> None:
@@ -197,7 +199,7 @@ class Movies(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).trending()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @movie.command(name="upcoming", description=DEFAULT["COMMAND_MOVIE_UPCOMING_DESC"])
     async def upcoming(self, ctx: commands.Context) -> None:
@@ -205,7 +207,7 @@ class Movies(commands.Cog):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         response = await tmdb.Movies(language=language, region=region).upcoming()
-        await self._reply(ctx, results=response["results"][:1])
+        await self._reply(ctx, results=[random.choice(response["results"])])
 
     @commands.slash_command(name="movie", description=DEFAULT["COMMAND_MOVIE_DESC"])
     async def slash_movie(self, inter: disnake.ApplicationCommandInteraction) -> None:
