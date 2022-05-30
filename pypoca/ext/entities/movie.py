@@ -27,8 +27,8 @@ class Movie(dict):
         self.status = data.get("status")
         self.tagline = data.get("tagline") or ""
         self.video = data.get("video")
-        self.vote_average = data.get("vote_average")
-        self.vote_count = data.get("vote_count")
+        self.vote_average = data["imdb"].get("imdb_rating") or data.get("vote_average")
+        self.vote_count = data["imdb"].get("imdb_votes") or data.get("vote_count")
 
         self.alternative_titles = data.get("alternative_titles") or {}
         self.credits = data.get("credits") or {}
@@ -106,6 +106,10 @@ class Movie(dict):
     @property
     def youtube(self) -> str:
         return f"https://www.youtube.com/watch?v={self.youtube_id}"
+
+    @property
+    def status(self) -> str:
+        return self._status.replace(" ", "_").upper()
 
     @property
     def backdrops(self) -> list[str]:

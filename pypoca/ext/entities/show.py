@@ -31,11 +31,11 @@ class Show(dict):
         self.production_countries = data.get("production_countries") or []
         self.seasons = data.get("seasons") or []
         self.spoken_languages = data.get("spoken_languages") or []
-        self.status = data.get("status")
+        self._status = data.get("status") or ""
         self.tagline = data.get("tagline") or ""
         self.type = data.get("type")
-        self.vote_average = data.get("vote_average")
-        self.vote_count = data.get("vote_count")
+        self.vote_average = data["imdb"].get("imdb_rating") or data.get("vote_average")
+        self.vote_count = data["imdb"].get("imdb_votes") or data.get("vote_count")
 
         self.alternative_titles = data.get("alternative_titles") or {}
         self.credits = data.get("credits") or {}
@@ -52,7 +52,12 @@ class Show(dict):
 
     @property
     def title_and_year(self) -> str:
-        return f"{self.title[:90]} ({self.first_date.year})" if self.first_date else self.title[:100]
+        if self.first_date and self._status in ("Ended", "Canceled") and self.last_air_date:
+            return f"{self.title[:90]} ({self.first_date.year}-{show.last_date.year})"
+        elif self.first_date:
+            return f"{self.title[:90]} ({self.first_date.year})"
+        else:
+            return self.title[:100]
 
     @property
     def first_date(self) -> date:
@@ -96,6 +101,10 @@ class Show(dict):
     @property
     def youtube(self) -> str:
         return f"https://www.youtube.com/watch?v={self.youtube_id}"
+
+    @property
+    def status(self) -> str:
+        return self._status.replace(" ", "_").upper()
 
     @property
     def cast(self) -> dict:

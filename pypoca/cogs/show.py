@@ -5,7 +5,7 @@ from disnake.ext import commands
 from pypoca.config import COLOR
 from pypoca.database import Server
 from pypoca.exceptions import NoResults
-from pypoca.services import tmdb, trakt
+from pypoca.services import omdb, tmdb, trakt
 from pypoca.ext import ALL, DEFAULT, DEFAULT_LANGUAGE, DEFAULT_REGION, Choice, Option, Show
 
 
@@ -80,7 +80,7 @@ class ShowEmbed(disnake.Embed):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         locale = ALL[language]
-        super().__init__(title=show.title, description=f"_{show.tagline}_" if show.tagline else "", color=COLOR)
+        super().__init__(title=show.title_and_year, description=f"_{show.tagline}_" if show.tagline else "", color=COLOR)
         if show.homepage:
             self.url = show.homepage
         if show.image:
@@ -97,9 +97,7 @@ class ShowEmbed(disnake.Embed):
             name=locale["COMMAND_TV_FIELD_PREMIERED"], value=show.first_date.strftime(locale["DATETIME_FORMAT"]) if show.first_date else "-", inline=True
         )
         self.add_field(
-            name=locale["COMMAND_TV_FIELD_STATUS"],
-            value=f"{show.status} ({show.last_date.year})" if show.status == "Ended" else show.status if show.status else "-",
-            inline=True,
+            name=locale["COMMAND_TV_FIELD_STATUS"], value=locale.get(show.status) or "-", inline=True
         )
         self.add_field(
             name=locale["COMMAND_TV_FIELD_EPISODES"], value=str(show.number_of_episodes) or "-", inline=True
@@ -136,10 +134,8 @@ class Shows(commands.Cog):
             result = await tmdb.Show(id=show_id, language=language, region=region).details(
                 append="credits,external_ids,recommendations,similar,videos,watch/providers"
             )
-            try:
-                result["external_ids"]["trakt_id"] = await trakt.Show().trakt_id_by_tmdb_id(show_id)
-            except Exception as e:
-                result["external_ids"]["trakt_id"] = None
+            result["external_ids"]["trakt_id"] = await trakt.Show().trakt_id_by_tmdb_id(show_id)
+            result["imdb"] = await omdb.Show().ratings_by_imdb_id(result["external_ids"]["imdb_id"])
             show = Show(result)
             await inter.send(
                 embed=ShowEmbed(inter, show=show), view=ShowButtons(inter, show=show)

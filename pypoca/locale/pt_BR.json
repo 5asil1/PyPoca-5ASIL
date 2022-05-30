@@ -1,4 +1,13 @@
 {
+    "CANCELED": "Cancelado",
+    "ENDED": "Encerrado",
+    "IN_PRODUCTION": "Em produção",
+    "PLANNED": "Planejado",
+    "POST_PRODUCTION": "Pós-produção",
+    "RELEASED": "Lançado",
+    "RETURNING_SERIES": "Renovado",
+    "RUMORED": "Rumor",
+
     "ERROR_NO_PERMISSION_REPLY": "Você precisa ser administrador para executar esse comando",
     "ERROR_NO_RESULTS": "Não foi possível encontrar nenhuma correspondência para essas especificações",
 

@@ -1,4 +1,13 @@
 {
+    "CANCELED": "Canceled",
+    "ENDED": "Ended",
+    "IN_PRODUCTION": "In Production",
+    "PLANNED": "Planned",
+    "POST_PRODUCTION": "Post Production",
+    "RELEASED": "Released",
+    "RETURNING_SERIES": "Returning Series",
+    "RUMORED": "Rumored",
+
     "ERROR_NO_PERMISSION_REPLY": "You must be administrator to execute this command",
     "ERROR_NO_RESULTS": "Could not find any match for these specifications",
 

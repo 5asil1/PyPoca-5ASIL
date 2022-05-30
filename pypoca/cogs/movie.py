@@ -5,7 +5,7 @@ from disnake.ext import commands
 from pypoca.config import COLOR
 from pypoca.database import Server
 from pypoca.exceptions import NoResults
-from pypoca.services import tmdb, trakt, translator, whatismymovie
+from pypoca.services import omdb, tmdb, trakt, translator, whatismymovie
 from pypoca.ext import ALL, DEFAULT, DEFAULT_LANGUAGE, DEFAULT_REGION, Choice, Movie, Option
 
 
@@ -80,7 +80,7 @@ class MovieEmbed(disnake.Embed):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         locale = ALL[language]
-        super().__init__(title=movie.title, description=f"_{movie.tagline}_" if movie.tagline else "", color=COLOR)
+        super().__init__(title=movie.title_and_year, description=f"_{movie.tagline}_" if movie.tagline else "", color=COLOR)
         if movie.homepage:
             self.url = movie.homepage
         if movie.image:
@@ -125,10 +125,8 @@ class Movies(commands.Cog):
             result = await tmdb.Movie(id=movie_id, language=language, region=region).details(
                 append="credits,external_ids,recommendations,similar,videos,watch/providers"
             )
-            try:
-                result["external_ids"]["trakt_id"] = await trakt.Movie().trakt_id_by_tmdb_id(movie_id)
-            except Exception as e:
-                result["external_ids"]["trakt_id"] = None
+            result["external_ids"]["trakt_id"] = await trakt.Movie().trakt_id_by_tmdb_id(movie_id)
+            result["imdb"] = await omdb.Movie().ratings_by_imdb_id(result["external_ids"]["imdb_id"])
             movie = Movie(result)
             await inter.send(
                 embed=MovieEmbed(inter, movie=movie), view=MovieButtons(inter, movie=movie)

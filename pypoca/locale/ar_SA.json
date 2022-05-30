@@ -1,4 +1,13 @@
 {
+    "CANCELED": "ألغيت",
+    "ENDED": "انتهى",
+    "IN_PRODUCTION": "في الانتاج",
+    "PLANNED": "مخطط",
+    "POST_PRODUCTION": "مرحلة ما بعد الإنتاج",
+    "RELEASED": "صدر",
+    "RETURNING_SERIES": "سلسلة العودة",
+    "RUMORED": "يشاع",
+
     "ERROR_NO_PERMISSION_REPLY": "يجب أن تكون مسؤولاً لتنفيذ هذا الأمر",
     "ERROR_NO_RESULTS": "تعذر العثور على أي تطابق لهذه المواصفات",
 
