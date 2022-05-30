@@ -12,9 +12,13 @@ class TmdbException(RequestException):
     pass
 
 
-class NoResults(TmdbException):
+class TraktException(RequestException):
     pass
 
 
-class TraktException(RequestException):
+class WhatIsMyMovieException(RequestException):
+    pass
+
+
+class NoResults(RequestException):
     pass
