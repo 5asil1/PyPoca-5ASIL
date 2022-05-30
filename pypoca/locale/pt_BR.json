@@ -7,7 +7,7 @@
     "OPTION_TRUE": "sim",
     "OPTION_FALSE": "não",
 
-    "OPTION_QUERY_NAME": "nome",
+    "OPTION_QUERY_NAME": "texto",
     "OPTION_QUERY_DESC": "Uma consulta de texto para pesquisar",
 
     "OPTION_PAGE_NAME": "página",
@@ -146,6 +146,7 @@
     "COMMAND_MOVIE_TOP_DESC": "Veja os filmes com melhor nota",
     "COMMAND_MOVIE_TRENDING_DESC": "Veja os filmes da tendência",
     "COMMAND_MOVIE_UPCOMING_DESC": "Veja os próximos filmes nos cinemas",
+    "COMMAND_MOVIE_FIND_DESC": "Use suas palavras ou pesquise por títulos, atores, gêneros, etc. A PyPoca encontrará filmes para você",
 
     "COMMAND_PERSON_DESC": "Tudo sobre artistas: encontre, descubra e obtenha informações",
     "COMMAND_PERSON_REPLY": "Artistas encontrados",

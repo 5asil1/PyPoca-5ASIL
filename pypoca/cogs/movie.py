@@ -5,7 +5,7 @@ from disnake.ext import commands
 from pypoca.config import COLOR
 from pypoca.database import Server
 from pypoca.exceptions import NoResults
-from pypoca.services import tmdb, trakt
+from pypoca.services import tmdb, trakt, translator, whatismymovie
 from pypoca.ext import ALL, DEFAULT, DEFAULT_LANGUAGE, DEFAULT_REGION, Choice, Movie, Option
 
 
@@ -145,6 +145,16 @@ class Movies(commands.Cog):
         response = await tmdb.Movies(language=language, region=region).discover()
         await self._reply(ctx, results=response["results"][:1])
 
+    @movie.command(name="find", description=DEFAULT["COMMAND_MOVIE_FIND_DESC"])
+    async def find(self, ctx: commands.Context, *, query: str = Option.query) -> None:
+        overview = translator.Translator().translate(query)
+        name = await whatismymovie.Movie().name_by_overview(overview)
+        server = Server.get_by_id(ctx.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Movies(language=language, region=region).search(name[:-6])
+        await self._reply(ctx, results=response["results"][:1])
+
     @movie.command(name="popular", description=DEFAULT["COMMAND_MOVIE_POPULAR_DESC"])
     async def popular(self, ctx: commands.Context) -> None:
         server = Server.get_by_id(ctx.guild.id)
@@ -154,7 +164,7 @@ class Movies(commands.Cog):
         await self._reply(ctx, results=response["results"][:1])
 
     @movie.command(name="search", description=DEFAULT["COMMAND_MOVIE_SEARCH_DESC"])
-    async def search(self, ctx: commands.Context, query: str = Option.query) -> None:
+    async def search(self, ctx: commands.Context, *, query: str = Option.query) -> None:
         server = Server.get_by_id(ctx.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
@@ -227,6 +237,17 @@ class Movies(commands.Cog):
             with_runtime__gte=min_runtime if min_runtime != -1 else None,
             with_runtime__lte=max_runtime if max_runtime != -1 else None,
         )
+        await self._reply(inter, results=response["results"])
+
+    @slash_movie.sub_command(name="find", description=DEFAULT["COMMAND_MOVIE_FIND_DESC"])
+    async def slash_find(self, inter: disnake.ApplicationCommandInteraction, query: str = Option.query) -> None:
+        overview = translator.Translator().translate(query)
+        await inter.response.defer()
+        name = await whatismymovie.Movie().name_by_overview(overview)
+        server = Server.get_by_id(inter.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        response = await tmdb.Movies(language=language, region=region).search(name[:-6])
         await self._reply(inter, results=response["results"])
 
     @slash_movie.sub_command(name="popular", description=DEFAULT["COMMAND_MOVIE_POPULAR_DESC"])

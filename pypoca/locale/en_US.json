@@ -7,7 +7,7 @@
     "OPTION_TRUE": "yes",
     "OPTION_FALSE": "no",
 
-    "OPTION_QUERY_NAME": "name",
+    "OPTION_QUERY_NAME": "query",
     "OPTION_QUERY_DESC": "A text query to search",
 
     "OPTION_PAGE_NAME": "page",
@@ -146,6 +146,7 @@
     "COMMAND_MOVIE_TOP_DESC": "Get the top rated movies",
     "COMMAND_MOVIE_TRENDING_DESC": "Get the trending movies",
     "COMMAND_MOVIE_UPCOMING_DESC": "Get the upcoming movies in theatres",
+    "COMMAND_MOVIE_FIND_DESC": "Use words or search with titles, actors, genres, etc. PyPoca will find movies for you",
 
     "COMMAND_PERSON_DESC": "All about people: find, discover and get information",
     "COMMAND_PERSON_REPLY": "People results",

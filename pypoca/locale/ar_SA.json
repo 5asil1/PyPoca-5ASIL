@@ -7,7 +7,7 @@
     "OPTION_TRUE": "yes",
     "OPTION_FALSE": "no",
 
-    "OPTION_QUERY_NAME": "name",
+    "OPTION_QUERY_NAME": "query",
     "OPTION_QUERY_DESC": "A text query to search",
 
     "OPTION_PAGE_NAME": "page",
@@ -146,6 +146,7 @@
     "COMMAND_MOVIE_TOP_DESC": "احصل على الأفلام الأعلى تقييمًا",
     "COMMAND_MOVIE_TRENDING_DESC": "احصل على الأفلام الرائجة",
     "COMMAND_MOVIE_UPCOMING_DESC": "اعرض الأفلام القادمة في السينما",
+    "COMMAND_MOVIE_FIND_DESC": "استخدم الكلمات أو ابحث بالعناوين والممثلين والأنواع وما إلى ذلك. سيجد PyPoca أفلامًا لك",
 
     "COMMAND_PERSON_DESC": "كل شيء عن الأشخاص: البحث عن المعلومات واكتشافها والحصول عليها",
     "COMMAND_PERSON_REPLY": "نتائج الأشخاص",
