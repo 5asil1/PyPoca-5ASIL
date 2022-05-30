@@ -42,14 +42,14 @@ class TMDb:
         params = {**self.default_params, **params}
 
         async with ClientSession() as session:
-            try:
-                response = await session.request(method, url=url, params=params)
-                response.raise_for_status()
-                result = await response.json()
-            except Exception as e:
-                raise TmdbException(e)
-            else:
-                return result
+            async with await session.request(method, url=url, params=params) as response:
+                try:
+                    response.raise_for_status()
+                    result = await response.json()
+                except Exception as e:
+                    raise TmdbException(e)
+                else:
+                    return result
 
 
 class Movies(TMDb):

@@ -11,8 +11,8 @@ class General(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.slash_command(description=DEFAULT["COMMAND_PING_DESC"])
-    async def ping(self, inter: disnake.ApplicationCommandInteraction, hide: Choice.boolean = Option.hide):
+    @commands.slash_command(name="ping", description=DEFAULT["COMMAND_PING_DESC"])
+    async def slash_ping(self, inter: disnake.ApplicationCommandInteraction, hide: Choice.boolean = Option.hide):
         server = Server.get_by_id(inter.guild.id)
         locale = ALL[server.language] if server else DEFAULT
         
@@ -22,8 +22,8 @@ class General(commands.Cog):
         embed = disnake.Embed(description=description, color=COLOR)
         await inter.send(embed=embed, ephemeral=hide)
 
-    @commands.slash_command(description=DEFAULT["COMMAND_HELP_DESC"])
-    async def help(self, inter: disnake.ApplicationCommandInteraction, hide: Choice.boolean = Option.hide):
+    @commands.slash_command(name="help", description=DEFAULT["COMMAND_HELP_DESC"])
+    async def slash_help(self, inter: disnake.ApplicationCommandInteraction, hide: Choice.boolean = Option.hide):
         server = Server.get_by_id(inter.guild.id)
         locale = ALL[server.language] if server else DEFAULT
 
@@ -31,6 +31,7 @@ class General(commands.Cog):
         description = f"""
             **/movie**
             {BLANK} **discover** {locale["COMMAND_MOVIE_DISCOVER_DESC"]}
+            {BLANK} **find** {locale["COMMAND_MOVIE_FIND_DESC"]}
             {BLANK} **popular** {locale["COMMAND_MOVIE_POPULAR_DESC"]}
             {BLANK} **search** {locale["COMMAND_MOVIE_SEARCH_DESC"]}
             {BLANK} **top** {locale["COMMAND_MOVIE_TOP_DESC"]}

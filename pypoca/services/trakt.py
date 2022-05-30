@@ -35,18 +35,19 @@ class Trakt:
         headers = self.default_headers
 
         async with ClientSession() as session:
-            try:
-                response = await session.request(method, url=url, headers=headers)
-                response.raise_for_status()
-                result = await response.json()
-            except Exception as e:
-                raise TmdbException(e)
-            else:
-                return result
+            async with await session.request(method, url=url, headers=headers) as response:
+                try:
+                    response.raise_for_status()
+                    result = await response.json()
+                except Exception as e:
+                    raise TmdbException(e)
+                else:
+                    return result
 
 
 class Movie(Trakt):
     async def find_by_tmdb_id(self, tmdb_id: str) -> dict:
+        """https://trakt.docs.apiary.io/#reference/search/id-lookup/get-id-lookup-results"""
         return await self.request(f"search/tmdb/{tmdb_id}")
 
     async def trakt_id_by_tmdb_id(self, tmdb_id: str) -> str:
@@ -59,6 +60,7 @@ class Movie(Trakt):
 
 class Show(Trakt):
     async def find_by_tmdb_id(self, tmdb_id: str) -> dict:
+        """https://trakt.docs.apiary.io/#reference/search/id-lookup/get-id-lookup-results"""
         return await self.request(f"search/tmdb/{tmdb_id}")
 
     async def trakt_id_by_tmdb_id(self, tmdb_id: str) -> str:

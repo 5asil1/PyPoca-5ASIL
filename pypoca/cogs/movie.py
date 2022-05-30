@@ -35,39 +35,6 @@ class MovieButtons(disnake.ui.View):
         await inter.bot.get_cog("Movies")._reply(inter, results=self.movie.similar)
 
 
-class MovieEmbed(disnake.Embed):
-    def __init__(self, inter: disnake.MessageInteraction, *, movie: Movie) -> None:
-        server = Server.get_by_id(inter.guild.id)
-        language = server.language if server else DEFAULT_LANGUAGE
-        region = server.region if server else DEFAULT_REGION
-        locale = ALL[language]
-        super().__init__(title=movie.title, description=movie.overview, color=COLOR)
-        if movie.homepage:
-            self.url = movie.homepage
-        if movie.image:
-            self.set_image(url=movie.image)
-        if movie.directors:
-            self.set_author(name=", ".join(movie.directors))
-        self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_RATING"], value=movie.rating_and_votes or "-", inline=True
-        )
-        self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_RELEASED"], value=movie.release_date.strftime(locale["DATETIME_FORMAT"]) if movie.release_date else "-", inline=True
-        )
-        self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_RUNTIME"], value=movie.duration or "-", inline=True
-        )
-        self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_GENRE"], value=", ".join(movie.genres) or "-", inline=True
-        )
-        self.add_field(
-            name=locale["COMMAND_MOVIE_FIELD_STUDIOS"], value=", ".join(movie.studios) or "-", inline=True
-        )
-        self.add_field(
-            name=locale["COMMAND_TV_FIELD_WATCH"], value=", ".join(movie.watch_on(region)) or "-", inline=True
-        )
-
-
 class MovieDropdown(disnake.ui.Select):
     def __init__(self, inter: disnake.ApplicationCommandInteraction, *, movies: list[Movie]) -> None:
         server = Server.get_by_id(inter.guild.id)
@@ -105,6 +72,39 @@ class MovieSelect(disnake.ui.View):
     def __init__(self, inter: disnake.ApplicationCommandInteraction, *, movies: list[Movie]) -> None:
         super().__init__()
         self.add_item(MovieDropdown(inter, movies=movies))
+
+
+class MovieEmbed(disnake.Embed):
+    def __init__(self, inter: disnake.MessageInteraction, *, movie: Movie) -> None:
+        server = Server.get_by_id(inter.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        locale = ALL[language]
+        super().__init__(title=movie.title, description=movie.overview, color=COLOR)
+        if movie.homepage:
+            self.url = movie.homepage
+        if movie.image:
+            self.set_image(url=movie.image)
+        if movie.directors:
+            self.set_author(name=", ".join(movie.directors))
+        self.add_field(
+            name=locale["COMMAND_MOVIE_FIELD_RATING"], value=movie.rating_and_votes or "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_MOVIE_FIELD_RELEASED"], value=movie.release_date.strftime(locale["DATETIME_FORMAT"]) if movie.release_date else "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_MOVIE_FIELD_RUNTIME"], value=movie.duration or "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_MOVIE_FIELD_GENRE"], value=", ".join(movie.genres) or "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_MOVIE_FIELD_STUDIOS"], value=", ".join(movie.studios) or "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_TV_FIELD_WATCH"], value=", ".join(movie.watch_on(region)) or "-", inline=True
+        )
 
 
 class Movies(commands.Cog):

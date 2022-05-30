@@ -37,30 +37,6 @@ class PersonButtons(disnake.ui.View):
             await inter.bot.get_cog("Shows")._reply(inter, results=self.person.cast_shows)
 
 
-class PersonEmbed(disnake.Embed):
-    def __init__(self, inter: disnake.MessageInteraction, *, person: Person) -> None:
-        server = Server.get_by_id(inter.guild.id)
-        language = server.language if server else DEFAULT_LANGUAGE
-        locale = ALL[language]
-        super().__init__(title=person.name, description=person.biography, color=COLOR)
-        if person.homepage:
-            self.url = person.homepage
-        if person.image:
-            self.set_thumbnail(url=person.image)
-        self.add_field(
-            name=locale["COMMAND_PERSON_FIELD_BIRTHDAY"], value=person.birthday.strftime(locale["DATETIME_FORMAT"]) if person.birthday else "-", inline=True
-        )
-        self.add_field(
-            name=locale["COMMAND_PERSON_FIELD_DEATHDAY"], value=person.deathday.strftime(locale["DATETIME_FORMAT"]) if person.deathday else "-", inline=True
-        )
-        self.add_field(
-            name=locale["COMMAND_PERSON_FIELD_BORN"], value=person.place_of_birth or "-", inline=True
-        )
-        self.add_field(
-            name=locale["COMMAND_PERSON_FIELD_KNOW_FOR"], value=", ".join(person.jobs[:6]) or "-", inline=False
-        )
-
-
 class PersonDropdown(disnake.ui.Select):
     def __init__(self, inter: disnake.ApplicationCommandInteraction, *, people: list[Person]) -> None:
         server = Server.get_by_id(inter.guild.id)
@@ -94,6 +70,30 @@ class PersonSelect(disnake.ui.View):
     def __init__(self, inter: disnake.ApplicationCommandInteraction, *, people: list[Person]) -> None:
         super().__init__()
         self.add_item(PersonDropdown(inter, people=people))
+
+
+class PersonEmbed(disnake.Embed):
+    def __init__(self, inter: disnake.MessageInteraction, *, person: Person) -> None:
+        server = Server.get_by_id(inter.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        locale = ALL[language]
+        super().__init__(title=person.name, description=person.biography, color=COLOR)
+        if person.homepage:
+            self.url = person.homepage
+        if person.image:
+            self.set_thumbnail(url=person.image)
+        self.add_field(
+            name=locale["COMMAND_PERSON_FIELD_BIRTHDAY"], value=person.birthday.strftime(locale["DATETIME_FORMAT"]) if person.birthday else "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_PERSON_FIELD_DEATHDAY"], value=person.deathday.strftime(locale["DATETIME_FORMAT"]) if person.deathday else "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_PERSON_FIELD_BORN"], value=person.place_of_birth or "-", inline=True
+        )
+        self.add_field(
+            name=locale["COMMAND_PERSON_FIELD_KNOW_FOR"], value=", ".join(person.jobs[:6]) or "-", inline=False
+        )
 
 
 class People(commands.Cog):
@@ -131,7 +131,7 @@ class People(commands.Cog):
         await self._reply(ctx, results=response["results"][:1])
 
     @person.command(name="search", description=DEFAULT["COMMAND_PERSON_SEARCH_DESC"])
-    async def search(self, ctx: commands.Context) -> None:
+    async def search(self, ctx: commands.Context, *, query: str = Option.query) -> None:
         server = Server.get_by_id(ctx.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION

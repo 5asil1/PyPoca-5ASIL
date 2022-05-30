@@ -35,6 +35,45 @@ class ShowButtons(disnake.ui.View):
         await inter.bot.get_cog("Shows")._reply(inter, results=self.show.similar)
 
 
+class ShowDropdown(disnake.ui.Select):
+    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, shows: list[Show]) -> None:
+        server = Server.get_by_id(inter.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        locale = ALL[language]
+        options = [
+            disnake.SelectOption(
+                label=show.title_and_year,
+                value=show.id,
+                description=show.rating_and_votes or "",
+            )
+            for show in shows
+        ]
+        super().__init__(placeholder=locale["PLACEHOLDER"], options=options[:25])
+
+    async def callback(self, inter: disnake.MessageInteraction) -> None:
+        server = Server.get_by_id(inter.guild.id)
+        language = server.language if server else DEFAULT_LANGUAGE
+        region = server.region if server else DEFAULT_REGION
+        show_id = int(self.values[0])
+        result = await tmdb.Show(id=show_id, language=language, region=region).details(
+            append="credits,external_ids,recommendations,similar,videos,watch/providers"
+        )
+        try:
+            result["external_ids"]["trakt_id"] = await trakt.Show().trakt_id_by_tmdb_id(show_id)
+        except Exception as e:
+            result["external_ids"]["trakt_id"] = None
+        show = Show(result)
+        await inter.response.send_message(
+            embed=ShowEmbed(inter, show=show), view=ShowButtons(inter, show=show)
+        )
+
+
+class ShowSelect(disnake.ui.View):
+    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, shows: list[Show]) -> None:
+        super().__init__()
+        self.add_item(ShowDropdown(inter, shows=shows))
+
+
 class ShowEmbed(disnake.Embed):
     def __init__(self, inter: disnake.MessageInteraction, *, show: Show) -> None:
         server = Server.get_by_id(inter.guild.id)
@@ -77,45 +116,6 @@ class ShowEmbed(disnake.Embed):
         self.add_field(
             name=locale["COMMAND_TV_FIELD_WATCH"], value=", ".join(show.watch_on(region)) or "-", inline=True
         )
-
-
-class ShowDropdown(disnake.ui.Select):
-    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, shows: list[Show]) -> None:
-        server = Server.get_by_id(inter.guild.id)
-        language = server.language if server else DEFAULT_LANGUAGE
-        locale = ALL[language]
-        options = [
-            disnake.SelectOption(
-                label=show.title_and_year,
-                value=show.id,
-                description=show.rating_and_votes or "",
-            )
-            for show in shows
-        ]
-        super().__init__(placeholder=locale["PLACEHOLDER"], options=options[:25])
-
-    async def callback(self, inter: disnake.MessageInteraction) -> None:
-        server = Server.get_by_id(inter.guild.id)
-        language = server.language if server else DEFAULT_LANGUAGE
-        region = server.region if server else DEFAULT_REGION
-        show_id = int(self.values[0])
-        result = await tmdb.Show(id=show_id, language=language, region=region).details(
-            append="credits,external_ids,recommendations,similar,videos,watch/providers"
-        )
-        try:
-            result["external_ids"]["trakt_id"] = await trakt.Show().trakt_id_by_tmdb_id(show_id)
-        except Exception as e:
-            result["external_ids"]["trakt_id"] = None
-        show = Show(result)
-        await inter.response.send_message(
-            embed=ShowEmbed(inter, show=show), view=ShowButtons(inter, show=show)
-        )
-
-
-class ShowSelect(disnake.ui.View):
-    def __init__(self, inter: disnake.ApplicationCommandInteraction, *, shows: list[Show]) -> None:
-        super().__init__()
-        self.add_item(ShowDropdown(inter, shows=shows))
 
 
 class Shows(commands.Cog):
@@ -165,7 +165,7 @@ class Shows(commands.Cog):
         await self._reply(ctx, results=response["results"][:1])
 
     @tv.command(name="search", description=DEFAULT["COMMAND_TV_SEARCH_DESC"])
-    async def search(self, ctx: commands.Context) -> None:
+    async def search(self, ctx: commands.Context, *, query: str = Option.query) -> None:
         server = Server.get_by_id(ctx.guild.id)
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
