@@ -10,12 +10,12 @@ class Movie(dict):
         self.belongs_to_collection = data.get("belongs_to_collection")
         self._budget = int(data.get("budget") or 0)
         self._genres = data.get("genres") or []
-        self.homepage = data.get("homepage")
+        self.homepage = data.get("homepage") or ""
         self.id = data.get("id")
-        self.name = data.get("title", "")
-        self.original_language = data.get("original_language")
-        self.original_name = data.get("original_title", "")
-        self.overview = data.get("overview")
+        self.name = data.get("title") or ""
+        self.original_language = data.get("original_language") or ""
+        self.original_name = data.get("original_title") or ""
+        self.overview = data.get("overview") or ""
         self.popularity = data.get("popularity")
         self.poster_path = data.get("poster_path")
         self.production_companies = data.get("production_companies") or []
@@ -25,7 +25,7 @@ class Movie(dict):
         self.runtime = data.get("runtime")
         self.spoken_languages = data.get("spoken_languages") or []
         self.status = data.get("status")
-        self.tagline = data.get("tagline")
+        self.tagline = data.get("tagline") or ""
         self.video = data.get("video")
         self.vote_average = data.get("vote_average")
         self.vote_count = data.get("vote_count")

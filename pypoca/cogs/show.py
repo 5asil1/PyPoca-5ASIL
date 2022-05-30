@@ -80,13 +80,16 @@ class ShowEmbed(disnake.Embed):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         locale = ALL[language]
-        super().__init__(title=show.title, description=show.overview, color=COLOR)
+        super().__init__(title=show.title, description=f"_{show.tagline}_" if show.tagline else "", color=COLOR)
         if show.homepage:
             self.url = show.homepage
         if show.image:
             self.set_image(url=show.image)
         if show.directors:
             self.set_author(name=", ".join(show.directors))
+        self.add_field(
+            name=locale["COMMAND_TV_FIELD_OVERVIEW"], value=show.overview, inline=False
+        )
         self.add_field(
             name=locale["COMMAND_TV_FIELD_RATING"], value=show.rating_and_votes or "-", inline=True
         )

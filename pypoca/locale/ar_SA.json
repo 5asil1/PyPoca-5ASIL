@@ -128,6 +128,7 @@
 
     "COMMAND_MOVIE_DESC": "كل شيء عن الأفلام: البحث عن المعلومات واكتشافها والحصول عليها",
     "COMMAND_MOVIE_REPLY": "نتائج الأفلام",
+    "COMMAND_MOVIE_FIELD_OVERVIEW": "نظرة عامة",
     "COMMAND_MOVIE_FIELD_GENRE": "النوع",
     "COMMAND_MOVIE_FIELD_RATING": "التقييم",
     "COMMAND_MOVIE_FIELD_RELEASED": "تم الإصدار",
@@ -163,6 +164,7 @@
 
     "COMMAND_TV_DESC": "كل ما يتعلق بالبرامج التليفزيونية: اعثر على المعلومات واكتشفها واحصل عليها",
     "COMMAND_TV_REPLY": "نتائج البرامج التلفزيونية",
+    "COMMAND_TV_FIELD_OVERVIEW": "نظرة عامة",
     "COMMAND_TV_FIELD_EPISODES": "الحلقات",
     "COMMAND_TV_FIELD_GENRE": "النوع",
     "COMMAND_TV_FIELD_NETWORK": "الشبكة",
@@ -188,6 +190,7 @@
     "COMMAND_GAME_DESC": "اعرض مدى معرفتك بالأفلام والمسلسلات مع الألعاب والاختبارات",
     "COMMAND_GAME_POINTS": "النقاط",
     "COMMAND_GAME_END": "انتهت اللعبة",
+
     "COMMAND_GAME_FRAME_DESC": "اكتشف ما هو الفيلم من خلال صورة واحدة فقط",
     "COMMAND_GAME_FRAME_REPLY": "من أي فيلم هذا؟",
     "COMMAND_GAME_FRAME_FIELD_SCORE": "النتيجة",

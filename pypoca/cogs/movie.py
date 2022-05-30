@@ -80,13 +80,16 @@ class MovieEmbed(disnake.Embed):
         language = server.language if server else DEFAULT_LANGUAGE
         region = server.region if server else DEFAULT_REGION
         locale = ALL[language]
-        super().__init__(title=movie.title, description=movie.overview, color=COLOR)
+        super().__init__(title=movie.title, description=f"_{movie.tagline}_" if movie.tagline else "", color=COLOR)
         if movie.homepage:
             self.url = movie.homepage
         if movie.image:
             self.set_image(url=movie.image)
         if movie.directors:
             self.set_author(name=", ".join(movie.directors))
+        self.add_field(
+            name=locale["COMMAND_MOVIE_FIELD_OVERVIEW"], value=movie.overview, inline=False
+        )
         self.add_field(
             name=locale["COMMAND_MOVIE_FIELD_RATING"], value=movie.rating_and_votes or "-", inline=True
         )

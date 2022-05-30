@@ -128,6 +128,7 @@
 
     "COMMAND_MOVIE_DESC": "Tudo sobre filmes: encontre, descubra e obtenha informações",
     "COMMAND_MOVIE_REPLY": "Filmes encontrados",
+    "COMMAND_MOVIE_FIELD_OVERVIEW": "Sinopse",
     "COMMAND_MOVIE_FIELD_GENRE": "Gêneros",
     "COMMAND_MOVIE_FIELD_RATING": "Nota",
     "COMMAND_MOVIE_FIELD_RELEASED": "Lançamento",
@@ -163,6 +164,7 @@
 
     "COMMAND_TV_DESC": "Tudo sobre séries: encontre, descubra e obtenha informações",
     "COMMAND_TV_REPLY": "Séries encontrados",
+    "COMMAND_TV_FIELD_OVERVIEW": "Sinopse",
     "COMMAND_TV_FIELD_EPISODES": "Episódios",
     "COMMAND_TV_FIELD_GENRE": "Gêneros",
     "COMMAND_TV_FIELD_NETWORK": "Rede",
@@ -188,6 +190,7 @@
     "COMMAND_GAME_DESC": "Mostre o quanto você conhece de filmes e séries com jogos e quizzes",
     "COMMAND_GAME_POINTS": "pontos",
     "COMMAND_GAME_END": "Fim de jogo",
+
     "COMMAND_GAME_FRAME_DESC": "Descubra qual é o filme com apenas uma imagem",
     "COMMAND_GAME_FRAME_REPLY": "De qual filme é isso?",
     "COMMAND_GAME_FRAME_FIELD_SCORE": "Pontuação",

@@ -128,6 +128,7 @@
 
     "COMMAND_MOVIE_DESC": "All about movies: find, discover and get information",
     "COMMAND_MOVIE_REPLY": "Movie results",
+    "COMMAND_MOVIE_FIELD_OVERVIEW": "Overview",
     "COMMAND_MOVIE_FIELD_GENRE": "Genre",
     "COMMAND_MOVIE_FIELD_RATING": "Rating",
     "COMMAND_MOVIE_FIELD_RELEASED": "Released",
@@ -163,6 +164,7 @@
 
     "COMMAND_TV_DESC": "All about TV shows: find, discover and get information",
     "COMMAND_TV_REPLY": "TV show results",
+    "COMMAND_TV_FIELD_OVERVIEW": "Overview",
     "COMMAND_TV_FIELD_EPISODES": "Episodes",
     "COMMAND_TV_FIELD_GENRE": "Genre",
     "COMMAND_TV_FIELD_NETWORK": "Network",
@@ -188,6 +190,7 @@
     "COMMAND_GAME_DESC": "Show how much you know about movies and series with games and quizzes",
     "COMMAND_GAME_POINTS": "points",
     "COMMAND_GAME_END": "Game over",
+
     "COMMAND_GAME_FRAME_DESC": "Find out what the movie is with only one image",
     "COMMAND_GAME_FRAME_REPLY": "Which movie is this from?",
     "COMMAND_GAME_FRAME_FIELD_SCORE": "Score",
