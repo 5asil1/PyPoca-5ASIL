@@ -8,6 +8,10 @@ class RequestException(PypocaException):
     pass
 
 
+class OMDbException(RequestException):
+    pass
+
+
 class TmdbException(RequestException):
     pass
 

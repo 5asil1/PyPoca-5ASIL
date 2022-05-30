@@ -51,8 +51,8 @@ class Movie(Trakt):
         return await self.request(f"search/tmdb/{tmdb_id}")
 
     async def trakt_id_by_tmdb_id(self, tmdb_id: str) -> str:
-        response = await self.find_by_tmdb_id(tmdb_id)
         try:
+            response = await self.find_by_tmdb_id(tmdb_id)
             return response[0]["movie"]["ids"]["trakt"]
         except Exception:
             return None
@@ -64,8 +64,8 @@ class Show(Trakt):
         return await self.request(f"search/tmdb/{tmdb_id}")
 
     async def trakt_id_by_tmdb_id(self, tmdb_id: str) -> str:
-        response = await self.find_by_tmdb_id(tmdb_id)
         try:
+            response = await self.find_by_tmdb_id(tmdb_id)
             return response[0]["show"]["ids"]["trakt"]
         except Exception:
             return None
