@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import date, datetime
 
 
 class Movie(dict):
@@ -8,7 +8,7 @@ class Movie(dict):
         self.adult = data.get("adult")
         self.backdrop_path = data.get("backdrop_path")
         self.belongs_to_collection = data.get("belongs_to_collection")
-        self.budget = data.get("budget")
+        self._budget = int(data.get("budget") or 0)
         self._genres = data.get("genres") or []
         self.homepage = data.get("homepage")
         self.id = data.get("id")
@@ -21,7 +21,7 @@ class Movie(dict):
         self.production_companies = data.get("production_companies") or []
         self.production_countries = data.get("production_countries") or []
         self._release_date = data.get("release_date")
-        self.revenue = data.get("revenue")
+        self._revenue = int(data.get("revenue") or 0)
         self.runtime = data.get("runtime")
         self.spoken_languages = data.get("spoken_languages") or []
         self.status = data.get("status")
@@ -48,14 +48,41 @@ class Movie(dict):
         return f"{self.title[:90]} ({self.release_date.year})" if self.release_date else self.title[:100]
 
     @property
-    def release_date(self) -> datetime:
+    def release_date(self) -> date:
         if self._release_date:
-            return datetime.strptime(self._release_date, "%Y-%m-%d")
+            return datetime.strptime(self._release_date, "%Y-%m-%d").date()
 
     @property
     def image(self) -> str:
         if self.backdrop_path:
             return f"https://image.tmdb.org/t/p/w1280/{self.backdrop_path}"
+
+    @property
+    def poster(self) -> str:
+        if self.backdrop_path:
+            return f"https://image.tmdb.org/t/p/w1280/{self.poster_path}"
+
+    @property
+    def budget(self) -> str:
+        if self._budget >= 1000000000:
+            return f"U${self._budget // 1000000000} bi"
+        elif self._budget >= 1000000:
+            return f"U${self._budget // 1000000} mi"
+        elif self._budget >= 1000:
+            return f"U${self._budget // 1000000}k"
+        elif self._budget:
+            return f"U${self._budget}"
+
+    @property
+    def revenue(self) -> str:
+        if self._revenue >= 1000000000:
+            return f"U${self._revenue // 1000000000} bi"
+        elif self._revenue >= 1000000:
+            return f"U${self._revenue // 1000000} mi"
+        elif self._revenue >= 1000:
+            return f"U${self._revenue // 1000000}k"
+        elif self._revenue:
+            return f"U${self._revenue}"
 
     @property
     def imdb_id(self) -> str:

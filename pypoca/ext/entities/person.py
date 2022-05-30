@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import date, datetime
 
 
 class Person(dict):
@@ -24,14 +24,14 @@ class Person(dict):
         self.credits = data.get("combined_credits") or {}
 
     @property
-    def birthday(self) -> datetime:
+    def birthday(self) -> date:
         if self._birthday:
-            return datetime.strptime(self._birthday, "%Y-%m-%d")
+            return datetime.strptime(self._birthday, "%Y-%m-%d").date()
 
     @property
-    def deathday(self) -> datetime:
+    def deathday(self) -> date:
         if self._deathday:
-            return datetime.strptime(self._deathday, "%Y-%m-%d")
+            return datetime.strptime(self._deathday, "%Y-%m-%d").date()
 
     @property
     def image(self) -> str:

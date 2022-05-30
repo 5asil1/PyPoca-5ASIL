@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from datetime import datetime
+from datetime import date, datetime
 
 
 class Show(dict):
@@ -55,19 +55,24 @@ class Show(dict):
         return f"{self.title[:90]} ({self.first_date.year})" if self.first_date else self.title[:100]
 
     @property
-    def first_date(self) -> datetime:
+    def first_date(self) -> date:
         if self.first_air_date:
-            return datetime.strptime(self.first_air_date, "%Y-%m-%d")
+            return datetime.strptime(self.first_air_date, "%Y-%m-%d").date()
 
     @property
-    def last_date(self) -> datetime:
+    def last_date(self) -> date:
         if self.last_air_date:
-            return datetime.strptime(self.last_air_date, "%Y-%m-%d")
+            return datetime.strptime(self.last_air_date, "%Y-%m-%d").date()
 
     @property
     def image(self) -> str:
         if self.backdrop_path:
             return f"https://image.tmdb.org/t/p/w1280/{self.backdrop_path}"
+
+    @property
+    def poster(self) -> str:
+        if self.backdrop_path:
+            return f"https://image.tmdb.org/t/p/w1280/{self.poster_path}"
 
     @property
     def imdb_id(self) -> str:
