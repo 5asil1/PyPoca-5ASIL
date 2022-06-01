@@ -214,6 +214,6 @@
     "COMMAND_GAME_FRAME_DESC": "اكتشف ما هو الفيلم من خلال صورة واحدة فقط",
     "COMMAND_GAME_FRAME_REPLY": "ما الفيلم؟",
 
-    "COMMAND_GAME_HIGHER_DESC": "احزر الفيلم الذي يحتوي على أعلى ميزانية أو تصنيف أو تاريخ إصدار أو طول" ,
+    "COMMAND_GAME_HIGHER_DESC": "خمن الفيلم الذي يحتوي على أعلى ميزانية أو تصنيف أو تاريخ إصدار أو مدة" ,
     "COMMAND_GAME_HIGHER_REPLY": "ما هو الفيلم الذي يحتوي على أعلى {category}؟"
 }

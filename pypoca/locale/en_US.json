@@ -214,6 +214,6 @@
     "COMMAND_GAME_FRAME_DESC": "Find out what the movie is with just one image",
     "COMMAND_GAME_FRAME_REPLY": "What's the movie?",
 
-    "COMMAND_GAME_HIGHER_DESC": "Guess which movie has the highest budget, rating, release date or length",
+    "COMMAND_GAME_HIGHER_DESC": "Guess which movie has the highest budget, rating, release date or duration",
     "COMMAND_GAME_HIGHER_REPLY": "Which movie has the highest {category}?"
 }
