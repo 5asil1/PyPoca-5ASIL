@@ -47,7 +47,6 @@ class MovieDropdown(disnake.ui.Select):
             disnake.SelectOption(
                 label=movie.title_and_year,
                 value=movie.id,
-                description=movie.rating_and_votes or "",
             )
             for movie in movies
         ]
@@ -61,10 +60,8 @@ class MovieDropdown(disnake.ui.Select):
         result = await tmdb.Movie(id=movie_id, language=language, region=region).details(
             append="credits,external_ids,recommendations,similar,videos,watch/providers"
         )
-        try:
-            result["external_ids"]["trakt_id"] = await trakt.Movie().trakt_id_by_tmdb_id(movie_id)
-        except Exception as e:
-            result["external_ids"]["trakt_id"] = None
+        result["external_ids"]["trakt_id"] = await trakt.Movie().trakt_id_by_tmdb_id(movie_id)
+        result["imdb"] = await omdb.Movie().ratings_by_imdb_id(result["external_ids"]["imdb_id"])
         movie = Movie(result)
         await inter.response.send_message(
             embed=MovieEmbed(inter, movie=movie), view=MovieButtons(inter, movie=movie)

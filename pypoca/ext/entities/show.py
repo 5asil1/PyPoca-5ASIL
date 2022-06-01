@@ -34,8 +34,8 @@ class Show(dict):
         self._status = data.get("status") or ""
         self.tagline = data.get("tagline") or ""
         self.type = data.get("type")
-        self.vote_average = data["imdb"].get("imdb_rating") if data.get("imdb") else data.get("vote_average")
-        self.vote_count = data["imdb"].get("imdb_votes") if data.get("imdb") else data.get("vote_count")
+        self.vote_average = data["imdb"]["imdb_rating"] if data.get("imdb") and data["imdb"].get("imdb_rating") else data.get("vote_average")
+        self.vote_count = data["imdb"]["imdb_votes"] if data.get("imdb") and data["imdb"].get("imdb_votes") else data.get("vote_count")
 
         self.alternative_titles = data.get("alternative_titles") or {}
         self.credits = data.get("credits") or {}

@@ -47,7 +47,6 @@ class ShowDropdown(disnake.ui.Select):
             disnake.SelectOption(
                 label=show.title_and_year,
                 value=show.id,
-                description=show.rating_and_votes or "",
             )
             for show in shows
         ]
@@ -61,10 +60,8 @@ class ShowDropdown(disnake.ui.Select):
         result = await tmdb.Show(id=show_id, language=language, region=region).details(
             append="credits,external_ids,recommendations,similar,videos,watch/providers"
         )
-        try:
-            result["external_ids"]["trakt_id"] = await trakt.Show().trakt_id_by_tmdb_id(show_id)
-        except Exception as e:
-            result["external_ids"]["trakt_id"] = None
+        result["external_ids"]["trakt_id"] = await trakt.Show().trakt_id_by_tmdb_id(show_id)
+        result["imdb"] = await omdb.Show().ratings_by_imdb_id(result["external_ids"]["imdb_id"])
         show = Show(result)
         await inter.response.send_message(
             embed=ShowEmbed(inter, show=show), view=ShowButtons(inter, show=show)

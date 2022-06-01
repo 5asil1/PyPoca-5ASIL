@@ -17,6 +17,7 @@ URLS = {
 COLOR = os.environ.get("COLOR_PRIMARY", 0xF1CF68)
 
 BUGSNAG_KEY = os.environ.get("BUGSNAG_KEY")
+OMDB_KEY = os.environ.get("OMDB_KEY")
 TMDB_KEY = os.environ.get("TMDB_KEY")
 TRAKT_CLIENT = os.environ.get("TRAKT_TV_CLIENT_ID")
 TRAKT_SECRET = os.environ.get("TRAKT_TV_CLIENT_SECRET")
