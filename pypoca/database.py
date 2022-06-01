@@ -11,6 +11,7 @@ class Server(db.Entity):
     language = Optional(str)
     region = Optional(str)
     frame_record = Optional(int)
+    higher_record = Optional(int)
     created_on = Required(datetime, default=datetime.utcnow)
     updated_on = Optional(datetime)
 

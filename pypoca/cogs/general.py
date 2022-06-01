@@ -50,6 +50,7 @@ class General(commands.Cog):
             {BLANK} **trending** {locale["COMMAND_PERSON_TRENDING_DESC"]}
             **/game**
             {BLANK} **frame** {locale["COMMAND_GAME_FRAME_DESC"]}
+            {BLANK} **higher** {locale["COMMAND_GAME_HIGHER_DESC"]}
             **/setting**
             {BLANK} **language** {locale["COMMAND_LANGUAGE_DESC"]}
         """

@@ -121,6 +121,13 @@
     "OPTION_MEDIA_CHOICE_TV": "tv",
     "OPTION_MEDIA_CHOICE_ALL": "all",
 
+    "OPTION_HIGHER_NAME": "category",
+    "OPTION_HIGHER_DESC": "Choose which characteristic will be compared between movies",
+    "OPTION_HIGHER_CHOICE_BUDGET": "budget",
+    "OPTION_HIGHER_CHOICE_VOTE_AVERAGE": "rating",
+    "OPTION_HIGHER_CHOICE_RELEASE_DATE": "release date",
+    "OPTION_HIGHER_CHOICE_RUNTIME": "duration",
+
     "PLACEHOLDER": "Select one of the options...",
 
     "COMMAND_PING_DESC": "Get PyPoca's latency",
@@ -201,10 +208,12 @@
     "COMMAND_GAME_DESC": "Show how much you know about movies and series with games and quizzes",
     "COMMAND_GAME_POINTS": "points",
     "COMMAND_GAME_END": "Game over",
+    "COMMAND_GAME_FIELD_SCORE": "Score",
+    "COMMAND_GAME_FIELD_RECORD": "Record",
 
-    "COMMAND_GAME_FRAME_DESC": "Find out what the movie is with only one image",
-    "COMMAND_GAME_FRAME_REPLY": "Which movie is this from?",
-    "COMMAND_GAME_FRAME_FIELD_SCORE": "Score",
-    "COMMAND_GAME_FRAME_FIELD_RECORD": "Record",
-    "COMMAND_GAME_FRAME_FIELD_TOP_SCORER": "Highest scorer"
+    "COMMAND_GAME_FRAME_DESC": "Find out what the movie is with just one image",
+    "COMMAND_GAME_FRAME_REPLY": "What's the movie?",
+
+    "COMMAND_GAME_HIGHER_DESC": "Guess which movie has the highest budget, rating, release date or length",
+    "COMMAND_GAME_HIGHER_REPLY": "Which movie has the highest {category}?"
 }

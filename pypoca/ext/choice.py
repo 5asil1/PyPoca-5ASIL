@@ -140,3 +140,11 @@ class Choice:
             DEFAULT["OPTION_INTERVAL_CHOICE_WEEK"]: "week",
         }
     )
+    higher = commands.option_enum(
+        {
+            DEFAULT["OPTION_HIGHER_CHOICE_VOTE_AVERAGE"]: "vote_average",
+            DEFAULT["OPTION_HIGHER_CHOICE_RELEASE_DATE"]: "release_date",
+            DEFAULT["OPTION_HIGHER_CHOICE_BUDGET"]: "budget",
+            DEFAULT["OPTION_HIGHER_CHOICE_RUNTIME"]: "runtime",
+        }
+    )

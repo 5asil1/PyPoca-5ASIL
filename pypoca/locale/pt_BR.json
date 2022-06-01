@@ -121,6 +121,13 @@
     "OPTION_MEDIA_CHOICE_TV": "série",
     "OPTION_MEDIA_CHOICE_ALL": "todos",
 
+    "OPTION_HIGHER_NAME": "categoria",
+    "OPTION_HIGHER_DESC": "Escolha qual característica será comparada entre os filmes",
+    "OPTION_HIGHER_CHOICE_VOTE_AVERAGE": "nota",
+    "OPTION_HIGHER_CHOICE_RELEASE_DATE": "ano de lançamento",
+    "OPTION_HIGHER_CHOICE_BUDGET": "orçamento",
+    "OPTION_HIGHER_CHOICE_RUNTIME": "duração",
+
     "PLACEHOLDER": "Selecione uma das opções...",
 
     "COMMAND_PING_DESC": "Obtenha a latência da PyPoca",
@@ -201,10 +208,12 @@
     "COMMAND_GAME_DESC": "Mostre o quanto você conhece de filmes e séries com jogos e quizzes",
     "COMMAND_GAME_POINTS": "pontos",
     "COMMAND_GAME_END": "Fim de jogo",
+    "COMMAND_GAME_FIELD_SCORE": "Pontuação",
+    "COMMAND_GAME_FIELD_RECORD": "Recorde",
 
     "COMMAND_GAME_FRAME_DESC": "Descubra qual é o filme com apenas uma imagem",
-    "COMMAND_GAME_FRAME_REPLY": "De qual filme é isso?",
-    "COMMAND_GAME_FRAME_FIELD_SCORE": "Pontuação",
-    "COMMAND_GAME_FRAME_FIELD_RECORD": "Recorde",
-    "COMMAND_GAME_FRAME_FIELD_TOP_SCORER": "Maior pontuador"
+    "COMMAND_GAME_FRAME_REPLY": "Qual é o filme?",
+
+    "COMMAND_GAME_HIGHER_DESC": "Adivinhe qual filme tem o maior orçamento, nota, data de lançamento ou duração",
+    "COMMAND_GAME_HIGHER_REPLY": "Qual filme tem maior {category}?"
 }

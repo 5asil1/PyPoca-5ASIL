@@ -124,3 +124,7 @@ class Option:
         name=DEFAULT["OPTION_INTERVAL_NAME"],
         description=DEFAULT["OPTION_INTERVAL_DESC"],
     )
+    higher = commands.Param(
+        name=DEFAULT["OPTION_HIGHER_NAME"],
+        description=DEFAULT["OPTION_HIGHER_DESC"],
+    )

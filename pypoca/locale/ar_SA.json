@@ -121,6 +121,13 @@
     "OPTION_MEDIA_CHOICE_TV": "tv",
     "OPTION_MEDIA_CHOICE_ALL": "all",
 
+    "OPTION_HIGHER_NAME": "category",
+    "OPTION_HIGHER_DESC": "Choose which characteristic will be compared between movies",
+    "OPTION_HIGHER_CHOICE_BUDGET": "الميزانية",
+    "OPTION_HIGHER_CHOICE_VOTE_AVERAGE": "تصنيف",
+    "OPTION_HIGHER_CHOICE_RELEASE_DATE": "تاريخ الإصدار",
+    "OPTION_HIGHER_CHOICE_RUNTIME": "المدة",
+
     "PLACEHOLDER": "حدد أحد الخيارات ...",
 
     "COMMAND_PING_DESC": "الحصول على زمن انتقال PyPoca",
@@ -201,10 +208,12 @@
     "COMMAND_GAME_DESC": "اعرض مدى معرفتك بالأفلام والمسلسلات مع الألعاب والاختبارات",
     "COMMAND_GAME_POINTS": "النقاط",
     "COMMAND_GAME_END": "انتهت اللعبة",
+    "COMMAND_GAME_FIELD_SCORE": "النتيجة",
+    "COMMAND_GAME_FIELD_RECORD": "تسجيل",
 
     "COMMAND_GAME_FRAME_DESC": "اكتشف ما هو الفيلم من خلال صورة واحدة فقط",
-    "COMMAND_GAME_FRAME_REPLY": "من أي فيلم هذا؟",
-    "COMMAND_GAME_FRAME_FIELD_SCORE": "النتيجة",
-    "COMMAND_GAME_FRAME_FIELD_RECORD": "تسجيل",
-    "COMMAND_GAME_FRAME_FIELD_TOP_SCORER": "أعلى نقاط"
+    "COMMAND_GAME_FRAME_REPLY": "ما الفيلم؟",
+
+    "COMMAND_GAME_HIGHER_DESC": "احزر الفيلم الذي يحتوي على أعلى ميزانية أو تصنيف أو تاريخ إصدار أو طول" ,
+    "COMMAND_GAME_HIGHER_REPLY": "ما هو الفيلم الذي يحتوي على أعلى {category}؟"
 }
