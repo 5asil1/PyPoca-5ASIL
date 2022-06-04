@@ -53,7 +53,7 @@ class Show(dict):
     @property
     def title_and_year(self) -> str:
         if self.first_date and self._status in ("Ended", "Canceled") and self.last_air_date:
-            return f"{self.title[:90]} ({self.first_date.year}-{show.last_date.year})"
+            return f"{self.title[:90]} ({self.first_date.year}-{self.last_date.year})"
         elif self.first_date:
             return f"{self.title[:90]} ({self.first_date.year})"
         else:
